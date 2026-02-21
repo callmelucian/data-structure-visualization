@@ -1,0 +1,8 @@
+[
+{
+  "directory": "D:/Code/CS163 Lab/data-structure-visualization/build",
+  "command": "C:\\mingw64\\bin\\g++.exe  @CMakeFiles/DataVisApp.dir/includes_CXX.rsp -g -std=gnu++20 -o CMakeFiles\\DataVisApp.dir\\src\\main.cpp.obj -c \"D:\\Code\\CS163 Lab\\data-structure-visualization\\src\\main.cpp\"",
+  "file": "D:/Code/CS163 Lab/data-structure-visualization/src/main.cpp",
+  "output": "CMakeFiles/DataVisApp.dir/src/main.cpp.obj"
+}
+]
