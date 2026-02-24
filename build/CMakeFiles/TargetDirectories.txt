@@ -1,3 +1,0 @@
-D:/Code/CS163 Lab/data-structure-visualization/build/CMakeFiles/DataVisApp.dir
-D:/Code/CS163 Lab/data-structure-visualization/build/CMakeFiles/edit_cache.dir
-D:/Code/CS163 Lab/data-structure-visualization/build/CMakeFiles/rebuild_cache.dir
