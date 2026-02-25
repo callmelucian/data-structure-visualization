@@ -1,5 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <vector>
+#include <memory>
 #include <string>
 
 class FloatingNode : public sf::Drawable, public sf::Transformable {
@@ -17,7 +19,7 @@ public:
         circle.setFillColor(initColor);
 
         // setup annotation
-        annotation.setCharacterSize(30);
+        annotation.setCharacterSize(50);
         annotation.setFillColor(sf::Color::White);
 
         sf::FloatRect localRectangle = annotation.getLocalBounds();
@@ -34,5 +36,12 @@ public:
         // show circle and annotation
         target.draw(circle, states);
         target.draw(annotation, states);
+    }
+};
+
+class NodeList : public std::vector<std::unique_ptr<FloatingNode>> {
+public:
+    void pushNode (float radius, const std::string &msgString, const sf::Font &font, const sf::Color &initColor) {
+        push_back(std::make_unique<FloatingNode>(radius, msgString, font, initColor));
     }
 };
