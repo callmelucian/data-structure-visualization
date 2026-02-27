@@ -10,9 +10,9 @@ const sf::Color floatColor = sf::Color({69, 123, 157});
 const sf::Color fixedColor = sf::Color({230, 57, 70});
 const sf::Vector2f zeroVector = sf::Vector2(0.f, 0.f);
 
-const float STATICFRICTION = 2.f;
-const float KINETICFRICTION = 1.5f;
-const float STATIONARY = 1e-3f;
+const float STATICFRICTION = .01f;
+const float KINETICFRICTION = .008f;
+const float STATIONARY = 1e-9f;
 const float eps = 1e-6f;
 
 enum class NodeState { FLOAT, FIXED };
@@ -48,7 +48,9 @@ public:
     }
 
     // === GEOMETRY HELPER FUNCTION ===
-    sf::Vector2f getOrigin() const { return circle.getOrigin(); }
+    sf::Vector2f getPosition() const {
+        return getTransform().transformPoint(circle.getPosition());
+    }
 
     // === HELPER FUNCTION FOR DRAWING ===
     void draw (sf::RenderTarget& target, sf::RenderStates states) const override {
@@ -62,8 +64,8 @@ public:
 
     // === HANDLE FLOW STATE ===
     void applyForce (const FloatingNode &o) {
-        sf::Vector2f a = getOrigin(), b = o.getOrigin();
-        if (distance(a, b) > eps) acceleration += (a - b) / cube(distance(a, b));
+        sf::Vector2f a = getPosition(), b = o.getPosition();
+        if (distance(a, b) > eps) acceleration += (a - b) * 1'000.f / cube(distance(a, b));
     }
 
     void resetAcceleration() { acceleration = sf::Vector2f(0, 0); }
@@ -72,7 +74,7 @@ public:
         if (magnitude(velocity) <= STATIONARY and magnitude(acceleration) <= STATICFRICTION) { // static friction
             resetAcceleration();
         }
-        else { // kinetic friction
+        else if (magnitude(velocity) > eps) { // kinetic friction
             sf::Vector2f friction = velocity * KINETICFRICTION / magnitude(velocity);
             acceleration -= friction;
         }
@@ -83,6 +85,7 @@ public:
     }
 
     sf::Vector2f getVelocity() const { return velocity; }
+    sf::Vector2f getAcceleration() const { return acceleration; }
 
     // === HANDLE MOUSE EVENTS ===
     bool onClick (const sf::Vector2f &mousePos) const {
@@ -150,20 +153,18 @@ public:
         }
     }
 
-    // === UPDATE ACCELERATION ===
-    void updateAcceleration() {
+    // === HANDLE POSITION ===
+    void updatePosition (float timeInterval) {
         for (auto &node : *this) {
             node->resetAcceleration();
             if (node->isFixed()) continue;
             for (const auto &otherNode : *this) node->applyForce(*otherNode);
             node->applyFriction();
         }
-    }
 
-    // === HANDLE POSITION ===
-    void updatePosition (float timeInterval) {
         for (auto &node : *this) {
             if (node->isFixed()) continue;
+            // std::cerr << "Node " << node->getVelocity() << " " << node->getAcceleration() << std::endl;
             node->applyAcceleration(timeInterval);
             node->move(node->getVelocity());
         }
