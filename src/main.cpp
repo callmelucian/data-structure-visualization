@@ -11,20 +11,37 @@ int main() {
     auto window = sf::RenderWindow(sf::VideoMode({800, 600}), "Data Structures Visualizer");
     sf::Font font("assets/font/cmunbx.ttf");
 
+    NodeList nodes;
+    nodes.pushNode(40.0, "3", font);
+    nodes.pushNode(40.0, "6", font);
+    nodes[0]->setPosition({300, 300});
+    nodes[1]->setPosition({500, 300});
+
     // main loop
     while (window.isOpen()) {
         while (const std::optional event = window.pollEvent()) {
-            if (event->is<sf::Event::Closed>()) {
-                window.close();
+            /// === WINDOW EVENTS ===
+            if (event->is<sf::Event::Closed>()) window.close();
+
+            /// === MOUSE EVENTS ===
+            if (const auto *mousePressed = event->getIf<sf::Event::MouseButtonPressed>()) { // mouse pressed
+                if (mousePressed->button == sf::Mouse::Button::Left) {
+                    sf::Vector2f mousePos = window.mapPixelToCoords(mousePressed->position);
+                    nodes.handleMouseClick(mousePos);
+                }
+            }
+            if (const auto *mouseMovement = event->getIf<sf::Event::MouseMoved>()) { // mouse moved
+                sf::Vector2f mousePos = window.mapPixelToCoords(mouseMovement->position);
+                nodes.handleMouseMovement(mousePos);
+            }
+            if (const auto *mouseReleased = event->getIf<sf::Event::MouseButtonReleased>()) { // mouse released
+                if (mouseReleased->button == sf::Mouse::Button::Left) {
+                    sf::Vector2f mousePos = window.mapPixelToCoords(mouseReleased->position);
+                    nodes.handleMouseRelease(mousePos);
+                }
             }
         }
         window.clear(sf::Color::Black);
-
-        NodeList nodes;
-        nodes.pushNode(40.0, "3", font, sf::Color({100, 0, 0}));
-        nodes.pushNode(40.0, "6", font, sf::Color({100, 0, 0}));
-        nodes[0]->setPosition({300, 300});
-        nodes[1]->setPosition({500, 300});
 
         for (auto &node : nodes) window.draw(*node);
 
