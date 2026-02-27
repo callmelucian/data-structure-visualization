@@ -8,10 +8,12 @@
 
 const sf::Color floatColor = sf::Color({69, 123, 157});
 const sf::Color fixedColor = sf::Color({230, 57, 70});
+const sf::Vector2f zeroVector = sf::Vector2(0.f, 0.f);
 
 const float STATICFRICTION = 2.f;
 const float KINETICFRICTION = 1.5f;
 const float STATIONARY = 1e-3f;
+const float eps = 1e-6f;
 
 enum class NodeState { FLOAT, FIXED };
 
@@ -61,7 +63,7 @@ public:
     // === HANDLE FLOW STATE ===
     void applyForce (const FloatingNode &o) {
         sf::Vector2f a = getOrigin(), b = o.getOrigin();
-        acceleration += (a - b) / cube(distance(a, b));
+        if (distance(a, b) > eps) acceleration += (a - b) / cube(distance(a, b));
     }
 
     void resetAcceleration() { acceleration = sf::Vector2f(0, 0); }
@@ -75,6 +77,12 @@ public:
             acceleration -= friction;
         }
     }
+
+    void applyAcceleration (float timeInterval) {
+        velocity += acceleration * timeInterval;
+    }
+
+    sf::Vector2f getVelocity() const { return velocity; }
 
     // === HANDLE MOUSE EVENTS ===
     bool onClick (const sf::Vector2f &mousePos) const {
@@ -104,6 +112,7 @@ public:
             else {
                 state = NodeState::FIXED;
                 circle.setFillColor(fixedColor);
+                velocity = zeroVector;
             }
             waitMouse = false;
         }
@@ -113,6 +122,8 @@ public:
     }
 
     bool isDragged() const { return dragMode; }
+    bool isFloating() const { return state == NodeState::FLOAT; }
+    bool isFixed() const { return state == NodeState::FIXED; }
 };
 
 class NodeList : public std::vector<std::unique_ptr<FloatingNode>> {
@@ -139,6 +150,22 @@ public:
         }
     }
 
+    // === UPDATE ACCELERATION ===
+    void updateAcceleration() {
+        for (auto &node : *this) {
+            node->resetAcceleration();
+            if (node->isFixed()) continue;
+            for (const auto &otherNode : *this) node->applyForce(*otherNode);
+            node->applyFriction();
+        }
+    }
+
     // === HANDLE POSITION ===
-    void updatePosition() { return; }
+    void updatePosition (float timeInterval) {
+        for (auto &node : *this) {
+            if (node->isFixed()) continue;
+            node->applyAcceleration(timeInterval);
+            node->move(node->getVelocity());
+        }
+    }
 };
