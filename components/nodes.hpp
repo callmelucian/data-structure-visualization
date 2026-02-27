@@ -8,7 +8,7 @@
 
 const sf::Color floatColor = sf::Color({69, 123, 157});
 const sf::Color fixedColor = sf::Color({230, 57, 70});
-const sf::Vector2f zeroVector = sf::Vector2(0.f, 0.f);
+const sf::Vector2f zeroVector = sf::Vector2f(0.f, 0.f);
 
 const float STATICFRICTION = 0.1f;
 const float KINETICFRICTION = 0.08f;

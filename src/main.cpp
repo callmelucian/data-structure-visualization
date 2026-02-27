@@ -1,6 +1,7 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "../components/nodes.hpp"
+#include "../components/edges.hpp"
 
 int main() {
     // anti aliasing
@@ -19,6 +20,9 @@ int main() {
     nodes[0]->setPosition({300, 200});
     nodes[1]->setPosition({500, 200});
     nodes[2]->setPosition({400, 400});
+
+    // intialize edges
+    Edges edge(nodes[0], nodes[1]);
 
     // system clock
     sf::Clock clock;
@@ -61,10 +65,7 @@ int main() {
         sf::Time elapsed = clock.restart();
         nodes.updatePosition(elapsed.asSeconds(), boundL, boundR, boundT, boundB);
         for (auto &node : nodes) window.draw(*node);
-
-        // FloatingNode node(50.0, "1", font, sf::Color::Red);
-        // node.setPosition({400, 300});
-        // window.draw(node);
+        window.draw(edge);
 
         window.display();
     }
