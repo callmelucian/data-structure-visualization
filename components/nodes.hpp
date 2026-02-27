@@ -10,10 +10,10 @@ const sf::Color floatColor = sf::Color({69, 123, 157});
 const sf::Color fixedColor = sf::Color({230, 57, 70});
 const sf::Vector2f zeroVector = sf::Vector2(0.f, 0.f);
 
-const float STATICFRICTION = .01f;
-const float KINETICFRICTION = .008f;
-const float STATIONARY = 1e-9f;
-const float eps = 1e-6f;
+const float STATICFRICTION = 0.1f;
+const float KINETICFRICTION = 0.08f;
+const float STATIONARY = 0.05f;
+const float eps = 1e-2f;
 
 enum class NodeState { FLOAT, FIXED };
 
@@ -48,9 +48,9 @@ public:
     }
 
     // === GEOMETRY HELPER FUNCTION ===
-    sf::Vector2f getPosition() const {
-        return getTransform().transformPoint(circle.getPosition());
-    }
+    // sf::Vector2f getPosition() const {
+        // return getTransform().transformPoint(circle.getPosition());
+    // }
 
     // === HELPER FUNCTION FOR DRAWING ===
     void draw (sf::RenderTarget& target, sf::RenderStates states) const override {
@@ -65,7 +65,7 @@ public:
     // === HANDLE FLOW STATE ===
     void applyForce (const FloatingNode &o) {
         sf::Vector2f a = getPosition(), b = o.getPosition();
-        if (distance(a, b) > eps) acceleration += (a - b) * 1'000.f / cube(distance(a, b));
+        acceleration += (a - b) * 1'500.f / cube(std::max(eps, distance(a, b)));
     }
 
     void resetAcceleration() { acceleration = sf::Vector2f(0, 0); }
@@ -74,7 +74,7 @@ public:
         if (magnitude(velocity) <= STATIONARY and magnitude(acceleration) <= STATICFRICTION) { // static friction
             resetAcceleration();
         }
-        else if (magnitude(velocity) > eps) { // kinetic friction
+        else if (magnitude(velocity) > STATIONARY) { // kinetic friction
             sf::Vector2f friction = velocity * KINETICFRICTION / magnitude(velocity);
             acceleration -= friction;
         }
@@ -84,7 +84,10 @@ public:
         velocity += acceleration * timeInterval;
     }
 
-    sf::Vector2f getVelocity() const { return velocity; }
+    sf::Vector2f getVelocity() const {
+        return magnitude(velocity) <= STATIONARY ? zeroVector : velocity;
+    }
+
     sf::Vector2f getAcceleration() const { return acceleration; }
 
     // === HANDLE MOUSE EVENTS ===
@@ -127,6 +130,8 @@ public:
     bool isDragged() const { return dragMode; }
     bool isFloating() const { return state == NodeState::FLOAT; }
     bool isFixed() const { return state == NodeState::FIXED; }
+
+    float getRadius() const { return circle.getRadius(); }
 };
 
 class NodeList : public std::vector<std::unique_ptr<FloatingNode>> {
@@ -154,7 +159,7 @@ public:
     }
 
     // === HANDLE POSITION ===
-    void updatePosition (float timeInterval) {
+    void updatePosition (float timeInterval, float boundL, float boundR, float boundT, float boundB) {
         for (auto &node : *this) {
             node->resetAcceleration();
             if (node->isFixed()) continue;
@@ -164,9 +169,12 @@ public:
 
         for (auto &node : *this) {
             if (node->isFixed()) continue;
-            // std::cerr << "Node " << node->getVelocity() << " " << node->getAcceleration() << std::endl;
             node->applyAcceleration(timeInterval);
             node->move(node->getVelocity());
+            sf::Vector2f pos = node->getPosition();
+            float size = node->getRadius();
+            node->setPosition({std::max(boundL + size, std::min(boundR - size, pos.x)),
+                               std::max(boundT + size, std::min(boundB - size, pos.y))});
         }
     }
 };

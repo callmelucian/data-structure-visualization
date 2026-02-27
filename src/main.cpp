@@ -15,11 +15,22 @@ int main() {
     NodeList nodes;
     nodes.pushNode(40.0, "3", font);
     nodes.pushNode(40.0, "6", font);
-    nodes[0]->setPosition({300, 300});
-    nodes[1]->setPosition({500, 300});
+    nodes.pushNode(40.0, "7", font);
+    nodes[0]->setPosition({300, 200});
+    nodes[1]->setPosition({500, 200});
+    nodes[2]->setPosition({400, 400});
 
     // system clock
     sf::Clock clock;
+
+    // window boundary
+    sf::View view = window.getView();
+    sf::Vector2f size = view.getSize();
+    sf::Vector2f center = view.getCenter();
+
+    sf::Vector2f lo = center - size / 2.f, hi = center + size / 2.f;
+    float boundL = lo.x, boundR = hi.x;
+    float boundT = lo.y, boundB = hi.y;
 
     // main loop
     while (window.isOpen()) {
@@ -48,7 +59,7 @@ int main() {
         window.clear(sf::Color::Black);
 
         sf::Time elapsed = clock.restart();
-        nodes.updatePosition(elapsed.asSeconds());
+        nodes.updatePosition(elapsed.asSeconds(), boundL, boundR, boundT, boundB);
         for (auto &node : nodes) window.draw(*node);
 
         // FloatingNode node(50.0, "1", font, sf::Color::Red);
