@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "../components/nodes.hpp"
 #include "../components/edges.hpp"
+#include "../components/button.hpp"
 
 int main() {
     // anti aliasing
@@ -36,6 +37,13 @@ int main() {
     float boundL = lo.x, boundR = hi.x;
     float boundT = lo.y, boundB = hi.y;
 
+    Button button(200, 100, "Button", 40, sf::Color({69, 1, 69}));
+    button.setCallback([&]() {
+        std::cerr << "Button clicked" << std::endl;
+        return;
+    });
+    button.setPosition({150, 150});
+
     // main loop
     while (window.isOpen()) {
         while (const std::optional event = window.pollEvent()) {
@@ -47,6 +55,7 @@ int main() {
                 if (mousePressed->button == sf::Mouse::Button::Left) {
                     sf::Vector2f mousePos = window.mapPixelToCoords(mousePressed->position);
                     nodes.handleMouseClick(mousePos);
+                    button.handleClick(mousePos);
                 }
             }
             if (const auto *mouseMovement = event->getIf<sf::Event::MouseMoved>()) { // mouse moved
@@ -66,6 +75,7 @@ int main() {
         nodes.updatePosition(elapsed.asSeconds(), boundL, boundR, boundT, boundB);
         for (auto &node : nodes) window.draw(*node);
         window.draw(edge);
+        window.draw(button);
 
         window.display();
     }

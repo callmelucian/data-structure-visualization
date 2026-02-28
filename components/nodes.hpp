@@ -31,6 +31,7 @@ public:
     // === CONSTRUCTOR ===
     FloatingNode (float radius, const std::string &msgString, const sf::Font &font) :
         annotation(font, msgString), state(NodeState::FLOAT), dragMode(false), waitMouse(false) {
+            
         // setup circle
         circle.setRadius(radius);
         circle.setOrigin({radius, radius});
