@@ -1,13 +1,12 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "../include/utility.hpp"
+#include "../assets/theme.hpp"
 #include <vector>
 #include <memory>
 #include <string>
 #include <utility>
 
-const sf::Color floatColor = sf::Color({69, 123, 157});
-const sf::Color fixedColor = sf::Color({230, 57, 70});
 const sf::Vector2f zeroVector = sf::Vector2f(0.f, 0.f);
 
 const float STATICFRICTION = 0.1f;
@@ -30,12 +29,13 @@ private:
 public:
     // === CONSTRUCTOR ===
     FloatingNode (float radius, const std::string &msgString, const sf::Font &font) :
-        annotation(font, msgString), state(NodeState::FLOAT), dragMode(false), waitMouse(false) {
+        circle(radius, 100), annotation(font, msgString), state(NodeState::FLOAT), dragMode(false), waitMouse(false) {
             
         // setup circle
-        circle.setRadius(radius);
         circle.setOrigin({radius, radius});
-        circle.setFillColor(floatColor);
+        circle.setFillColor(Theme::getFloatColor());
+        circle.setOutlineColor(Theme::getPrimary());
+        circle.setOutlineThickness(4);
 
         // setup annotation
         annotation.setCharacterSize(50);
@@ -114,11 +114,11 @@ public:
         if (waitMouse) { // change state
             if (state == NodeState::FIXED) {
                 state = NodeState::FLOAT;
-                circle.setFillColor(floatColor);
+                circle.setFillColor(Theme::getFloatColor());
             }
             else {
                 state = NodeState::FIXED;
-                circle.setFillColor(fixedColor);
+                circle.setFillColor(Theme::getFixedColor());
                 velocity = zeroVector;
             }
             waitMouse = false;

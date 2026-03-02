@@ -11,6 +11,7 @@ private:
     const std::unique_ptr<FloatingNode> &to;
 
 public:
+    Edges() : from(nullptr), to(nullptr) {}
     Edges (const std::unique_ptr<FloatingNode> &from, const std::unique_ptr<FloatingNode> &to) : from(from), to(to) {}
 
     void draw (sf::RenderTarget &target, sf::RenderStates state) const override {
@@ -23,15 +24,16 @@ public:
         sf::Vector2f start = fromCenter + shift;
         sf::Vector2f end = toCenter - shift;
         sf::Vector2f delta = end - start;
-        double dist = distance(start, end);
-        double angle = std::atan2(delta.y, delta.x);
+        float dist = distance(start, end);
+        float angle = std::atan2(delta.y, delta.x);
+        float thickness = 4.0f; 
 
         // setup line
-        sf::RectangleShape line({dist, 2.0f});
-        line.setOrigin({0, 1.0f});
+        sf::RectangleShape line({dist, thickness});
+        line.setOrigin({0, thickness / 2.0f});
         line.setPosition(start);
         line.setRotation(sf::radians(angle));
-        line.setFillColor(sf::Color::White);
+        line.setFillColor(sf::Color::Black);
 
         // draw
         target.draw(line, state);
