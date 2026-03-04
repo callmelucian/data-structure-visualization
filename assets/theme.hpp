@@ -12,7 +12,10 @@ namespace LightModeColors {
 
 // return colors
 namespace Theme {
-    inline sf::Font cmuSerif("assets/font/cmunbx.ttf");
+    inline sf::Font cmuSerif("assets/font-cmu/cmunbx.ttf");
+    inline sf::Font notoCondensedBold("assets/font-noto-mono/NotoSansMono_ExtraCondensed-ExtraBold.ttf");
+    inline sf::Font notoCondensed("assets/font-noto-mono/NotoSansMono_ExtraCondensed-Regular.ttf");
+    inline sf::Font notoRegular("assets/font-noto-mono/NotoSansMono-Regular.ttf");
 
     inline sf::Color getBackground() { return LightModeColors::background; }
     inline sf::Color getPrimary() { return LightModeColors::primary; }

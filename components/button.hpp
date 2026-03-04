@@ -1,7 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <functional>
-#include "fonts.hpp"
+#include "../assets/theme.hpp"
 
 const sf::Color idleColor = sf::Color({100, 100, 100});
 
@@ -16,7 +16,7 @@ private:
 public:
     Button (float width, float height, const std::string &labelString, int fontSize,
             const sf::Color &activeColor) :
-        label(cmuSerif, labelString), activeColor(activeColor), activation(true) {
+        label(Theme::cmuSerif, labelString), activeColor(activeColor), activation(true) {
         
         // setup rectangle
         rectangle.setSize({width, height});

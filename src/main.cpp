@@ -3,6 +3,7 @@
 #include "../components/nodes.hpp"
 #include "../components/edges.hpp"
 #include "../components/button.hpp"
+#include "../components/action-bar.hpp"
 #include "../scenes/scene-manager.hpp"
 #include "../scenes/linked-list-scene.hpp"
 

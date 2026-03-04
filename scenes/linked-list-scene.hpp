@@ -4,16 +4,25 @@
 #include "../components/nodes.hpp"
 #include "../components/edges.hpp"
 #include "../components/button.hpp"
+#include "../components/action-bar.hpp"
 #include "scene-manager.hpp"
 #include <vector>
 
+const float actionBarHeight = 120.f;
+
 class LinkedListScene : public Scene {
+private:
+    ActionBar actionBar;
     NodeList nodes;
     std::vector<Edges> edges;
     Button button;
+
 public:
     LinkedListScene (const sf::RenderWindow &window) :
-        Scene(Theme::getBackground(), window), button(200, 100, "Button", 40, sf::Color({69, 1, 69})) {
+        Scene(Theme::getBackground(), window), button(200, 100, "Button", 40, sf::Color({69, 1, 69})),
+        actionBar(boundR, actionBarHeight, Theme::getBackground(), sf::Color::Black, "Linked-list") {
+            actionBar.setPosition({boundR / 2.f, actionBarHeight / 2.f});
+
             // nodes initialization
             nodes.pushNode(40.0, "3", Theme::cmuSerif);
             nodes.pushNode(40.0, "6", Theme::cmuSerif);
@@ -63,5 +72,6 @@ public:
     void draw (sf::RenderWindow &window) {
         for (auto &node : nodes) window.draw(*node);
         for (auto &edge : edges) window.draw(edge);
+        window.draw(actionBar);
     }
 };
