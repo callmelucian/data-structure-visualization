@@ -6,6 +6,7 @@
 #include "../components/action-bar.hpp"
 #include "../scenes/scene-manager.hpp"
 #include "../scenes/linked-list-scene.hpp"
+#include "../scenes/test-scene.hpp"
 
 int main() {
     // anti aliasing
@@ -16,7 +17,7 @@ int main() {
     auto window = sf::RenderWindow(sf::VideoMode({1800, 800}), "Data Structures Visualizer");
     SceneManager manager;
 
-    manager.changeScene(std::make_unique<LinkedListScene>(window));
+    manager.changeScene(std::make_unique<TestScene>(window));
     manager.runMainLoop(window);
 
     return 0;

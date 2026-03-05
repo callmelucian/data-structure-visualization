@@ -4,6 +4,7 @@
 #include <string>
 
 const std::string appName = "CS163 Visualization App";
+const float actionBarHeight = 120.f;
 
 class ActionBar : public sf::Drawable, public sf::Transformable {
 private:
