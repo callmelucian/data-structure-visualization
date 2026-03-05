@@ -28,17 +28,17 @@ private:
 
 public:
     // === CONSTRUCTOR ===
-    FloatingNode (float radius, const std::string &msgString, const sf::Font &font) :
+    FloatingNode (float radius, const std::string &msgString, const sf::Font &font, float fontSize, float thickness) :
         circle(radius, 100), annotation(font, msgString), state(NodeState::FLOAT), dragMode(false), waitMouse(false) {
             
         // setup circle
         circle.setOrigin({radius, radius});
         circle.setFillColor(Theme::getFloatColor());
         circle.setOutlineColor(Theme::getPrimary());
-        circle.setOutlineThickness(4);
+        circle.setOutlineThickness(thickness);
 
         // setup annotation
-        annotation.setCharacterSize(50);
+        annotation.setCharacterSize(fontSize);
         annotation.setFillColor(sf::Color::White);
 
         sf::FloatRect localRectangle = annotation.getLocalBounds();
@@ -137,8 +137,8 @@ public:
 
 class NodeList : public std::vector<std::unique_ptr<FloatingNode>> {
 public:
-    void pushNode (float radius, const std::string &msgString, const sf::Font &font) {
-        push_back(std::make_unique<FloatingNode>(radius, msgString, font));
+    void pushNode (float radius, const std::string &msgString, const sf::Font &font, float fontSize, float thickness) {
+        push_back(std::make_unique<FloatingNode>(radius, msgString, font, fontSize, thickness));
     }
 
     // === HANDLE MOUSE EVENTS ===

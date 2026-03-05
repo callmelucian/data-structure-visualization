@@ -13,9 +13,17 @@ namespace LightModeColors {
 // return colors
 namespace Theme {
     inline sf::Font cmuSerif("assets/font-cmu/cmunbx.ttf");
+
+    // Noto Mono family
     inline sf::Font notoCondensedBold("assets/font-noto-mono/NotoSansMono_ExtraCondensed-ExtraBold.ttf");
     inline sf::Font notoCondensed("assets/font-noto-mono/NotoSansMono_ExtraCondensed-Regular.ttf");
     inline sf::Font notoRegular("assets/font-noto-mono/NotoSansMono-Regular.ttf");
+
+    // IBM Plex Mono family
+    inline sf::Font ibmRegular("assets/font-ibm-plex/IBMPlexMono-Regular.ttf");
+    inline sf::Font ibmItalic("assets/font-ibm-plex/IBMPlexMono-Italic.ttf");
+    inline sf::Font ibmBold("assets/font-ibm-plex/IBMPlexMono-Bold.ttf");
+    inline sf::Font ibmBoldItalic("assets/font-ibm-plex/IBMPlexMono-BoldItalic.ttf");
 
     inline sf::Color getBackground() { return LightModeColors::background; }
     inline sf::Color getPrimary() { return LightModeColors::primary; }

@@ -24,15 +24,15 @@ public:
             actionBar.setPosition({boundR / 2.f, actionBarHeight / 2.f});
 
             // nodes initialization
-            nodes.pushNode(40.0, "3", Theme::cmuSerif);
-            nodes.pushNode(40.0, "6", Theme::cmuSerif);
-            nodes.pushNode(40.0, "7", Theme::cmuSerif);
+            nodes.pushNode(25.0, "3", Theme::ibmBold, 30, 2.5);
+            nodes.pushNode(25.0, "6", Theme::ibmBold, 30, 2.5);
+            nodes.pushNode(25.0, "7", Theme::ibmBold, 30, 2.5);
             nodes[0]->setPosition({300, 200});
             nodes[1]->setPosition({500, 200});
             nodes[2]->setPosition({400, 400});
             
             // edge initialization
-            edges.emplace_back(nodes[0], nodes[1]);
+            edges.emplace_back(nodes[0], nodes[1], 2.0);
 
             // button initialization
             button.setCallback([&]() {
@@ -73,5 +73,6 @@ public:
         for (auto &node : nodes) window.draw(*node);
         for (auto &edge : edges) window.draw(edge);
         window.draw(actionBar);
+        window.draw(button);
     }
 };

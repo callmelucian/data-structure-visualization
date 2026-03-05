@@ -9,10 +9,11 @@ class Edges : public sf::Drawable, public sf::Transformable {
 private:
     const std::unique_ptr<FloatingNode> &from;
     const std::unique_ptr<FloatingNode> &to;
+    float thickness;
 
 public:
-    Edges() : from(nullptr), to(nullptr) {}
-    Edges (const std::unique_ptr<FloatingNode> &from, const std::unique_ptr<FloatingNode> &to) : from(from), to(to) {}
+    Edges() : from(nullptr), to(nullptr), thickness(0) {}
+    Edges (const std::unique_ptr<FloatingNode> &from, const std::unique_ptr<FloatingNode> &to, float thickness) : from(from), to(to), thickness(thickness) {}
 
     void draw (sf::RenderTarget &target, sf::RenderStates state) const override {
         // get centers of the endpoints
@@ -26,7 +27,6 @@ public:
         sf::Vector2f delta = end - start;
         float dist = distance(start, end);
         float angle = std::atan2(delta.y, delta.x);
-        float thickness = 4.0f; 
 
         // setup line
         sf::RectangleShape line({dist, thickness});

@@ -16,7 +16,7 @@ private:
 public:
     Button (float width, float height, const std::string &labelString, int fontSize,
             const sf::Color &activeColor) :
-        label(Theme::cmuSerif, labelString), activeColor(activeColor), activation(true) {
+        label(Theme::ibmRegular, labelString), activeColor(activeColor), activation(true) {
         
         // setup rectangle
         rectangle.setSize({width, height});
