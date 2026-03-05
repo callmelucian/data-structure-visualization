@@ -16,12 +16,12 @@ private:
 
 public:
     TestScene (const sf::RenderWindow &window) :
-        Scene(Theme::getBackground(), window), slider(200.f, 40.f),
+        Scene(Theme::getBackground(), window), slider(200.f, 40.f, "Volume"),
         actionBar(boundR, actionBarHeight, Theme::getBackground(), sf::Color::Black, "Linked-list") {
             actionBar.setPosition({boundR / 2.f, actionBarHeight / 2.f});
 
             slider.setPosition({900.f, 400.f});
-            slider.setChangePercentFunction([&] (float percentage) {
+            slider.setChangeValueFunction([&] (float percentage) {
                 std::cerr << "Percentage is set to " << percentage << std::endl;
             });
         }
