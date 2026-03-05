@@ -48,11 +48,6 @@ public:
         });
     }
 
-    // === GEOMETRY HELPER FUNCTION ===
-    // sf::Vector2f getPosition() const {
-        // return getTransform().transformPoint(circle.getPosition());
-    // }
-
     // === HELPER FUNCTION FOR DRAWING ===
     void draw (sf::RenderTarget& target, sf::RenderStates states) const override {
         // apply state transform

@@ -6,6 +6,7 @@
 #include "../components/button.hpp"
 #include "../components/action-bar.hpp"
 #include "../components/slider.hpp"
+#include "../components/tree.hpp"
 #include "scene-manager.hpp"
 #include <vector>
 
