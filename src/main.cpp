@@ -7,8 +7,27 @@
 #include "../scenes/scene-manager.hpp"
 #include "../scenes/linked-list-scene.hpp"
 #include "../scenes/test-scene.hpp"
+#include "../components/tree.hpp"
 
 int main() {
+    GraphicTree tree;
+
+    for (int i = 0; i < 10; i++) tree.createNode(0);
+    tree.addEdge(0, 1);
+    tree.addEdge(0, 2);
+    tree.addEdge(0, 3);
+    tree.addEdge(2, 4);
+    tree.addEdge(2, 5);
+    tree.addEdge(2, 6);
+    tree.addEdge(2, 7);
+    tree.addEdge(3, 8);
+    tree.addEdge(3, 9);
+
+    tree.calculatePosition(0, 40);
+    tree.printPosition();
+
+    return 0;
+
     // anti aliasing
     sf::ContextSettings settings;
     settings.antiAliasingLevel = 100;
