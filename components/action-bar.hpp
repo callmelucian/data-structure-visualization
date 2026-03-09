@@ -1,46 +1,43 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "../assets/theme.hpp"
 #include <string>
 
-const std::string appName = "CS163 Visualization App";
-const float actionBarHeight = 120.f;
+#include "../assets/theme.hpp"
+#include "global-setting.hpp"
+#include "ui-base.hpp"
 
-class ActionBar : public sf::Drawable, public sf::Transformable {
+class ActionBar : public UI::Base {
 private:
-    sf::Text appTitle, subtitle;
+    UI::Text appTitle, subtitle;
     sf::RectangleShape rectangle;
 
 public:
-    ActionBar (float width, float height, const sf::Color &fillColor, const sf::Color &textColor, const std::string &msg) :
-    appTitle(Theme::notoCondensedBold, appName), subtitle(Theme::notoCondensed, msg) {
+    // constructor
+    ActionBar() : appTitle(Theme::notoCondensedBold, Setting::appName), subtitle(Theme::notoCondensed, "") {
         // setup background rectangle for action bar
-        rectangle.setSize({width, height});
-        rectangle.setOrigin({width / 2.f, height / 2.f});
-        rectangle.setFillColor(fillColor);
+        rectangle.setSize({Setting::actionBarWidth, Setting::actionBarHeight});
+        rectangle.setOrigin({Setting::actionBarWidth / 2.f, Setting::actionBarHeight / 2.f});
+        rectangle.setFillColor(Theme::getBackground());
 
         // setup annotation
-        appTitle.setCharacterSize(48);
-        appTitle.setFillColor(textColor);
-        subtitle.setCharacterSize(28);
-        subtitle.setFillColor(textColor);
+        appTitle.setAutoCharacterSize(1'000'000, 50, 1.f);
+        appTitle.setFillColor(Theme::getPrimary());
+        appTitle.centerOrigin();
+        appTitle.setPosition({0, -15});
 
-        sf::FloatRect localRectangle = appTitle.getLocalBounds();
-        appTitle.setOrigin({
-            localRectangle.position.x + localRectangle.size.x / 2.f,
-            localRectangle.position.y + localRectangle.size.y / 2.f
-        });
-
-        localRectangle = subtitle.getLocalBounds();
-        subtitle.setOrigin({
-            localRectangle.position.x + localRectangle.size.x / 2.f,
-            localRectangle.position.y + localRectangle.size.y / 2.f
-        });
-        
-        appTitle.setPosition({0, -12});
-        subtitle.setPosition({0, 28});
+        subtitle.setAutoCharacterSize(1'000'000, 25, 1.f);
+        subtitle.setFillColor(Theme::getPrimary());
+        subtitle.centerOrigin();
+        subtitle.setPosition({0, 27.5f});
     }
 
+    void setSubtitle (const std::string &msg) {
+        subtitle.setString(msg);
+        subtitle.setAutoCharacterSize(1'000'000, 25, 1.f);
+        subtitle.centerOrigin();
+    }
+
+    // (override) draw action-bar onto the screen
     void draw (sf::RenderTarget& target, sf::RenderStates states) const override {
         // apply state transform
         states.transform *= getTransform();
@@ -50,4 +47,14 @@ public:
         target.draw(appTitle, states);
         target.draw(subtitle, states);
     }
+
+    // (override) return the boundary of the action bar
+    sf::FloatRect getBoundary() const override {
+        return rectangle.getGlobalBounds();
+    }
+
+    // (override) handle mouse events
+    void handleMousePress (const sf::Vector2f &mousePos) override {}
+    void handleMouseRelease (const sf::Vector2f &mousePos) override {}
+    void handleMouseMovement (const sf::Vector2f &mousePos) override {}
 };

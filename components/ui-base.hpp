@@ -43,8 +43,10 @@ namespace UI {
 
     class Text : public sf::Text {
     public:
+        // using sf::Text's constructor
         using sf::Text::Text;
 
+        // set the origin to the center the bounding box of the text
         void centerOrigin() {
             auto localRectangle = getLocalBounds();
             setOrigin({
@@ -53,6 +55,7 @@ namespace UI {
             });
         }
 
+        // automatically find the bestt font size to fill the container
         void setAutoCharacterSize (float boxW, float boxH, float textFill = 0.8f) {
             setCharacterSize(100); // set a reference size
             auto localRectangle = getLocalBounds();

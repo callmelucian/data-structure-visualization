@@ -3,33 +3,41 @@
 #include <iostream>
 
 #include "scene-manager.hpp"
+
 #include "../components/button.hpp"
+#include "../components/action-bar.hpp"
+#include "../components/global-setting.hpp"
 
 class TestButtonScene : public Scene {
 private:
-    Button b1, b2;
+    ActionBar actionBar;
+    Button button1, button2;
 
 public:
     // constructor
-    TestButtonScene (const sf::RenderWindow &window) : Scene(window), b1(300, 70), b2(300, 70) {
-        b1.setString("TOGGLE");
-        b1.setCallback([&]() {
-            b2.toggleState();
+    TestButtonScene (const sf::RenderWindow &window) : Scene(window), button1(300, 70), button2(300, 70) {
+        button1.setString("TOGGLE");
+        button1.setCallback([&]() {
+            button2.toggleState();
             std::cerr << "Button 1 pressed, toggle button 2's state" << std::endl;
         });
-        b1.setPosition({700, 400});
+        button1.setPosition({700, 400});
 
-        b2.setString("PRESS");
-        b2.setCallback([&]() {
+        button2.setString("PRESS");
+        button2.setCallback([&]() {
             std::cerr << "button 2 pressed, happi happi" << std::endl;
         });
-        b2.setPosition({1100, 400});
+        button2.setPosition({1100, 400});
+
+        actionBar.setSubtitle("Linked-list");
+        actionBar.setPosition({Setting::actionBarWidth / 2.f, Setting::actionBarHeight / 2.f});
     }
 
     // (override) handle events
     void handleEvent (sf::RenderWindow &window, const std::optional<sf::Event> &event) override {
-        b1.handleMouseEvents(window, event);
-        b2.handleMouseEvents(window, event);
+        button1.handleMouseEvents(window, event);
+        button2.handleMouseEvents(window, event);
+        actionBar.handleMouseEvents(window, event);
     }
 
     // (override) time propagation
@@ -37,7 +45,8 @@ public:
 
     // (override) draw scene onto the screen
     void draw (sf::RenderWindow &window) override {
-        window.draw(b1);
-        window.draw(b2);
+        window.draw(button1);
+        window.draw(button2);
+        window.draw(actionBar);
     }
 };
