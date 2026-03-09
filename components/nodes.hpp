@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "../include/utility.hpp"
 #include "../assets/theme.hpp"
+#include "text.hpp"
 #include <vector>
 #include <memory>
 #include <string>
@@ -19,7 +20,8 @@ enum class NodeState { FLOAT, FIXED };
 class FloatingNode : public sf::Drawable, public sf::Transformable {
 private:
     sf::CircleShape circle;
-    sf::Text annotation;
+    // sf::Text annotation;
+    UIText annotation;
     sf::Color color;
     NodeState state;
     bool dragMode, waitMouse;
@@ -27,10 +29,9 @@ private:
     sf::Vector2f velocity, acceleration;
 
 public:
-    // === CONSTRUCTOR ===
+    // constructor
     FloatingNode (float radius, const std::string &msgString, const sf::Font &font, float fontSize, float thickness) :
-        circle(radius, 100), annotation(font, msgString), state(NodeState::FLOAT), dragMode(false), waitMouse(false) {
-            
+    circle(radius, 100), annotation(font, msgString), state(NodeState::FLOAT), dragMode(false), waitMouse(false) {
         // setup circle
         circle.setOrigin({radius, radius});
         circle.setFillColor(Theme::getFloatColor());
@@ -40,15 +41,10 @@ public:
         // setup annotation
         annotation.setCharacterSize(fontSize);
         annotation.setFillColor(sf::Color::White);
-
-        sf::FloatRect localRectangle = annotation.getLocalBounds();
-        annotation.setOrigin({
-            localRectangle.position.x + localRectangle.size.x / 2.f,
-            localRectangle.position.y + localRectangle.size.y / 2.f
-        });
+        annotation.centerOrigin();
     }
 
-    // === HELPER FUNCTION FOR DRAWING ===
+    // draw node onto the screen
     void draw (sf::RenderTarget& target, sf::RenderStates states) const override {
         // apply state transform
         states.transform *= getTransform();
@@ -86,13 +82,13 @@ public:
 
     sf::Vector2f getAcceleration() const { return acceleration; }
 
-    // === HANDLE MOUSE EVENTS ===
-    bool onClick (const sf::Vector2f &mousePos) const {
+    // check if the position is contained in the rectangle
+    bool containPosition (const sf::Vector2f &mousePos) const {
         sf::Vector2f localPos = this->getInverseTransform().transformPoint(mousePos);
         return circle.getGlobalBounds().contains(localPos);
     }
 
-    void handleMouseClick (const sf::Vector2f &mousePos) {
+    void handleMousePress (const sf::Vector2f &mousePos) {
         if (!onClick(mousePos)) return;
         waitMouse = true;
     }

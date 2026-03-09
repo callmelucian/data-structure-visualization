@@ -10,11 +10,15 @@ private:
     const std::unique_ptr<FloatingNode> &from;
     const std::unique_ptr<FloatingNode> &to;
     float thickness;
+    bool isDirected;
 
 public:
-    Edges() : from(nullptr), to(nullptr), thickness(0) {}
-    Edges (const std::unique_ptr<FloatingNode> &from, const std::unique_ptr<FloatingNode> &to, float thickness) : from(from), to(to), thickness(thickness) {}
+    // constructors
+    Edges() : from(nullptr), to(nullptr), thickness(0), isDirected(false) {}
+    Edges (const std::unique_ptr<FloatingNode> &from, const std::unique_ptr<FloatingNode> &to, float thickness, bool isDirected) :
+        from(from), to(to), thickness(thickness), isDirected(isDirected) {}
 
+    // draw edge onto the screen
     void draw (sf::RenderTarget &target, sf::RenderStates state) const override {
         // get centers of the endpoints
         sf::Vector2f fromCenter = from->getPosition();

@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <functional>
 #include <string>
+#include <cmath>
 
 const sf::Color holderColor = sf::Color::White;
 const sf::Color hoveredColor = sf::Color({0, 0, 0, 55});

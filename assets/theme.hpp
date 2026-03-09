@@ -5,9 +5,15 @@
 namespace LightModeColors {
     inline constexpr sf::Color background({240, 240, 240}); // imperfect white
     inline constexpr sf::Color primary({0, 0, 0}); // perfect black
+    inline constexpr sf::Color secondary({80, 80, 80});
 
     inline constexpr sf::Color floatColor = sf::Color({69, 123, 157}); // blue
     inline constexpr sf::Color fixedColor = sf::Color({230, 57, 70}); // red
+
+    inline constexpr sf::Color pressedButton = sf::Color({200, 200, 200});
+    inline constexpr sf::Color hoveredButton = sf::Color({220, 220, 220});
+    inline constexpr sf::Color button = sf::Color({255, 255, 255});
+    inline constexpr sf::Color idleButton = sf::Color({150, 150, 150});
 };
 
 // return colors
@@ -27,6 +33,13 @@ namespace Theme {
 
     inline sf::Color getBackground() { return LightModeColors::background; }
     inline sf::Color getPrimary() { return LightModeColors::primary; }
+    inline sf::Color getSecondary() { return LightModeColors::secondary; }
+    
     inline sf::Color getFloatColor() { return LightModeColors::floatColor; }
     inline sf::Color getFixedColor() { return LightModeColors::fixedColor; }
+
+    inline sf::Color getPressedButton() { return LightModeColors::pressedButton; }
+    inline sf::Color getHoveredButton() { return LightModeColors::hoveredButton; }
+    inline sf::Color getButton() { return LightModeColors::button; }
+    inline sf::Color getIdleButton() { return LightModeColors::idleButton; }
 };

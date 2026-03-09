@@ -1,14 +1,17 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+
 #include "../assets/theme.hpp"
-#include "../components/nodes.hpp"
-#include "../components/edges.hpp"
-#include "../components/button.hpp"
+#include "scene-manager.hpp"
+
 #include "../components/action-bar.hpp"
 #include "../components/slider.hpp"
-#include "../components/tree.hpp"
-#include "scene-manager.hpp"
-#include <vector>
+
+// #include "../components/nodes.hpp"
+// #include "../components/edges.hpp"
+// #include "../components/button.hpp"
+// #include "../components/tree.hpp"
+// #include <vector>
 
 class TestScene : public Scene {
 private:
