@@ -13,7 +13,7 @@ private:
 
 public:
     // constructor
-    ActionBar() : appTitle(Theme::notoCondensedBold, Setting::appName), subtitle(Theme::notoCondensed, "") {
+    ActionBar() : appTitle(Theme::notoCondensedBold, Setting::appName), subtitle(Theme::notoCondensed) {
         // setup background rectangle for action bar
         rectangle.setSize({Setting::actionBarWidth, Setting::actionBarHeight});
         rectangle.setOrigin({Setting::actionBarWidth / 2.f, Setting::actionBarHeight / 2.f});

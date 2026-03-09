@@ -3,7 +3,7 @@
 
 #include "../scenes/scene-manager.hpp"
 // #include "../scenes/test-scene.hpp"
-#include "../scenes/test-button-scene.hpp"
+#include "../scenes/temporary-scene.hpp"
 
 // #include "../components/nodes.hpp"
 // #include "../components/edges.hpp"
