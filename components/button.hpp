@@ -117,6 +117,9 @@ public:
         target.draw(label, states);
     }
 
+    // (override) handle text events
+    void handleTextEntered (const char &unicode) override {}
+
     // disable button (make un-clickable)
     void disableButton() {
         clickable = false;

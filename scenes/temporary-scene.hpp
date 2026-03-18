@@ -10,17 +10,19 @@
 #include "../components/action-bar.hpp"
 #include "../components/global-setting.hpp"
 #include "../components/slider.hpp"
+#include "../components/input-field.hpp"
 
 class TestButtonScene : public Scene {
 private:
     ActionBar actionBar;
     Button button1, button2;
     Slider slider;
+    TextInputField inputField;
 
 public:
     // constructor
     TestButtonScene (const sf::RenderWindow &window) :
-    Scene(window), button1(250, 50), button2(250, 50), slider(300, 30) {
+    Scene(window), button1(250, 50), button2(250, 50), slider(300, 30), inputField(250, 50) {
         button1.setString("TOGGLE");
         button1.setCallback([&]() {
             button2.toggleState();
@@ -42,6 +44,8 @@ public:
         });
         slider.setDisplayValueFunction(floatToPercentage);
         slider.setPosition({900, 500});
+
+        inputField.setPosition({900, 300});
     }
 
     // (override) handle events
@@ -50,10 +54,14 @@ public:
         button2.handleMouseEvents(window, event);
         actionBar.handleMouseEvents(window, event);
         slider.handleMouseEvents(window, event);
+        inputField.handleMouseEvents(window, event);
+        inputField.handleTextEvents(window, event);
     }
 
     // (override) time propagation
-    void timePropagation (float delta) override {}
+    void timePropagation (float delta) override {
+        inputField.timePropagation();
+    }
 
     // (override) draw scene onto the screen
     void draw (sf::RenderWindow &window) override {
@@ -61,5 +69,6 @@ public:
         window.draw(button2);
         window.draw(actionBar);
         window.draw(slider);
+        window.draw(inputField);
     }
 };

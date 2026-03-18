@@ -17,6 +17,9 @@ namespace UI {
         virtual void handleMouseRelease (const sf::Vector2f &mousePos)  = 0;
         virtual void handleMouseMovement (const sf::Vector2f &mousePos) = 0;
 
+        // helper functions to handle text events
+        virtual void handleTextEntered (const char &unicode) = 0;
+
         // handle mouse events
         void handleMouseEvents (sf::RenderWindow &window, const std::optional<sf::Event> &event) {
             // event: mouse moved
@@ -39,6 +42,13 @@ namespace UI {
                 }
             }
         }
+
+        // handle text events
+        void handleTextEvents (sf::RenderWindow &window, const std::optional<sf::Event> &event) {
+            if (const auto *textEntered = event->getIf<sf::Event::TextEntered>()) {
+                handleTextEntered(textEntered->unicode);
+            }
+        }
     };
 
     class Text : public sf::Text {
@@ -53,6 +63,11 @@ namespace UI {
                 localRectangle.position.x + localRectangle.size.x / 2.f,
                 localRectangle.position.y + localRectangle.size.y / 2.f
             });
+        }
+
+        float getWidth() const {
+            auto localRectangle = getLocalBounds();
+            return localRectangle.size.x;
         }
 
         // automatically find the bestt font size to fill the container

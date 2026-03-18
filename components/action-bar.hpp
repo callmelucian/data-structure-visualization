@@ -57,4 +57,7 @@ public:
     void handleMousePress (const sf::Vector2f &mousePos) override {}
     void handleMouseRelease (const sf::Vector2f &mousePos) override {}
     void handleMouseMovement (const sf::Vector2f &mousePos) override {}
+
+    // (override) handle text events
+    void handleTextEntered (const char &unicode) override {}
 };

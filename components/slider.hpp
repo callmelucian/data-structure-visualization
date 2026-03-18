@@ -114,4 +114,7 @@ public:
         }
         else hovered.setSize({0.f, holder.getSize().y});
     }
+
+    // (override) handle text events
+    void handleTextEntered (const char &unicode) override {}
 };
