@@ -39,7 +39,7 @@ public:
     void setString (const std::string &msg) {
         label.setString(msg);
         label.setAutoCharacterSize(
-            rectangle.getSize().x, rectangle.getSize().y
+            rectangle.getSize().x, rectangle.getSize().y, 0.75
         );
         label.centerOrigin();
         cursor.setPosition({label.getWidth() / 2.f, 0});
@@ -61,6 +61,7 @@ public:
     void handleMousePress (const sf::Vector2f &mousePos) override {
         bool contained = containPosition(mousePos);
         if (isFocused() && contained) blinkClock.restart();
+        if (!contained) showCursor = false;
         rectangle.setFillColor(
             contained ? Theme::getPressedButton() : Theme::getButton()
         );

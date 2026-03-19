@@ -1,21 +1,23 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "nodes.hpp"
-#include "../include/utility.hpp"
 #include <cmath>
 #include <memory>
 
-class Edges : public sf::Drawable, public sf::Transformable {
+#include "../include/utility.hpp"
+#include "nodes.hpp"
+#include "ui-base.hpp"
+
+class Edges : public UI::Base {
 private:
-    const std::unique_ptr<FloatingNode> &from;
-    const std::unique_ptr<FloatingNode> &to;
+    const std::unique_ptr<Node> &from;
+    const std::unique_ptr<Node> &to;
     float thickness;
     bool isDirected;
 
 public:
     // constructors
     Edges() : from(nullptr), to(nullptr), thickness(0), isDirected(false) {}
-    Edges (const std::unique_ptr<FloatingNode> &from, const std::unique_ptr<FloatingNode> &to, float thickness, bool isDirected) :
+    Edges (const std::unique_ptr<Node> &from, const std::unique_ptr<Node> &to, float thickness = 2.f, bool isDirected = false) :
         from(from), to(to), thickness(thickness), isDirected(isDirected) {}
 
     // draw edge onto the screen
@@ -41,5 +43,15 @@ public:
 
         // draw
         target.draw(line, state);
+    }
+
+    // override functions
+    void handleMousePress (const sf::Vector2f &mousePos) override {}
+    void handleMouseMovement (const sf::Vector2f &mousePos) override {}
+    void handleMouseRelease (const sf::Vector2f &mousePos) override {}
+    void handleTextEntered (const char &unicode) override {}
+
+    sf::FloatRect getBoundary() const override {
+        return sf::FloatRect({0, 0}, {0, 0});
     }
 };

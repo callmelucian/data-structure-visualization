@@ -37,7 +37,7 @@ public:
     void setString (const std::string &msg) {
         label.setString(msg);
         label.setAutoCharacterSize(
-            rectangle.getSize().x, rectangle.getSize().y
+            rectangle.getSize().x, rectangle.getSize().y, 0.75
         );
         label.centerOrigin();
     }
