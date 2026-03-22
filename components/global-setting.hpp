@@ -6,4 +6,7 @@ namespace Setting {
 
     inline constexpr float actionBarWidth = 1800.f;
     inline constexpr float actionBarHeight = 120.f;
+
+    inline constexpr float screenWidth = 1800;
+    inline constexpr float screenHeight = 800;
 };

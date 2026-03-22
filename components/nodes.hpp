@@ -2,14 +2,21 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <cmath>
+#include <random>
+#include <iostream>
 
 #include "ui-base.hpp"
 #include "../assets/theme.hpp"
+#include "global-setting.hpp"
+#include "../include/utility.hpp"
+
+const float eps = 1e-6;
 
 class Node : public UI::Base {
 private:
     sf::CircleShape circle;
     UI::Text label;
+    float targetX, targetY;
 
 public:
     Node (const std::string &msg, float radius = 30.f, float thickness = 2.f) :
@@ -55,6 +62,91 @@ public:
     void handleMouseRelease (const sf::Vector2f &mousePos) override {}
     void handleTextEntered (const char &unicode) override {}
 };
+
+class AnimatedNode : public sf::Drawable {
+private:
+    Node nodeUI;
+    sf::Vector2f targetPosition;
+
+public:
+    AnimatedNode (const std::string &msg, float radius = 30.f, float thickness = 2.f) :
+        nodeUI(msg, radius, thickness), targetPosition({randFloat(0, Setting::screenWidth), randFloat(0, Setting::screenHeight)}) {
+            nodeUI.setPosition(targetPosition);
+        }
+    
+    void setTargetPosition (float x, float y) {
+        targetPosition = sf::Vector2f({x, y});
+    }
+
+    void setTargetX (float x) {
+        targetPosition.x = x;
+    }
+
+    void setTargetY (float y) {
+        targetPosition.y = y;
+    }
+
+    float getTargetX (float x) const {
+        return targetPosition.x;
+    }
+
+    float getTargetY (float y) const {
+        return targetPosition.y;
+    }
+
+    void timePropagation (float deltaTime) {
+        sf::Vector2f displacement = targetPosition - nodeUI.getPosition();
+        if (magnitude(displacement) < eps) nodeUI.setPosition(targetPosition);
+        else {
+            sf::Vector2f newPosition = nodeUI.getPosition() + displacement * deltaTime;
+            nodeUI.setPosition(newPosition);
+            std::cerr << "Update position" << std::endl;
+        }
+    }
+
+    sf::FloatRect getGlobalBounds() const {
+        return nodeUI.getGlobalBounds();
+    }
+
+    sf::Vector2f getPosition() const {
+        return nodeUI.getPosition();
+    }
+
+    float getRadius() const {
+        return nodeUI.getRadius();
+    }
+
+    // draw node onto the screen
+    void draw (sf::RenderTarget& target, sf::RenderStates states) const override {
+        nodeUI.draw(target, states);
+    }
+};
+
+void drawEdge (sf::RenderTarget &target, sf::RenderStates state, const AnimatedNode &from, const AnimatedNode &to, float thickness = 2.f) {
+    if (from.getPosition() == to.getPosition()) return;
+
+    // get centers of the endpoints
+    sf::Vector2f fromCenter = from.getPosition();
+    sf::Vector2f toCenter = to.getPosition();
+    sf::Vector2f shift = (toCenter - fromCenter) * from.getRadius() / distance(fromCenter, toCenter);
+
+    // pre calculations
+    sf::Vector2f start = fromCenter + shift;
+    sf::Vector2f end = toCenter - shift;
+    sf::Vector2f delta = end - start;
+    float dist = distance(start, end);
+    float angle = std::atan2(delta.y, delta.x);
+
+    // setup line
+    sf::RectangleShape line({dist, thickness});
+    line.setOrigin({0, thickness / 2.0f});
+    line.setPosition(start);
+    line.setRotation(sf::radians(angle));
+    line.setFillColor(sf::Color::Black);
+
+    // draw
+    target.draw(line, state);
+}
 
 namespace OldCode {
     // #pragma once

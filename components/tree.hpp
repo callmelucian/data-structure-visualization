@@ -13,8 +13,8 @@
 #include <random>
 #include <iostream>
 
-const float delta = 400.f;
-const float deltaHeight = 200.f;
+const float idealDeltaWidth = 400.f;
+const float idealDeltaHeight = 200.f;
 std::mt19937 rng(21);
 
 float randFloat (float L, float R) {
@@ -49,15 +49,15 @@ public:
     void addChild (int u) { childList.insert(u); }
     void removeChild (int u) { childList.erase(u); }
     
-    friend float calculateOffset (const TreeNode &a, const TreeNode &b) {
+    friend float calculateOffset (const TreeNode &a, const TreeNode &b, float deltaWidth) {
         float offset = 0.f;
         for (int i = 0; i < std::min(a.subtreeHeight(), b.subtreeHeight()); i++)
-            offset = std::max(offset, a.getRightBound(i) + delta - b.getLeftBound(i));
+            offset = std::max(offset, a.getRightBound(i) + deltaWidth - b.getLeftBound(i));
         return offset;
     }
 
-    float mergeNode (const TreeNode &o) {
-        float offset = calculateOffset(*this, o);
+    float mergeNode (const TreeNode &o, float deltaWidth) {
+        float offset = calculateOffset(*this, o, deltaWidth);
         for (int i = 0; i < o.subtreeHeight(); i++) {
             if (i < subtreeHeight()) {
                 leftBound[i] = std::min(leftBound[i], o.getLeftBound(i) + offset);
@@ -129,15 +129,14 @@ public:
         for (int v : nodeData[node].getChildrenList()) applyOffset(v, amount);
     }
 
-    void calculateX (int node) {
+    void calculateX (int node, float deltaWidth) {
         nodeData[node].resetPosition();
         for (int v : nodeData[node].getChildrenList()) {
-            calculateX(v);
-            float offset = nodeData[node].mergeNode(nodeData[v]);
+            calculateX(v, deltaWidth);
+            float offset = nodeData[node].mergeNode(nodeData[v], deltaWidth);
             applyOffset(v, offset);
         }
         nodeData[node].prependRoot();
-        // std::cerr << "calculate " << node << " " << nodeData[node].getX() << "\n";
     }
 
     void calculateY (int node, float curHeight, float hd) {
@@ -147,10 +146,22 @@ public:
     }
 
     void calculatePosition (float maxWidth, float maxHeight) {
-        calculateX(rootNode);
-        float hd = std::min(deltaHeight, maxHeight / nodeData[rootNode].subtreeHeight());
-        calculateY(rootNode, 0, hd);
+        // calculate x-coordinate by binary searching for the ideal gap
+        float deltaL = 0, deltaR = idealDeltaWidth;
+        for (int iteration = 0; iteration < 20; iteration++) {
+            float deltaMid = (deltaL + deltaR) / 2.0f;
+            calculateX(rootNode, deltaMid);
+            if (nodeData[rootNode].getWidth() <= maxWidth) deltaL = deltaMid;
+            else deltaR = deltaMid;
+        }
+        std::cerr << "binary result " << deltaL << " " << deltaR << std::endl;
+        calculateX(rootNode, deltaR);
 
+        // calculate y-coordinate
+        float deltaHeight = std::min(idealDeltaHeight, maxHeight / nodeData[rootNode].subtreeHeight());
+        calculateY(rootNode, 0, deltaHeight);
+
+        // apply position to node's UI
         for (int i = 0; i < nodeUI.size(); i++)
             nodeUI[i].setPosition({nodeData[i].getX(), nodeData[i].getY()});
     }
@@ -175,14 +186,12 @@ public:
         sf::FloatRect totalBounds = nodeUI[0].getGlobalBounds();
         for (const auto& circle : nodeUI) {
             sf::FloatRect itemBounds = circle.getGlobalBounds();
-            float left   = std::min(totalBounds.position.x, itemBounds.position.x);
-            float top    = std::min(totalBounds.position.y, itemBounds.position.y);
-            float right  = std::max(totalBounds.position.x + totalBounds.size.x, 
-                                    itemBounds.position.x + itemBounds.size.x);
-            float bottom = std::max(totalBounds.position.y + totalBounds.size.y, 
-                                    itemBounds.position.y + itemBounds.size.y);
+            float left = std::min(totalBounds.position.x, itemBounds.position.x);
+            float top = std::min(totalBounds.position.y, itemBounds.position.y);
+            float right = std::max(totalBounds.position.x + totalBounds.size.x, itemBounds.position.x + itemBounds.size.x);
+            float bottom = std::max(totalBounds.position.y + totalBounds.size.y, itemBounds.position.y + itemBounds.size.y);
             totalBounds.position = {left, top};
-            totalBounds.size     = {right - left, bottom - top};
+            totalBounds.size = {right - left, bottom - top};
         }
         return totalBounds;
     }

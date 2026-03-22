@@ -12,7 +12,7 @@
 #include "../components/slider.hpp"
 #include "../components/input-field.hpp"
 #include "../components/nodes.hpp"
-#include "../components/tree.hpp"
+#include "../components/binary-tree.hpp"
 
 class TestButtonScene : public Scene {
 private:
@@ -20,7 +20,7 @@ private:
     Button button1, button2;
     Slider slider;
     TextInputField inputField;
-    GraphicTree tree;
+    BinaryTree binTree;
 
 public:
     // constructor
@@ -50,29 +50,17 @@ public:
 
         inputField.setPosition({900, 300});
 
-        tree.createNode(0);
-        tree.createNode(1);
-        tree.createNode(2);
-        tree.createNode(3);
-        tree.createNode(4);
-        tree.createNode(5);
-        tree.createNode(6);
-        tree.createNode(7);
-        tree.createNode(8);
-        tree.addEdge(0, 1);
-        tree.addEdge(0, 2);
-        tree.addEdge(1, 3);
-        tree.addEdge(1, 4);
-        tree.addEdge(2, 5);
-        tree.addEdge(2, 6);
-        tree.addEdge(2, 7);
-        tree.addEdge(1, 8);
+        for (int i = 0; i < 7; i++) binTree.createNode(i);
+        binTree.addEdge(0, 1, true);
+        binTree.addEdge(0, 2, false);
+        binTree.addEdge(1, 3, true);
+        binTree.addEdge(1, 4, false);
+        binTree.addEdge(3, 5, true);
+        binTree.addEdge(3, 6, false);
 
-        tree.calculatePosition(1800, 800);
-        tree.printPosition();
-
-        tree.centerOrigin();
-        tree.setPosition({900, 400});
+        binTree.calculatePositions(1600, 600);
+        binTree.centerOrigin();
+        binTree.setPosition({Setting::screenWidth / 2.f, Setting::screenHeight / 2.f});
     }
 
     // (override) handle events
@@ -88,6 +76,8 @@ public:
     // (override) time propagation
     void timePropagation (float delta) override {
         inputField.timePropagation();
+        binTree.timePropagation(delta);
+        binTree.centerOrigin();
     }
 
     // (override) draw scene onto the screen
@@ -97,6 +87,6 @@ public:
         // window.draw(actionBar);
         // window.draw(slider);
         // window.draw(inputField);
-        window.draw(tree);
+        window.draw(binTree);
     }
 };
