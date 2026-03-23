@@ -100,7 +100,6 @@ public:
         else {
             sf::Vector2f newPosition = nodeUI.getPosition() + displacement * deltaTime;
             nodeUI.setPosition(newPosition);
-            std::cerr << "Update position" << std::endl;
         }
     }
 

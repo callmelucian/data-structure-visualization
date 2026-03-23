@@ -4,6 +4,7 @@
 #include "../scenes/scene-manager.hpp"
 // #include "../scenes/test-scene.hpp"
 #include "../scenes/temporary-scene.hpp"
+#include "../scenes/avl-tree-scene.hpp"
 
 // #include "../components/nodes.hpp"
 // #include "../components/edges.hpp"
@@ -42,7 +43,8 @@ int main() {
     auto window = sf::RenderWindow(sf::VideoMode({1800, 800}), "Data Structures Visualizer");
     SceneManager manager;
 
-    manager.changeScene(std::make_unique<TestButtonScene>(window));
+    // manager.changeScene(std::make_unique<TestButtonScene>(window));
+    manager.changeScene(std::make_unique<AVLTreeScene>(window));
     manager.runMainLoop(window);
 
     return 0;
