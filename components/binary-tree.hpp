@@ -20,11 +20,12 @@ private:
     std::vector<AnimatedNode> nodeUI;
     std::vector<bool> isDeleted;
     int rootNode, treeSize;
+    sf::Vector2f targetOrigin;
 public:
-    BinaryTree() : rootNode(0), treeSize(0) {}
+    BinaryTree() : rootNode(0), treeSize(0), targetOrigin({0, 0}) {}
 
-    int createNode (int value) {
-        nodeUI.emplace_back(std::to_string(value)), isDeleted.push_back(false);
+    int createNode (const std::string &s) {
+        nodeUI.emplace_back(s), isDeleted.push_back(false);
         leftChild.push_back(0), rightChild.push_back(0), parent.push_back(0);
         return treeSize++;
     }
@@ -103,12 +104,29 @@ public:
         return totalBounds;
     }
 
+    void setTargetOrigin (float x, float y) {
+        targetOrigin.x = x;
+        targetOrigin.y = y;
+    }
+
     void centerOrigin() {
-        auto localRectangle = getLocalBounds();
-        setOrigin({
-            localRectangle.position.x + localRectangle.size.x / 2.f,
-            localRectangle.position.y + localRectangle.size.y / 2.f
-        });
+        if (nodeUI.empty()) return;
+        float targetXMin = nodeUI[0].getTargetX(), targetXMax = nodeUI[0].getTargetX();
+        float targetYMin = nodeUI[0].getTargetY(), targetYMax = nodeUI[0].getTargetY();
+        for (const AnimatedNode &circle : nodeUI) {
+            targetXMin = std::min(targetXMin, circle.getTargetX());
+            targetXMax = std::max(targetXMax, circle.getTargetX());
+            targetYMin = std::min(targetYMin, circle.getTargetY());
+            targetYMax = std::max(targetYMax, circle.getTargetY());
+        }
+        float originX = (targetXMin + targetXMax) / 2.f;
+        float originY = (targetYMin + targetYMax) / 2.f;
+        setTargetOrigin(originX, originY);
+        // auto localRectangle = getLocalBounds();
+        // setOrigin({
+        //     localRectangle.position.x + localRectangle.size.x / 2.f,
+        //     localRectangle.position.y + localRectangle.size.y / 2.f
+        // });
     }
 
     void draw (sf::RenderTarget& target, sf::RenderStates states) const override {
@@ -125,5 +143,11 @@ public:
 
     void timePropagation (float deltaTime) {
         for (AnimatedNode &node : nodeUI) node.timePropagation(deltaTime);
+        sf::Vector2f displacement = targetOrigin - getOrigin();
+        if (magnitude(displacement) < eps) setOrigin(targetOrigin);
+        else {
+            sf::Vector2f newPosition = getOrigin() + displacement * Setting::animationFactor * deltaTime;
+            setOrigin(newPosition);
+        }
     }
 };

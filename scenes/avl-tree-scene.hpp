@@ -40,9 +40,7 @@ public:
             actionBar.setSubtitle("AVL Tree");
             inputFieldButton.setCallback([&]() {
                 std::string msg = inputField.releaseText();
-                int value = convert(msg);
-                if (value == -1) return;
-                avlTree.createNode(value);
+                avlTree.createNode(msg);
                 if (counter) {
                     int parent = (counter - 1) / 2;
                     avlTree.addEdge(parent, counter, counter & 1);
@@ -68,9 +66,9 @@ public:
     }
 
     void draw (sf::RenderWindow &window) override {
+        window.draw(avlTree);
         window.draw(actionBar);
         window.draw(inputField);
         window.draw(inputFieldButton);
-        window.draw(avlTree);
     }
 };

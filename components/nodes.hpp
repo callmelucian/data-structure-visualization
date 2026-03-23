@@ -86,11 +86,11 @@ public:
         targetPosition.y = y;
     }
 
-    float getTargetX (float x) const {
+    float getTargetX() const {
         return targetPosition.x;
     }
 
-    float getTargetY (float y) const {
+    float getTargetY() const {
         return targetPosition.y;
     }
 
@@ -98,7 +98,7 @@ public:
         sf::Vector2f displacement = targetPosition - nodeUI.getPosition();
         if (magnitude(displacement) < eps) nodeUI.setPosition(targetPosition);
         else {
-            sf::Vector2f newPosition = nodeUI.getPosition() + displacement * deltaTime;
+            sf::Vector2f newPosition = nodeUI.getPosition() + displacement * Setting::animationFactor * deltaTime;
             nodeUI.setPosition(newPosition);
         }
     }

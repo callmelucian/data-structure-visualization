@@ -9,4 +9,6 @@ namespace Setting {
 
     inline constexpr float screenWidth = 1800;
     inline constexpr float screenHeight = 800;
+
+    inline constexpr float animationFactor = 2.f;
 };

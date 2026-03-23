@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <string>
 
 #include "scene-manager.hpp"
 
@@ -50,7 +51,7 @@ public:
 
         inputField.setPosition({900, 300});
 
-        for (int i = 0; i < 7; i++) binTree.createNode(i);
+        for (int i = 0; i < 7; i++) binTree.createNode(std::to_string(i));
         binTree.addEdge(0, 1, true);
         binTree.addEdge(0, 2, false);
         binTree.addEdge(1, 3, true);
