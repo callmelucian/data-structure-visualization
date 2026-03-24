@@ -3,7 +3,7 @@
 #include <string>
 
 #include "../assets/theme.hpp"
-#include "global-setting.hpp"
+#include "../core/global-setting.hpp"
 #include "ui-base.hpp"
 
 class ActionBar : public UI::Base {

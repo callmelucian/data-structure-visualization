@@ -8,7 +8,7 @@
 
 #include "ui-base.hpp"
 #include "nodes.hpp"
-#include "global-setting.hpp"
+#include "../core/global-setting.hpp"
 
 const float idealDeltaHeight = 200.f;
 const float idealDeltaWidth = 400.f;

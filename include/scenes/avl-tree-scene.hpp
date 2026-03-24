@@ -3,8 +3,8 @@
 
 // utilities
 #include "scene-manager.hpp"
-#include "../include/utility.hpp"
-#include "../include/avl-tree.hpp"
+#include "../core/utility.hpp"
+#include "../ds/avl-tree.hpp"
 
 // UI components
 #include "../components/action-bar.hpp"

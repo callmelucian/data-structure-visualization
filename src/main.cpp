@@ -1,21 +1,9 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
-#include "../scenes/scene-manager.hpp"
-// #include "../scenes/test-scene.hpp"
-#include "../scenes/temporary-scene.hpp"
-#include "../scenes/avl-tree-scene.hpp"
-
-// #include "../components/nodes.hpp"
-// #include "../components/edges.hpp"
-#include "../components/button.hpp"
-#include "../components/ui-base.hpp"
-#include "../components/global-setting.hpp"
-// #include "../components/action-bar.hpp"
-// #include "../scenes/linked-list-scene.hpp"
-// #include "../components/tree.hpp"
-
-#include "../include/utility.hpp"
+// include scenes
+#include "../include/scenes/scene-manager.hpp"
+#include "../include/scenes/avl-tree-scene.hpp"
 
 int main() {
     // GraphicTree tree;

@@ -7,8 +7,8 @@
 
 #include "ui-base.hpp"
 #include "../assets/theme.hpp"
-#include "global-setting.hpp"
-#include "../include/utility.hpp"
+#include "../core/global-setting.hpp"
+#include "../core/utility.hpp"
 
 const float eps = 1e-6;
 
