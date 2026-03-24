@@ -27,26 +27,24 @@ public:
 
     int createNode (const std::string &s, bool isRoot = false) {
         nodeUI.emplace_back(s), isDeleted.push_back(false), treeSize++;
-        leftChild.push_back(0), rightChild.push_back(0), parent.push_back(0);
+        leftChild.push_back(-1), rightChild.push_back(-1), parent.push_back(-1);
         if (isRoot) setRootNode(treeSize - 1);
         return treeSize - 1;
     }
 
     void setRootNode (int targetNode) {
-        rootNode = targetNode;
-        calculatePositions();
+        rootNode = targetNode, parent[targetNode] = -1;
     }
 
     void addEdge (int parentNode, int childNode, bool isLeft) {
-        (isLeft ? leftChild[parentNode] : rightChild[parentNode]) = childNode;
-        parent[childNode] = parentNode;
-        calculatePositions();
+        (isLeft ? leftChild : rightChild)[parentNode] = childNode;
+        if (childNode != -1) parent[childNode] = parentNode;
     }
 
     void deleteNode (int nodeID) {
-        if (leftChild[parent[nodeID]] == nodeID) leftChild[parent[nodeID]] = 0;
-        if (rightChild[parent[nodeID]] == nodeID) rightChild[parent[nodeID]] = 0;
-        leftChild[nodeID] = rightChild[nodeID] = 0, isDeleted[nodeID] = true;
+        if (leftChild[parent[nodeID]] == nodeID) leftChild[parent[nodeID]] = -1;
+        if (rightChild[parent[nodeID]] == nodeID) rightChild[parent[nodeID]] = -1;
+        leftChild[nodeID] = rightChild[nodeID] = -1, isDeleted[nodeID] = true;
     }
 
     void calculatePositions (float maxWidth = Setting::focusX, float maxHeight = Setting::focusY) {
@@ -61,8 +59,8 @@ public:
         // find height and precalculate distance between leaf nodes
         std::function<int(int)> getHeight = [&] (int u) {
             int height = 1;
-            if (leftChild[u]) height = std::max(height, 1 + getHeight(leftChild[u]));
-            if (rightChild[u]) height = std::max(height, 1 + getHeight(rightChild[u]));
+            if (leftChild[u] != -1) height = std::max(height, 1 + getHeight(leftChild[u]));
+            if (rightChild[u] != -1) height = std::max(height, 1 + getHeight(rightChild[u]));
             return height;
         };
         int treeHeight = getHeight(rootNode);
@@ -76,11 +74,11 @@ public:
         
         // run DFS to assign positions
         std::function<void(int, int, float, float)> dfsTree = [&] (int u, int depth, float width, float height) {
+            assert(u != -1);
             int maxLeafCount = (1 << (treeHeight - depth));
             nodeUI[u].setTargetPosition(width + deltaWidth * (maxLeafCount - 1) / 2.f, height);
-
-            if (leftChild[u]) dfsTree(leftChild[u], depth + 1, width, height + deltaHeight);
-            if (rightChild[u]) dfsTree(rightChild[u], depth + 1, width + deltaWidth * (maxLeafCount / 2), height + deltaHeight);
+            if (leftChild[u] != -1) dfsTree(leftChild[u], depth + 1, width, height + deltaHeight);
+            if (rightChild[u] != -1) dfsTree(rightChild[u], depth + 1, width + deltaWidth * (maxLeafCount / 2), height + deltaHeight);
         };
         dfsTree(rootNode, 1, xMin, yMin);
 
@@ -135,8 +133,8 @@ public:
         // show circle and annotation
         for (const AnimatedNode &node : nodeUI) target.draw(node, states);
         for (int i = 0; i < parent.size(); i++) {
-            if (leftChild[i]) drawEdge(target, states, nodeUI[i], nodeUI[leftChild[i]]);
-            if (rightChild[i]) drawEdge(target, states, nodeUI[i], nodeUI[rightChild[i]]);
+            if (leftChild[i] != -1) drawEdge(target, states, nodeUI[i], nodeUI[leftChild[i]]);
+            if (rightChild[i] != -1) drawEdge(target, states, nodeUI[i], nodeUI[rightChild[i]]);
         }
     }
 
