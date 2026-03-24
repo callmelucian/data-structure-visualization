@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <string>
+#include <functional>
 
 #include "../assets/theme.hpp"
 #include "ui-base.hpp"
@@ -14,6 +15,7 @@ private:
     sf::RectangleShape rectangle, cursor;
     bool activation, focus, showCursor;
     sf::Clock blinkClock;
+    std::function<void(const std::string&)> callbackFunction;
 
 public:
     TextInputField (float width, float height) : label(Theme::notoRegular), activation(false), focus(false), showCursor(false) {
@@ -35,6 +37,11 @@ public:
         label.centerOrigin();
     }
 
+    // set callback function for input field
+    void setCallbackFunction (auto func) {
+        callbackFunction = func;
+    }
+
     // set label string
     void setString (const std::string &msg) {
         label.setString(msg);
@@ -49,6 +56,7 @@ public:
     std::string releaseText() {
         std::string holder = currentMessage;
         currentMessage = "", setString("");
+        if (holder.size()) callbackFunction(holder);
         return holder;
     }
 
@@ -87,8 +95,10 @@ public:
             if (currentMessage.size())
                 currentMessage.erase(currentMessage.size() - 1);
         }
-        else if (unicode < 128)
+        else if (unicode >= 32 && unicode < 128)
             currentMessage += unicode;
+        else if (unicode == 10 || unicode == 13)
+            releaseText();
         setString(currentMessage);
     }
 

@@ -24,9 +24,10 @@ private:
 public:
     BinaryTree() : rootNode(0), treeSize(0), targetOrigin({0, 0}) {}
 
-    int createNode (const std::string &s) {
+    int createNode (const std::string &s, bool isRoot = false) {
         nodeUI.emplace_back(s), isDeleted.push_back(false);
         leftChild.push_back(0), rightChild.push_back(0), parent.push_back(0);
+        if (isRoot) setRootNode(treeSize);
         return treeSize++;
     }
 

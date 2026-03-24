@@ -4,6 +4,7 @@
 // utilities
 #include "scene-manager.hpp"
 #include "../include/utility.hpp"
+#include "../include/avl-tree.hpp"
 
 // UI components
 #include "../components/action-bar.hpp"
@@ -25,29 +26,45 @@ private:
     ActionBar actionBar;
     Button inputFieldButton;
     TextInputField inputField;
-    BinaryTree avlTree;
+    BinaryTree avlTreeUI;
+    DS::AVLTree avlTreeLogic;
 
     int counter;
 
 public:
     AVLTreeScene (const sf::RenderWindow &window) :
         Scene(window), inputFieldButton(100, 30), inputField(150, 30), counter(0) {
-            inputFieldButton.setPosition({240, 750});
-            inputField.setPosition({115, 750});
+            inputFieldButton.setPosition({240, 850});
+            inputField.setPosition({115, 850});
             actionBar.setPosition({Setting::actionBarWidth / 2.f, Setting::actionBarHeight / 2.f});
-            avlTree.setPosition({Setting::screenWidth / 2.f, Setting::screenHeight / 2.f});
+            avlTreeUI.setPosition({Setting::screenWidth / 2.f, Setting::screenHeight / 2.f});
 
             actionBar.setSubtitle("AVL Tree");
-            inputFieldButton.setCallback([&]() {
-                std::string msg = inputField.releaseText();
-                avlTree.createNode(msg);
-                if (counter) {
-                    int parent = (counter - 1) / 2;
-                    avlTree.addEdge(parent, counter, counter & 1);
+
+            // set callback functions
+            avlTreeLogic.setCallbackCreateNode([&] (int value, bool isRoot) {
+                int visualID = avlTreeUI.createNode(std::to_string(value), isRoot);
+                if (isRoot) {
+                    avlTreeUI.calculatePositions(1600, 700);
+                    avlTreeUI.centerOrigin();
                 }
-                counter++;
-                avlTree.calculatePositions(1600, 400);
-                avlTree.centerOrigin();
+                return visualID;
+            });
+            avlTreeLogic.setCallbackAddEdge([&] (int parent, int node, bool isLeft) {
+                avlTreeUI.addEdge(parent, node, isLeft);
+                avlTreeUI.calculatePositions(1600, 700);
+                avlTreeUI.centerOrigin();
+            });
+            inputField.setCallbackFunction([&] (const std::string &msg) {
+                int value = convert(msg);
+                if (value == -1) {
+                    std::cerr << "Input field contains non-numerical value!" << std::endl;
+                    return;
+                }
+                avlTreeLogic.insert(value);
+            });
+            inputFieldButton.setCallback([&]() {
+                inputField.releaseText();
             });
         }
     
@@ -61,13 +78,12 @@ public:
 
     void timePropagation (float delta) override {
         inputField.timePropagation();
-        avlTree.timePropagation(delta);
-        avlTree.centerOrigin();
+        avlTreeUI.timePropagation(delta);
     }
 
     void draw (sf::RenderWindow &window) override {
-        window.draw(avlTree);
-        window.draw(actionBar);
+        window.draw(avlTreeUI);
+        // window.draw(actionBar);
         window.draw(inputField);
         window.draw(inputFieldButton);
     }

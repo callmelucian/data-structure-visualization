@@ -10,6 +10,7 @@
 // #include "../components/edges.hpp"
 #include "../components/button.hpp"
 #include "../components/ui-base.hpp"
+#include "../components/global-setting.hpp"
 // #include "../components/action-bar.hpp"
 // #include "../scenes/linked-list-scene.hpp"
 // #include "../components/tree.hpp"
@@ -40,7 +41,8 @@ int main() {
     settings.antiAliasingLevel = 100;
 
     // initialize window & fonts
-    auto window = sf::RenderWindow(sf::VideoMode({1800, 800}), "Data Structures Visualizer");
+    auto window = sf::RenderWindow(sf::VideoMode({(int)Setting::screenWidth, (int)Setting::screenHeight}), "Data Structures Visualizer");
+    window.setPosition({50, 50});
     SceneManager manager;
 
     // manager.changeScene(std::make_unique<TestButtonScene>(window));
