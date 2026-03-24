@@ -1,4 +1,5 @@
 #pragma once
+#include <SFML/Graphics.hpp>
 #include <string>
 
 namespace Setting {
@@ -11,4 +12,8 @@ namespace Setting {
     inline constexpr float screenHeight = 900;
 
     inline constexpr float animationFactor = 2.f;
+
+    inline constexpr sf::Vector2f screenCenter({screenWidth / 2.f, screenHeight / 2.f});
+    inline constexpr float focusX = 1600;
+    inline constexpr float focusY = 600;
 };

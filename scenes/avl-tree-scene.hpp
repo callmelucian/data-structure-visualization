@@ -26,7 +26,7 @@ private:
     ActionBar actionBar;
     Button inputFieldButton;
     TextInputField inputField;
-    BinaryTree avlTreeUI;
+    UI::BinaryTree avlTreeUI;
     DS::AVLTree avlTreeLogic;
 
     int counter;
@@ -44,16 +44,10 @@ public:
             // set callback functions
             avlTreeLogic.setCallbackCreateNode([&] (int value, bool isRoot) {
                 int visualID = avlTreeUI.createNode(std::to_string(value), isRoot);
-                if (isRoot) {
-                    avlTreeUI.calculatePositions(1600, 700);
-                    avlTreeUI.centerOrigin();
-                }
                 return visualID;
             });
             avlTreeLogic.setCallbackAddEdge([&] (int parent, int node, bool isLeft) {
                 avlTreeUI.addEdge(parent, node, isLeft);
-                avlTreeUI.calculatePositions(1600, 700);
-                avlTreeUI.centerOrigin();
             });
             inputField.setCallbackFunction([&] (const std::string &msg) {
                 int value = convert(msg);

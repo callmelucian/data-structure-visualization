@@ -13,31 +13,34 @@
 const float idealDeltaHeight = 200.f;
 const float idealDeltaWidth = 400.f;
 
+namespace UI {
 class BinaryTree : public UI::Base {
 private:
-    // std::vector<std::set<int>> adjacencyList;
     std::vector<int> leftChild, rightChild, parent;
     std::vector<AnimatedNode> nodeUI;
     std::vector<bool> isDeleted;
     int rootNode, treeSize;
     sf::Vector2f targetOrigin;
+
 public:
     BinaryTree() : rootNode(0), treeSize(0), targetOrigin({0, 0}) {}
 
     int createNode (const std::string &s, bool isRoot = false) {
-        nodeUI.emplace_back(s), isDeleted.push_back(false);
+        nodeUI.emplace_back(s), isDeleted.push_back(false), treeSize++;
         leftChild.push_back(0), rightChild.push_back(0), parent.push_back(0);
-        if (isRoot) setRootNode(treeSize);
-        return treeSize++;
+        if (isRoot) setRootNode(treeSize - 1);
+        return treeSize - 1;
     }
 
     void setRootNode (int targetNode) {
         rootNode = targetNode;
+        calculatePositions();
     }
 
     void addEdge (int parentNode, int childNode, bool isLeft) {
         (isLeft ? leftChild[parentNode] : rightChild[parentNode]) = childNode;
         parent[childNode] = parentNode;
+        calculatePositions();
     }
 
     void deleteNode (int nodeID) {
@@ -46,10 +49,12 @@ public:
         leftChild[nodeID] = rightChild[nodeID] = 0, isDeleted[nodeID] = true;
     }
 
-    void calculatePositions (float maxWidth, float maxHeight) {
+    void calculatePositions (float maxWidth = Setting::focusX, float maxHeight = Setting::focusY) {
         // edge case: tree only contains 1 node
+        if (treeSize == 0) return;
         if (treeSize == 1) {
-            nodeUI[rootNode].setTargetPosition(maxWidth / 2.f, maxHeight / 2.f);
+            nodeUI[rootNode].setTargetPosition(0, 0);
+            setTargetOrigin(0, 0);
             return;
         }
 
@@ -78,6 +83,19 @@ public:
             if (rightChild[u]) dfsTree(rightChild[u], depth + 1, width + deltaWidth * (maxLeafCount / 2), height + deltaHeight);
         };
         dfsTree(rootNode, 1, xMin, yMin);
+
+        // center origin
+        float targetXMin = nodeUI[0].getTargetX(), targetXMax = nodeUI[0].getTargetX();
+        float targetYMin = nodeUI[0].getTargetY(), targetYMax = nodeUI[0].getTargetY();
+        for (const AnimatedNode &circle : nodeUI) {
+            targetXMin = std::min(targetXMin, circle.getTargetX());
+            targetXMax = std::max(targetXMax, circle.getTargetX());
+            targetYMin = std::min(targetYMin, circle.getTargetY());
+            targetYMax = std::max(targetYMax, circle.getTargetY());
+        }
+        float originX = (targetXMin + targetXMax) / 2.f;
+        float originY = (targetYMin + targetYMax) / 2.f;
+        setTargetOrigin(originX, originY);
     }
 
     void handleMousePress (const sf::Vector2f &mousePos) override {}
@@ -110,26 +128,6 @@ public:
         targetOrigin.y = y;
     }
 
-    void centerOrigin() {
-        if (nodeUI.empty()) return;
-        float targetXMin = nodeUI[0].getTargetX(), targetXMax = nodeUI[0].getTargetX();
-        float targetYMin = nodeUI[0].getTargetY(), targetYMax = nodeUI[0].getTargetY();
-        for (const AnimatedNode &circle : nodeUI) {
-            targetXMin = std::min(targetXMin, circle.getTargetX());
-            targetXMax = std::max(targetXMax, circle.getTargetX());
-            targetYMin = std::min(targetYMin, circle.getTargetY());
-            targetYMax = std::max(targetYMax, circle.getTargetY());
-        }
-        float originX = (targetXMin + targetXMax) / 2.f;
-        float originY = (targetYMin + targetYMax) / 2.f;
-        setTargetOrigin(originX, originY);
-        // auto localRectangle = getLocalBounds();
-        // setOrigin({
-        //     localRectangle.position.x + localRectangle.size.x / 2.f,
-        //     localRectangle.position.y + localRectangle.size.y / 2.f
-        // });
-    }
-
     void draw (sf::RenderTarget& target, sf::RenderStates states) const override {
         // apply state transform
         states.transform *= getTransform();
@@ -151,4 +149,5 @@ public:
             setOrigin(newPosition);
         }
     }
+};
 };
