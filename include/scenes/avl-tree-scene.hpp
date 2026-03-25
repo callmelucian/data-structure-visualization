@@ -11,6 +11,7 @@
 #include "../components/button.hpp"
 #include "../components/binary-tree.hpp"
 #include "../components/input-field.hpp"
+#include "../components/slider.hpp"
 
 int convert (const std::string &s) {
     int ans = 0;
@@ -23,8 +24,8 @@ int convert (const std::string &s) {
 
 class AVLTreeScene : public Scene {
 private:
-    Button insertButton, eraseButton;
-    TextInputField insertField, eraseField;
+    UI::Button insertButton, eraseButton;
+    UI::TextInputField insertField, eraseField;
     UI::BinaryTree avlTreeUI;
     DS::AVLTree avlTreeLogic;
 

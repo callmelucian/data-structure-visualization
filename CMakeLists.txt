@@ -16,6 +16,11 @@ include_directories(include)
 add_executable(DataVisApp
     src/main.cpp
     src/ds/avl-tree.cpp
+    src/components/binary-tree.cpp
+    src/components/button.cpp
+    src/components/input-field.cpp
+    src/components/nodes.cpp
+    src/components/slider.cpp
 )
 
 # 6. Link SFML to your app
