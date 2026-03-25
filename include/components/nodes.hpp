@@ -16,7 +16,6 @@ class Node : public UI::Base {
 private:
     sf::CircleShape circle;
     UI::Text label;
-    float targetX, targetY;
 
 public:
     Node (const std::string &msg, float radius = 30.f, float thickness = 2.f) :
@@ -113,6 +112,10 @@ public:
 
     float getRadius() const {
         return nodeUI.getRadius();
+    }
+
+    friend void swapAnimatedNode (AnimatedNode &a, AnimatedNode &b) {
+        std::swap(a.nodeUI, b.nodeUI);
     }
 
     // draw node onto the screen

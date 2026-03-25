@@ -23,8 +23,8 @@ int convert (const std::string &s) {
 
 class AVLTreeScene : public Scene {
 private:
-    Button inputFieldButton;
-    TextInputField inputField;
+    Button insertButton, eraseButton;
+    TextInputField insertField, eraseField;
     UI::BinaryTree avlTreeUI;
     DS::AVLTree avlTreeLogic;
 
@@ -32,12 +32,19 @@ private:
 
 public:
     AVLTreeScene (const sf::RenderWindow &window) :
-        Scene(window), inputFieldButton(100, 30), inputField(150, 30), counter(0) {
-            inputFieldButton.setPosition({240, 850});
-            inputField.setPosition({115, 850});
+        Scene(window), insertButton(100, 30), eraseButton(100, 30), insertField(150, 30), eraseField(150, 30), counter(0) {
+            // intialize buttons
+            insertButton.setString("INSERT");
+            eraseButton.setString("ERASE");
+
+            // set positions for objects
+            insertButton.setPosition({240, 850});
+            insertField.setPosition({115, 850});
+            eraseButton.setPosition({525, 850});
+            eraseField.setPosition({400, 850});
             avlTreeUI.setPosition({Setting::screenWidth / 2.f, Setting::screenHeight / 2.f});
 
-            // set callback functions
+            // set callback functions: AVL Tree Logic object
             avlTreeLogic.setCallbackCreateNode([&] (int value, bool isRoot) {
                 int visualID = avlTreeUI.createNode(std::to_string(value), isRoot);
                 return visualID;
@@ -51,7 +58,16 @@ public:
             avlTreeLogic.setCallbackReposition([&]() {
                 avlTreeUI.calculatePositions();
             });
-            inputField.setCallbackFunction([&] (const std::string &msg) {
+            avlTreeLogic.setCallbackDeleteNode([&] (int visualID) {
+                std::cerr << "Delete node with visualID " << visualID << std::endl;
+                avlTreeUI.deleteNode(visualID);
+            });
+            avlTreeLogic.setCallbackSwapValue([&] (int a, int b) {
+                avlTreeUI.swapNode(a, b);
+            });
+
+            // set callback functions: input field and button for insertion
+            insertField.setCallbackFunction([&] (const std::string &msg) {
                 int value = convert(msg);
                 if (value == -1) {
                     std::cerr << "Input field contains non-numerical value!" << std::endl;
@@ -59,25 +75,45 @@ public:
                 }
                 avlTreeLogic.insert(value);
             });
-            inputFieldButton.setCallback([&]() {
-                inputField.releaseText();
+            insertButton.setCallback([&]() {
+                insertField.releaseText();
+            });
+
+            // set callback functions: input field and button for deletion
+            eraseField.setCallbackFunction([&] (const std::string &msg) {
+                int value = convert(msg);
+                if (value == -1) {
+                    std::cerr << "Input field contains non-numerical value!" << std::endl;
+                    return;
+                }
+                avlTreeLogic.erase(value);
+            });
+            eraseButton.setCallback([&]() {
+                eraseField.releaseText();
             });
         }
     
     void handleEvent (sf::RenderWindow &window, const std::optional<sf::Event> &event) override {
-        inputField.handleMouseEvents(window, event);
-        inputField.handleTextEvents(window, event);
-        inputFieldButton.handleMouseEvents(window, event);
+        insertField.handleMouseEvents(window, event);
+        insertField.handleTextEvents(window, event);
+        insertButton.handleMouseEvents(window, event);
+
+        eraseField.handleMouseEvents(window, event);
+        eraseField.handleTextEvents(window, event);
+        eraseButton.handleMouseEvents(window, event);
     }
 
     void timePropagation (float delta) override {
-        inputField.timePropagation();
+        insertField.timePropagation();
+        eraseField.timePropagation();
         avlTreeUI.timePropagation(delta);
     }
 
     void draw (sf::RenderWindow &window) override {
         window.draw(avlTreeUI);
-        window.draw(inputField);
-        window.draw(inputFieldButton);
+        window.draw(insertField);
+        window.draw(insertButton);
+        window.draw(eraseField);
+        window.draw(eraseButton);
     }
 };

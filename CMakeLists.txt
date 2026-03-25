@@ -13,7 +13,10 @@ find_package(SFML 3.0 REQUIRED COMPONENTS Graphics)
 include_directories(include)
 
 # 5. Create the executable from your source files
-add_executable(DataVisApp src/main.cpp)
+add_executable(DataVisApp
+    src/main.cpp
+    src/ds/avl-tree.cpp
+)
 
 # 6. Link SFML to your app
 target_link_libraries(DataVisApp SFML::Graphics)

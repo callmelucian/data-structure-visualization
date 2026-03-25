@@ -28,12 +28,13 @@ public:
     int createNode (const std::string &s, bool isRoot = false) {
         nodeUI.emplace_back(s), isDeleted.push_back(false), treeSize++;
         leftChild.push_back(-1), rightChild.push_back(-1), parent.push_back(-1);
-        if (isRoot) setRootNode(treeSize - 1);
-        return treeSize - 1;
+        if (isRoot) setRootNode((int)nodeUI.size() - 1);
+        return (int)nodeUI.size() - 1;
     }
 
     void setRootNode (int targetNode) {
-        rootNode = targetNode, parent[targetNode] = -1;
+        rootNode = targetNode;
+        if (targetNode != -1) parent[targetNode] = -1;
     }
 
     void addEdge (int parentNode, int childNode, bool isLeft) {
@@ -44,7 +45,11 @@ public:
     void deleteNode (int nodeID) {
         if (leftChild[parent[nodeID]] == nodeID) leftChild[parent[nodeID]] = -1;
         if (rightChild[parent[nodeID]] == nodeID) rightChild[parent[nodeID]] = -1;
-        leftChild[nodeID] = rightChild[nodeID] = -1, isDeleted[nodeID] = true;
+        leftChild[nodeID] = rightChild[nodeID] = -1, isDeleted[nodeID] = true, treeSize--;
+    }
+
+    void swapNode (int nodeA, int nodeB) {
+        swapAnimatedNode(nodeUI[nodeA], nodeUI[nodeB]);
     }
 
     void calculatePositions (float maxWidth = Setting::focusX, float maxHeight = Setting::focusY) {
@@ -83,13 +88,14 @@ public:
         dfsTree(rootNode, 1, xMin, yMin);
 
         // center origin
-        float targetXMin = nodeUI[0].getTargetX(), targetXMax = nodeUI[0].getTargetX();
-        float targetYMin = nodeUI[0].getTargetY(), targetYMax = nodeUI[0].getTargetY();
-        for (const AnimatedNode &circle : nodeUI) {
-            targetXMin = std::min(targetXMin, circle.getTargetX());
-            targetXMax = std::max(targetXMax, circle.getTargetX());
-            targetYMin = std::min(targetYMin, circle.getTargetY());
-            targetYMax = std::max(targetYMax, circle.getTargetY());
+        float targetXMin = nodeUI[rootNode].getTargetX(), targetXMax = nodeUI[rootNode].getTargetX();
+        float targetYMin = nodeUI[rootNode].getTargetY(), targetYMax = nodeUI[rootNode].getTargetY();
+        for (int i = 0; i < nodeUI.size(); i++) {
+            if (isDeleted[i]) continue;
+            targetXMin = std::min(targetXMin, nodeUI[i].getTargetX());
+            targetXMax = std::max(targetXMax, nodeUI[i].getTargetX());
+            targetYMin = std::min(targetYMin, nodeUI[i].getTargetY());
+            targetYMax = std::max(targetYMax, nodeUI[i].getTargetY());
         }
         float originX = (targetXMin + targetXMax) / 2.f;
         float originY = (targetYMin + targetYMax) / 2.f;
@@ -105,21 +111,20 @@ public:
         return sf::FloatRect();
     }
 
-    sf::FloatRect getLocalBounds() const {
-        if (nodeUI.empty()) return sf::FloatRect();
-        sf::FloatRect totalBounds = nodeUI[0].getGlobalBounds();
-        for (const auto& circle : nodeUI) {
-            sf::FloatRect itemBounds = circle.getGlobalBounds();
-            float left = std::min(totalBounds.position.x, itemBounds.position.x);
-            float top = std::min(totalBounds.position.y, itemBounds.position.y);
-            float right = std::max(totalBounds.position.x + totalBounds.size.x, itemBounds.position.x + itemBounds.size.x);
-            float bottom = std::max(totalBounds.position.y + totalBounds.size.y, itemBounds.position.y + itemBounds.size.y);
-
-            totalBounds.position = {left, top};
-            totalBounds.size = {right - left, bottom - top};
-        }
-        return totalBounds;
-    }
+    // sf::FloatRect getLocalBounds() const {
+    //     if (nodeUI.empty()) return sf::FloatRect();
+    //     sf::FloatRect totalBounds = nodeUI[0].getGlobalBounds();
+    //     for (const auto& circle : nodeUI) {
+    //         sf::FloatRect itemBounds = circle.getGlobalBounds();
+    //         float left = std::min(totalBounds.position.x, itemBounds.position.x);
+    //         float top = std::min(totalBounds.position.y, itemBounds.position.y);
+    //         float right = std::max(totalBounds.position.x + totalBounds.size.x, itemBounds.position.x + itemBounds.size.x);
+    //         float bottom = std::max(totalBounds.position.y + totalBounds.size.y, itemBounds.position.y + itemBounds.size.y);
+    //         totalBounds.position = {left, top};
+    //         totalBounds.size = {right - left, bottom - top};
+    //     }
+    //     return totalBounds;
+    // }
 
     void setTargetOrigin (float x, float y) {
         targetOrigin.x = x;
@@ -131,11 +136,12 @@ public:
         states.transform *= getTransform();
 
         // show circle and annotation
-        for (const AnimatedNode &node : nodeUI) target.draw(node, states);
         for (int i = 0; i < parent.size(); i++) {
             if (leftChild[i] != -1) drawEdge(target, states, nodeUI[i], nodeUI[leftChild[i]]);
             if (rightChild[i] != -1) drawEdge(target, states, nodeUI[i], nodeUI[rightChild[i]]);
         }
+        for (int i = 0; i < nodeUI.size(); i++)
+            if (!isDeleted[i]) target.draw(nodeUI[i], states);
     }
 
     void timePropagation (float deltaTime) {
