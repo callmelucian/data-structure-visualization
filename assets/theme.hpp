@@ -10,6 +10,8 @@ namespace LightModeColors {
     inline constexpr sf::Color floatColor = sf::Color({69, 123, 157}); // blue
     inline constexpr sf::Color fixedColor = sf::Color({230, 57, 70}); // red
 
+    inline constexpr sf::Color transparentColor = sf::Color({0, 0, 0, 0});
+
     inline constexpr sf::Color pressedButton = sf::Color({200, 200, 200});
     inline constexpr sf::Color hoveredButton = sf::Color({220, 220, 220});
     inline constexpr sf::Color button = sf::Color({255, 255, 255});
@@ -42,4 +44,6 @@ namespace Theme {
     inline sf::Color getHoveredButton() { return LightModeColors::hoveredButton; }
     inline sf::Color getButton() { return LightModeColors::button; }
     inline sf::Color getIdleButton() { return LightModeColors::idleButton; }
+
+    inline sf::Color getTransparent() { return LightModeColors::transparentColor; }
 };

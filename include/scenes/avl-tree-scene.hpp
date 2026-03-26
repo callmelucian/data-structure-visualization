@@ -24,8 +24,8 @@ int convert (const std::string &s) {
 
 class AVLTreeScene : public Scene {
 private:
-    UI::Button insertButton, eraseButton;
-    UI::TextInputField insertField, eraseField;
+    UI::Button insertButton, eraseButton, highlightButton;
+    UI::TextInputField insertField, eraseField, highlightField;
     UI::BinaryTree avlTreeUI;
     DS::AVLTree avlTreeLogic;
 
@@ -33,7 +33,7 @@ private:
 
 public:
     AVLTreeScene (const sf::RenderWindow &window) :
-        Scene(window), insertButton(100, 30), eraseButton(100, 30), insertField(150, 30), eraseField(150, 30), counter(0) {
+        Scene(window), insertButton(100, 30), eraseButton(100, 30), highlightButton(100, 30), insertField(150, 30), eraseField(150, 30), highlightField(150, 30), counter(0) {
             // intialize buttons
             insertButton.setString("INSERT");
             eraseButton.setString("ERASE");
@@ -43,6 +43,8 @@ public:
             insertField.setPosition({115, 850});
             eraseButton.setPosition({525, 850});
             eraseField.setPosition({400, 850});
+            highlightButton.setPosition({810, 850});
+            highlightField.setPosition({685, 850});
             avlTreeUI.setPosition({Setting::screenWidth / 2.f, Setting::screenHeight / 2.f});
 
             // set callback functions: AVL Tree Logic object
@@ -60,7 +62,7 @@ public:
                 avlTreeUI.calculatePositions();
             });
             avlTreeLogic.setCallbackDeleteNode([&] (int visualID) {
-                std::cerr << "Delete node with visualID " << visualID << std::endl;
+                // std::cerr << "Delete node with visualID " << visualID << std::endl;
                 avlTreeUI.deleteNode(visualID);
             });
             avlTreeLogic.setCallbackSwapValue([&] (int a, int b) {
@@ -92,6 +94,15 @@ public:
             eraseButton.setCallback([&]() {
                 eraseField.releaseText();
             });
+
+            // set callback functions: input field and button for highlighting
+            highlightField.setCallbackFunction([&] (const std::string &msg) {
+                int value = convert(msg);
+                avlTreeUI.setHighlight(value);
+            });
+            highlightButton.setCallback([&]() {
+                highlightField.releaseText();
+            });
         }
     
     void handleEvent (sf::RenderWindow &window, const std::optional<sf::Event> &event) override {
@@ -102,11 +113,16 @@ public:
         eraseField.handleMouseEvents(window, event);
         eraseField.handleTextEvents(window, event);
         eraseButton.handleMouseEvents(window, event);
+
+        highlightField.handleMouseEvents(window, event);
+        highlightField.handleTextEvents(window, event);
+        highlightButton.handleMouseEvents(window, event);
     }
 
     void timePropagation (float delta) override {
         insertField.timePropagation();
         eraseField.timePropagation();
+        highlightField.timePropagation();
         avlTreeUI.timePropagation(delta);
     }
 
@@ -116,5 +132,7 @@ public:
         window.draw(insertButton);
         window.draw(eraseField);
         window.draw(eraseButton);
+        window.draw(highlightField);
+        window.draw(highlightButton);
     }
 };

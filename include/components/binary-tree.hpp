@@ -10,6 +10,7 @@
 #include "ui-base.hpp"
 #include "nodes.hpp"
 #include "../core/global-setting.hpp"
+#include "../../assets/theme.hpp"
 
 extern const float idealDeltaHeight;
 extern const float idealDeltaWidth;
@@ -21,8 +22,9 @@ private:
     std::vector<int> leftChild, rightChild, parent;
     std::vector<AnimatedNode> nodeUI;
     std::vector<bool> isDeleted;
-    int rootNode, treeSize;
-    sf::Vector2f targetOrigin;
+    int rootNode, treeSize, highlightID;
+    sf::Vector2f targetOrigin, targetHighlight;
+    sf::CircleShape highlightCircle;
 
 public:
     BinaryTree();
@@ -54,6 +56,8 @@ public:
     void timePropagation(float deltaTime);
     
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
+    void setHighlight (int nodeID);
 };
 
 } // namespace UI

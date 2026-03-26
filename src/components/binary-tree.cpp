@@ -5,7 +5,18 @@ const float idealDeltaWidth = 400.f;
 
 namespace UI {
 
-BinaryTree::BinaryTree() : rootNode(0), treeSize(0), targetOrigin({0, 0}) {}
+BinaryTree::BinaryTree() :
+    rootNode(0), treeSize(0),
+    targetOrigin({0, 0}),
+    targetHighlight({0, 0}),
+    highlightCircle(36.f, 100),
+    highlightID(-1) {
+    
+    highlightCircle.setOutlineColor(Theme::getFixedColor());
+    highlightCircle.setFillColor(Theme::getTransparent());
+    highlightCircle.setOrigin({36.f, 36.f});
+    highlightCircle.setOutlineThickness(6.f);
+}
 
 int BinaryTree::createNode(const std::string &s, bool isRoot) {
     nodeUI.emplace_back(s), isDeleted.push_back(false), treeSize++;
@@ -18,6 +29,7 @@ void BinaryTree::deleteNode(int nodeID) {
     if (leftChild[parent[nodeID]] == nodeID) leftChild[parent[nodeID]] = -1;
     if (rightChild[parent[nodeID]] == nodeID) rightChild[parent[nodeID]] = -1;
     leftChild[nodeID] = rightChild[nodeID] = -1, isDeleted[nodeID] = true, treeSize--;
+    if (nodeID == highlightID) highlightID = -1;
 }
 
 void BinaryTree::addEdge(int parentNode, int childNode, bool isLeft) {
@@ -40,6 +52,8 @@ void BinaryTree::calculatePositions(float maxWidth, float maxHeight) {
     if (treeSize == 1) {
         nodeUI[rootNode].setTargetPosition(0, 0);
         setTargetOrigin(0, 0);
+        if (highlightID != -1)
+            targetHighlight = nodeUI[highlightID].getPosition();
         return;
     }
 
@@ -82,6 +96,9 @@ void BinaryTree::calculatePositions(float maxWidth, float maxHeight) {
     float originX = (targetXMin + targetXMax) / 2.f;
     float originY = (targetYMin + targetYMax) / 2.f;
     setTargetOrigin(originX, originY);
+
+    if (highlightID != -1)
+        targetHighlight = nodeUI[highlightID].getPosition();
 }
 
 void BinaryTree::handleMousePress(const sf::Vector2f &mousePos) {}
@@ -112,6 +129,10 @@ void BinaryTree::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     }
     for (int i = 0; i < (int)nodeUI.size(); i++)
         if (!isDeleted[i]) target.draw(nodeUI[i], states);
+    
+    // show highlight circle
+    if (highlightID != -1)
+        target.draw(highlightCircle, states);
 }
 
 void BinaryTree::timePropagation(float deltaTime) {
@@ -122,6 +143,24 @@ void BinaryTree::timePropagation(float deltaTime) {
         sf::Vector2f newPosition = getOrigin() + displacement * Setting::animationFactor * deltaTime;
         setOrigin(newPosition);
     }
+    
+    displacement = targetHighlight - highlightCircle.getPosition();
+    if (magnitude(displacement) < eps) highlightCircle.setPosition(targetHighlight);
+    else {
+        sf::Vector2f newPosition = highlightCircle.getPosition() + displacement * Setting::animationFactor * 10.f * deltaTime;
+        highlightCircle.setPosition(newPosition);
+    }
+}
+
+void BinaryTree::setHighlight (int nodeID) {
+    // remove highlight from previously highlighted node
+    if (highlightID != -1)
+        nodeUI[highlightID].unHighlightNode();
+    if (nodeID != -1) {
+        nodeUI[nodeID].highlightNode();
+        targetHighlight = nodeUI[nodeID].getPosition();
+    }
+    highlightID = nodeID;
 }
 
 } // namespace UI

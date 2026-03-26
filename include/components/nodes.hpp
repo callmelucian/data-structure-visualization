@@ -32,6 +32,8 @@ public:
 
     sf::FloatRect getGlobalBounds() const;
 
+    void setColor (const sf::Color &color);
+
     // handle mouse press
     void handleMousePress(const sf::Vector2f &mousePos) override;
     
@@ -72,6 +74,10 @@ public:
     float getRadius() const;
 
     friend void swapAnimatedNode(AnimatedNode &a, AnimatedNode &b);
+
+    void highlightNode();
+
+    void unHighlightNode();
 
     // draw node onto the screen
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

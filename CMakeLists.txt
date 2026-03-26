@@ -21,6 +21,7 @@ add_executable(DataVisApp
     src/components/input-field.cpp
     src/components/nodes.cpp
     src/components/slider.cpp
+    src/core/utility.cpp
 )
 
 # 6. Link SFML to your app

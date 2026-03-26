@@ -10,14 +10,14 @@ Node::Node(const std::string &msg, float radius, float thickness) :
     
     // setup circle
     circle.setOrigin({radius, radius});
-    circle.setFillColor(Theme::getFloatColor());
+    circle.setFillColor(Theme::getTransparent());
     circle.setOutlineColor(Theme::getPrimary());
     circle.setOutlineThickness(thickness);
 
     // setup annotation
     float squareSize = std::sqrt(2 * radius * radius);
     label.setAutoCharacterSize(squareSize, squareSize);
-    label.setFillColor(sf::Color::White);
+    label.setFillColor(sf::Color::Black);
     label.centerOrigin();
 }
 
@@ -42,11 +42,14 @@ sf::FloatRect Node::getGlobalBounds() const {
     return getTransform().transformRect(circle.getGlobalBounds());
 }
 
+void Node::setColor (const sf::Color &color) {
+    circle.setFillColor(color);
+}
+
 void Node::handleMousePress(const sf::Vector2f &mousePos) {}
 void Node::handleMouseMovement(const sf::Vector2f &mousePos) {}
 void Node::handleMouseRelease(const sf::Vector2f &mousePos) {}
 void Node::handleTextEntered(const char &unicode) {}
-
 
 // AnimatedNode Implementation
 AnimatedNode::AnimatedNode(const std::string &msg, float radius, float thickness) :
@@ -98,6 +101,14 @@ float AnimatedNode::getRadius() const {
 
 void swapAnimatedNode(AnimatedNode &a, AnimatedNode &b) {
     std::swap(a.nodeUI, b.nodeUI);
+}
+
+void AnimatedNode::highlightNode() {
+    nodeUI.setColor(Theme::getFixedColor());
+}
+
+void AnimatedNode::unHighlightNode() {
+    nodeUI.setColor(Theme::getTransparent());
 }
 
 void AnimatedNode::draw(sf::RenderTarget& target, sf::RenderStates states) const {

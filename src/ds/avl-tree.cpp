@@ -86,6 +86,8 @@ Node* AVLTree::insertValue (Node *ptr, int insertKey) {
     if (ptr == nullptr)
         return new Node(insertKey, callbackCreateNode(insertKey, false));
     
+    // std::cerr << "Trying to insert at " << ptr->value << " " << insertKey << std::endl;
+    
     // recursive call for either subtree
     if (insertKey == ptr->value) return ptr->count++, ptr;
     if (insertKey < ptr->value) {
