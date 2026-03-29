@@ -22,6 +22,23 @@ int convert (const std::string &s) {
     return ans;
 }
 
+namespace AVL {
+
+enum EventType {
+    CreateNode,
+    AddEdge,
+    SetRootNode,
+    CalculatePositions,
+    DeleteNode,
+    SwapNode
+};
+
+class AVLEvent {
+    
+};
+
+}; // namespace AVL
+
 class AVLTreeScene : public Scene {
 private:
     UI::Button insertButton, eraseButton, highlightButton;
@@ -68,6 +85,8 @@ public:
             avlTreeLogic.setCallbackSwapValue([&] (int a, int b) {
                 avlTreeUI.swapNode(a, b);
             });
+            avlTreeLogic.setCallbackApplyAnimation([&]() { avlTreeUI.calculatePositions(); });
+            avlTreeLogic.setCallbackHighlightNode([&] (int nodeID) {});
 
             // set callback functions: input field and button for insertion
             insertField.setCallbackFunction([&] (const std::string &msg) {

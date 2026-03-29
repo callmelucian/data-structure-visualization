@@ -21,6 +21,8 @@ private:
     std::function<void(int, int, bool)> callbackAddEdge;
     std::function<void(int)> callbackChangeRoot;
     std::function<void()> callbackReposition;
+    std::function<void()> callbackApplyAnimation;
+    std::function<void(int)> callbackHighlightNode;
 
     /**
      * @brief Get the height of the node given by ptr in O(1)
@@ -126,6 +128,22 @@ public:
      */
     void setCallbackReposition (auto func) {
         callbackReposition = func;
+    }
+
+    /**
+     * @brief Assign a callback function that will be called
+     * whenever AVL Tree wants to apply animation
+     */
+    void setCallbackApplyAnimation (auto func) {
+        callbackApplyAnimation = func;
+    }
+
+    /**
+     * @brief Assign a callback function that will be called
+     * whenever AVL Tree wants to highlight a node
+     */
+    void setCallbackHighlightNode (auto func) {
+        callbackHighlightNode = func;
     }
 
     /**
