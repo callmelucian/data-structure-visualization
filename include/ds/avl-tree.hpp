@@ -14,6 +14,7 @@ struct Node {
 class AVLTree {
 private:
     Node *root;
+    int nodeCounter;
 
     std::function<int(int, bool)> callbackCreateNode;
     std::function<void(int)> callbackDeleteNode;

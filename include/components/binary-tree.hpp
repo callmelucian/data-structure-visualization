@@ -29,7 +29,7 @@ private:
 public:
     BinaryTree();
 
-    int createNode(const std::string &s, bool isRoot = false);
+    void createNode(const std::string &s, bool isRoot = false);
 
     void deleteNode(int nodeID);
 

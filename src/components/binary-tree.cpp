@@ -18,11 +18,10 @@ BinaryTree::BinaryTree() :
     highlightCircle.setOutlineThickness(6.f);
 }
 
-int BinaryTree::createNode(const std::string &s, bool isRoot) {
+void BinaryTree::createNode(const std::string &s, bool isRoot) {
     nodeUI.emplace_back(s), isDeleted.push_back(false), treeSize++;
     leftChild.push_back(-1), rightChild.push_back(-1), parent.push_back(-1);
     if (isRoot) setRootNode((int)nodeUI.size() - 1);
-    return (int)nodeUI.size() - 1;
 }
 
 void BinaryTree::deleteNode(int nodeID) {

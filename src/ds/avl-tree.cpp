@@ -8,7 +8,7 @@ Node::Node() : value(0), visualID(0), height(0), count(0), lpt(nullptr), rpt(nul
 Node::Node (int value, int visualID) : value(value), visualID(visualID), height(1), count(1), lpt(nullptr), rpt(nullptr) {}
 
 // === Class AVLTree ===
-AVLTree::AVLTree() : root(nullptr) {}
+AVLTree::AVLTree() : root(nullptr), nodeCounter(0) {}
 
 int AVLTree::getHeight (Node *ptr) {
     return ptr ? ptr->height : 0;
@@ -90,7 +90,7 @@ Node* AVLTree::selfBalancing (Node *ptr) {
 Node* AVLTree::insertValue (Node *ptr, int insertKey) {
     // insertion happen at this node
     if (ptr == nullptr)
-        return new Node(insertKey, callbackCreateNode(insertKey, false));
+        return callbackCreateNode(insertKey, false), new Node(insertKey, nodeCounter++);
     
     callbackHighlightNode(getVisualID(ptr));
     callbackApplyAnimation();
@@ -168,8 +168,10 @@ Node* AVLTree::eraseValue (Node *ptr, int deleteKey) {
 }
 
 void AVLTree::insert (int value) {
-    if (root == nullptr)
-        root = new Node(value, callbackCreateNode(value, true));
+    if (root == nullptr) {
+        callbackCreateNode(value, true);
+        root = new Node(value, nodeCounter++);
+    }
     else {
         root = insertValue(root, value);
         callbackChangeRoot(getVisualID(root));

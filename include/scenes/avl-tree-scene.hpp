@@ -66,8 +66,7 @@ public:
 
             // set callback functions: AVL Tree Logic object
             avlTreeLogic.setCallbackCreateNode([&] (int value, bool isRoot) {
-                int visualID = avlTreeUI.createNode(std::to_string(value), isRoot);
-                return visualID;
+                avlTreeUI.createNode(std::to_string(value), isRoot);
             });
             avlTreeLogic.setCallbackAddEdge([&] (int parent, int node, bool isLeft) {
                 avlTreeUI.addEdge(parent, node, isLeft);
