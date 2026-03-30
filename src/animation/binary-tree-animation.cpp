@@ -33,3 +33,11 @@ BinaryTreeChangeRoot::BinaryTreeChangeRoot (int newRoot) : newRoot(newRoot) {}
 void BinaryTreeChangeRoot::apply (UI::BinaryTree &ui) {
     ui.setRootNode(newRoot);
 }
+
+// ========== BINARY TREE HIGHLIGHT NODE ========== //
+
+BinaryTreeHighlightNode::BinaryTreeHighlightNode (int targetNode) : targetNode(targetNode) {}
+
+void BinaryTreeHighlightNode::apply (UI::BinaryTree &ui) {
+    ui.setHighlight(targetNode);
+}

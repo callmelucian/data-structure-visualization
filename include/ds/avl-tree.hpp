@@ -21,7 +21,6 @@ private:
     std::function<void(int, int)> callbackSwapValue;
     std::function<void(int, int, bool)> callbackAddEdge;
     std::function<void(int)> callbackChangeRoot;
-    std::function<void()> callbackReposition;
     std::function<void()> callbackApplyAnimation;
     std::function<void(int)> callbackHighlightNode;
 
@@ -121,14 +120,6 @@ public:
      */
     void setCallbackChangeRoot (auto func) {
         callbackChangeRoot = func;
-    }
-
-    /**
-     * @brief Assign a callback function that will be called
-     * whenever AVL Tree need to reposition itself
-     */
-    void setCallbackReposition (auto func) {
-        callbackReposition = func;
     }
 
     /**

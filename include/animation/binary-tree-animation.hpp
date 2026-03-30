@@ -49,3 +49,12 @@ public:
 
     void apply (UI::BinaryTree &ui) override;
 };
+
+class BinaryTreeHighlightNode : public AnimationEvent<UI::BinaryTree> {
+private:
+    int targetNode;
+public:
+    BinaryTreeHighlightNode (int targetNode);
+
+    void apply (UI::BinaryTree &ui) override;
+};

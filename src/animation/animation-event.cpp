@@ -33,27 +33,27 @@ TypeUI& AnimationManager<TypeUI>::getCurrentUI() {
 template <typename TypeUI>
 void AnimationManager<TypeUI>::previousState() {
     if (stateIterator == 0)
-        return setCallbackSetPreviousState(false);
+        return setCallbackSetPreviousStateButton(false);
     
     // stateUI[stateIterator].copyPosition(stateUI[stateIterator - 1])
     stateIterator--;
     if (stateIterator == 0)
-        setCallbackSetPreviousState(false);
+        setCallbackSetPreviousStateButton(false);
     if (stateIterator + 2 == stateUI.size())
-        setCallbackSetNextState(true);
+        setCallbackSetNextStateButton(true);
 }
 
 template <typename TypeUI>
 void AnimationManager<TypeUI>::nextState() {
     if (stateIterator + 1 == stateUI.size())
-        return setCallbackSetNextState(false);
+        return setCallbackSetNextStateButton(false);
     
     // stateUI[stateIterator].copyPosition(stateUI[stateIterator + 1])
     stateIterator++;
     if (stateIterator == 1)
-        setCallbackSetPreviousState(true);
+        setCallbackSetPreviousStateButton(true);
     if (stateIterator + 1 == stateUI.size())
-        setCallbackSetNextState(false);
+        setCallbackSetNextStateButton(false);
 }
 
 template <typename TypeUI>
@@ -61,4 +61,5 @@ void AnimationManager<TypeUI>::timePropagation() {
     if (clock.getElapsedTime().asSeconds() < Setting::animationDelay) return;
     clock.reset();
     popAnimation();
+    ui.calculatePositions();
 }

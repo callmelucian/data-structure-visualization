@@ -21,7 +21,7 @@ private:
     std::vector<TypeUI> stateUI;
     std::queue<int> eventIDQueue;
     int currentEventStep, displayEventStep, stateIterator;
-    std::function<void(bool)> callbackSetNextState, callbackSetPreviousState;
+    std::function<void(bool)> callbackSetNextStateButton, callbackSetPreviousStateButton;
     sf::Clock clock;
 
 public:
@@ -29,16 +29,16 @@ public:
      * @brief Assign a callback function that will be called
      * whenever Animation Manager need to enable/disable the next-state button
      */
-    void setCallbackSetNextState (auto func) {
-        setCallbackSetNextState = func;
+    void setCallbackSetNextStateButton (auto func) {
+        setCallbackSetNextStateButton = func;
     }
 
     /**
      * @brief Assign a callback function that will be called
      * whenever Animation Manager need to enable/disable the previous-state button
      */
-    void setCallbackSetPreviousState (auto func) {
-        setCallbackSetPreviousState = func;
+    void setCallbackSetPreviousStateButton (auto func) {
+        setCallbackSetPreviousStateButton = func;
     }
 
     /**

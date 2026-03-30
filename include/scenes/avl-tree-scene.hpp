@@ -5,6 +5,8 @@
 #include "scene-manager.hpp"
 #include "../core/utility.hpp"
 #include "../ds/avl-tree.hpp"
+#include "../animation/animation-event.hpp"
+#include "../animation/binary-tree-animation.hpp"
 
 // UI components
 #include "../components/action-bar.hpp"
@@ -22,35 +24,18 @@ int convert (const std::string &s) {
     return ans;
 }
 
-namespace AVL {
-
-enum EventType {
-    CreateNode,
-    AddEdge,
-    SetRootNode,
-    CalculatePositions,
-    DeleteNode,
-    SwapNode
-};
-
-class AVLEvent {
-    
-};
-
-}; // namespace AVL
-
 class AVLTreeScene : public Scene {
 private:
     UI::Button insertButton, eraseButton, highlightButton;
     UI::TextInputField insertField, eraseField, highlightField;
     UI::BinaryTree avlTreeUI;
     DS::AVLTree avlTreeLogic;
-
+    AnimationManager<UI::BinaryTree> treeUI;
     int counter;
 
 public:
     AVLTreeScene (const sf::RenderWindow &window) :
-        Scene(window), insertButton(100, 30), eraseButton(100, 30), highlightButton(100, 30), insertField(150, 30), eraseField(150, 30), highlightField(150, 30), counter(0) {
+        Scene(window), insertButton(100, 30), eraseButton(100, 30), highlightButton(100, 30), insertField(150, 30), eraseField(150, 30), highlightField(150, 30), treeUI(UI::BinaryTree()), counter(0) {
             // intialize buttons
             insertButton.setString("INSERT");
             eraseButton.setString("ERASE");
@@ -67,25 +52,43 @@ public:
             // set callback functions: AVL Tree Logic object
             avlTreeLogic.setCallbackCreateNode([&] (int value, bool isRoot) {
                 avlTreeUI.createNode(std::to_string(value), isRoot);
+                treeUI.createAnimationEvent(
+                    std::make_unique<BinaryTreeCreateNode>(std::to_string(value), isRoot)
+                );
             });
             avlTreeLogic.setCallbackAddEdge([&] (int parent, int node, bool isLeft) {
                 avlTreeUI.addEdge(parent, node, isLeft);
+                treeUI.createAnimationEvent(
+                    std::make_unique<BinaryTreeAddEdge>(parent, node, isLeft)
+                );
             });
             avlTreeLogic.setCallbackChangeRoot([&] (int newRoot) {
                 avlTreeUI.setRootNode(newRoot);
-            });
-            avlTreeLogic.setCallbackReposition([&]() {
-                avlTreeUI.calculatePositions();
+                treeUI.createAnimationEvent(
+                    std::make_unique<BinaryTreeChangeRoot>(newRoot)
+                );
             });
             avlTreeLogic.setCallbackDeleteNode([&] (int visualID) {
-                // std::cerr << "Delete node with visualID " << visualID << std::endl;
                 avlTreeUI.deleteNode(visualID);
+                treeUI.createAnimationEvent(
+                    std::make_unique<BinaryTreeDeleteNode>(visualID)
+                );
             });
             avlTreeLogic.setCallbackSwapValue([&] (int a, int b) {
                 avlTreeUI.swapNode(a, b);
+                treeUI.createAnimationEvent(
+                    std::make_unique<BinaryTreeSwapValue>(a, b)
+                );
             });
-            avlTreeLogic.setCallbackApplyAnimation([&]() { avlTreeUI.calculatePositions(); });
-            avlTreeLogic.setCallbackHighlightNode([&] (int nodeID) {});
+            avlTreeLogic.setCallbackApplyAnimation([&]() {
+                avlTreeUI.calculatePositions();
+                treeUI.nextStep();
+            });
+            avlTreeLogic.setCallbackHighlightNode([&] (int nodeID) {
+                treeUI.createAnimationEvent(
+                    std::make_unique<BinaryTreeHighlightNode>(nodeID)
+                );
+            });
 
             // set callback functions: input field and button for insertion
             insertField.setCallbackFunction([&] (const std::string &msg) {
@@ -142,10 +145,12 @@ public:
         eraseField.timePropagation();
         highlightField.timePropagation();
         avlTreeUI.timePropagation(delta);
+        treeUI.timePropagation();
     }
 
     void draw (sf::RenderWindow &window) override {
-        window.draw(avlTreeUI);
+        // window.draw(avlTreeUI);
+        window.draw(treeUI.getCurrentUI());
         window.draw(insertField);
         window.draw(insertButton);
         window.draw(eraseField);
