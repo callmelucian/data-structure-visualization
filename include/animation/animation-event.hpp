@@ -5,6 +5,7 @@
 #include <functional>
 
 #include "../core/global-setting.hpp"
+#include "../components/binary-tree.hpp"
 
 template <typename TypeUI>
 class AnimationEvent {
@@ -30,7 +31,7 @@ public:
      * whenever Animation Manager need to enable/disable the next-state button
      */
     void setCallbackSetNextStateButton (auto func) {
-        setCallbackSetNextStateButton = func;
+        callbackSetNextStateButton = func;
     }
 
     /**
@@ -38,7 +39,7 @@ public:
      * whenever Animation Manager need to enable/disable the previous-state button
      */
     void setCallbackSetPreviousStateButton (auto func) {
-        setCallbackSetPreviousStateButton = func;
+        callbackSetPreviousStateButton = func;
     }
 
     /**
@@ -81,3 +82,5 @@ public:
      */
     void timePropagation();
 };
+
+template class AnimationManager<UI::BinaryTree>;

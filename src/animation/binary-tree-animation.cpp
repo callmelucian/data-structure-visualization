@@ -34,6 +34,14 @@ void BinaryTreeChangeRoot::apply (UI::BinaryTree &ui) {
     ui.setRootNode(newRoot);
 }
 
+// ========== BINARY TREE CHANGE ROOT ========== //
+
+BinaryTreeSwapValue::BinaryTreeSwapValue (int a, int b) : a(a), b(b) {}
+
+void BinaryTreeSwapValue::apply (UI::BinaryTree &ui) {
+    ui.swapNode(a, b);
+}
+
 // ========== BINARY TREE HIGHLIGHT NODE ========== //
 
 BinaryTreeHighlightNode::BinaryTreeHighlightNode (int targetNode) : targetNode(targetNode) {}

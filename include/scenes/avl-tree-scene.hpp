@@ -49,6 +49,10 @@ public:
             highlightField.setPosition({685, 850});
             avlTreeUI.setPosition({Setting::screenWidth / 2.f, Setting::screenHeight / 2.f});
 
+            // set callback functions tree UI
+            treeUI.setCallbackSetPreviousStateButton([&] (bool f) { return; });
+            treeUI.setCallbackSetNextStateButton([&] (bool f) { return; });
+
             // set callback functions: AVL Tree Logic object
             avlTreeLogic.setCallbackCreateNode([&] (int value, bool isRoot) {
                 avlTreeUI.createNode(std::to_string(value), isRoot);
