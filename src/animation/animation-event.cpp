@@ -2,7 +2,7 @@
 
 template <typename TypeUI>
 AnimationManager<TypeUI>::AnimationManager (const TypeUI &init) :
-    stateUI(1, init), currentEventStep(0), displayEventStep(0), currentAction(0), displayAction(0), stateIterator(0) {}
+    stateUI(1, init), currentEventStep(0), displayEventStep(0), stateIterator(0) {}
 
 template <typename TypeUI>
 void AnimationManager<TypeUI>::createAnimationEvent (std::unique_ptr<AnimationEvent<TypeUI>> event) {
@@ -17,12 +17,12 @@ void AnimationManager<TypeUI>::nextStep() {
 
 template <typename TypeUI>
 void AnimationManager<TypeUI>::popAnimation() {
-    while (eventIDQueue.size() && eventIDQueue.top() == displayIndex) {
-        animationQueue.top()->apply(getCurrentUI());
+    while (eventIDQueue.size() && eventIDQueue.front() == displayEventStep) {
+        animationQueue.front()->apply(getCurrentUI());
         animationQueue.pop();
         eventIDQueue.pop();
     }
-    displayIndex++;
+    displayEventStep++;
 }
 
 template<typename TypeUI>
@@ -54,4 +54,11 @@ void AnimationManager<TypeUI>::nextState() {
         setCallbackSetPreviousState(true);
     if (stateIterator + 1 == stateUI.size())
         setCallbackSetNextState(false);
+}
+
+template <typename TypeUI>
+void AnimationManager<TypeUI>::timePropagation() {
+    if (clock.getElapsedTime().asSeconds() < Setting::animationDelay) return;
+    clock.reset();
+    popAnimation();
 }

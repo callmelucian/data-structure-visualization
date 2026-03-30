@@ -22,6 +22,8 @@ add_executable(DataVisApp
     src/components/nodes.cpp
     src/components/slider.cpp
     src/core/utility.cpp
+    src/animation/animation-event.cpp
+    src/animation/binary-tree-animation.cpp
 )
 
 # 6. Link SFML to your app

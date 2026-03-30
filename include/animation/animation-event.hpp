@@ -1,5 +1,10 @@
+#pragma once
+#include <SFML/System.hpp>
 #include <queue>
 #include <memory>
+#include <functional>
+
+#include "../core/global-setting.hpp"
 
 template <typename TypeUI>
 class AnimationEvent {
@@ -15,8 +20,9 @@ private:
     std::queue<std::unique_ptr<AnimationEvent<TypeUI>>> animationQueue;
     std::vector<TypeUI> stateUI;
     std::queue<int> eventIDQueue;
-    int currentEventStep, displayEventStep, currentAction, displayAction, stateIterator;
+    int currentEventStep, displayEventStep, stateIterator;
     std::function<void(bool)> callbackSetNextState, callbackSetPreviousState;
+    sf::Clock clock;
 
 public:
     /**
@@ -31,7 +37,7 @@ public:
      * @brief Assign a callback function that will be called
      * whenever Animation Manager need to enable/disable the previous-state button
      */
-    void setCallbackSetPreviousState (auto funct) {
+    void setCallbackSetPreviousState (auto func) {
         setCallbackSetPreviousState = func;
     }
 
@@ -69,4 +75,9 @@ public:
      * @brief pass to the next UI state
      */
     void nextState();
+
+    /**
+     * @brief time propagration
+     */
+    void timePropagation();
 };

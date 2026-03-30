@@ -16,7 +16,7 @@ private:
     Node *root;
     int nodeCounter;
 
-    std::function<int(int, bool)> callbackCreateNode;
+    std::function<void(int, bool)> callbackCreateNode;
     std::function<void(int)> callbackDeleteNode;
     std::function<void(int, int)> callbackSwapValue;
     std::function<void(int, int, bool)> callbackAddEdge;
