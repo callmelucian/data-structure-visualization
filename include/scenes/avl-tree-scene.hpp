@@ -149,7 +149,7 @@ public:
         eraseField.timePropagation();
         highlightField.timePropagation();
         avlTreeUI.timePropagation(delta);
-        treeUI.timePropagation();
+        treeUI.timePropagation(delta);
     }
 
     void draw (sf::RenderWindow &window) override {

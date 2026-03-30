@@ -23,7 +23,7 @@ private:
     std::queue<int> eventIDQueue;
     int currentEventStep, displayEventStep, stateIterator;
     std::function<void(bool)> callbackSetNextStateButton, callbackSetPreviousStateButton;
-    sf::Clock clock;
+    sf::Clock clockInternal;
 
 public:
     /**
@@ -80,7 +80,7 @@ public:
     /**
      * @brief time propagration
      */
-    void timePropagation();
+    void timePropagation (float deltaTime);
 };
 
 template class AnimationManager<UI::BinaryTree>;

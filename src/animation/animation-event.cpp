@@ -2,7 +2,14 @@
 
 template <typename TypeUI>
 AnimationManager<TypeUI>::AnimationManager (const TypeUI &init) :
-    stateUI(1, init), currentEventStep(0), displayEventStep(0), stateIterator(0) {}
+    stateUI(1, init), currentEventStep(0), displayEventStep(0), stateIterator(0) {
+
+    // center UI
+    stateUI[0].setPosition({
+        Setting::screenWidth / 2.f,
+        Setting::screenHeight / 2.f
+    });
+}
 
 template <typename TypeUI>
 void AnimationManager<TypeUI>::createAnimationEvent (std::unique_ptr<AnimationEvent<TypeUI>> event) {
@@ -17,7 +24,10 @@ void AnimationManager<TypeUI>::nextStep() {
 
 template <typename TypeUI>
 void AnimationManager<TypeUI>::popAnimation() {
+    if (eventIDQueue.empty()) return;
     while (eventIDQueue.size() && eventIDQueue.front() == displayEventStep) {
+        std::cerr << "Popping Animation: " << typeid(*animationQueue.front()).name() << std::endl;
+
         animationQueue.front()->apply(getCurrentUI());
         animationQueue.pop();
         eventIDQueue.pop();
@@ -57,9 +67,11 @@ void AnimationManager<TypeUI>::nextState() {
 }
 
 template <typename TypeUI>
-void AnimationManager<TypeUI>::timePropagation() {
-    if (clock.getElapsedTime().asSeconds() < Setting::animationDelay) return;
-    clock.reset();
+void AnimationManager<TypeUI>::timePropagation (float deltaTime) {
+    getCurrentUI().timePropagation(deltaTime);
+    if (clockInternal.getElapsedTime().asSeconds() < Setting::animationDelay) return;
+    // std::cerr << "Got here, not returned" << std::endl;
+    clockInternal.restart();
     popAnimation();
     getCurrentUI().calculatePositions();
 }
