@@ -24,14 +24,19 @@ void BinaryTree::deleteNode(int nodeID) {
     if (highlighter.getAddress() == nodeUI[nodeID]) highlighter.free();
 }
 
-void BinaryTree::addEdge(int parentNode, int childNode, bool isLeft) {
-    (isLeft ? leftChild : rightChild)[parentNode] = childNode;
+bool BinaryTree::addEdge(int parentNode, int childNode, bool isLeft) {
+    int &targetMemory = (isLeft ? leftChild : rightChild)[parentNode];
+    if (targetMemory == childNode) return false;
+    targetMemory = childNode;
     if (childNode != -1) parent[childNode] = parentNode;
+    return true;
 }
 
-void BinaryTree::setRootNode(int targetNode) {
+bool BinaryTree::setRootNode(int targetNode) {
+    if (rootNode == targetNode) return false;
     rootNode = targetNode;
     if (targetNode != -1) parent[targetNode] = -1;
+    return true;
 }
 
 void BinaryTree::swapNode(int nodeA, int nodeB) {
@@ -135,7 +140,7 @@ void BinaryTree::timePropagation (float deltaTime) {
     }
 }
 
-void BinaryTree::setHighlight (int nodeID) {
+bool BinaryTree::setHighlight (int nodeID) {
     // remove highlight from previously highlighted node
     // if (highlightID != -1)
     //     nodeUI[highlightID].unHighlightNode();
@@ -144,8 +149,14 @@ void BinaryTree::setHighlight (int nodeID) {
     //     targetHighlight = nodeUI[nodeID].getPosition();
     // }
     // highlightID = nodeID, highlightFixed = false;
-    if (nodeID == -1) highlighter.free();
-    else highlighter.setTargetNode(nodeUI[nodeID]);
+    if (nodeID == -1) {
+        if (highlighter.getAddress() == nullptr) return false;
+        return highlighter.free(), true;
+    }
+    else {
+        if (highlighter.getAddress() == nodeUI[nodeID]) return false;
+        return highlighter.setTargetNode(nodeUI[nodeID]), true;
+    }
 }
 
 } // namespace UI

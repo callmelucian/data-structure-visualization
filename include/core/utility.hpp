@@ -6,6 +6,8 @@
 #include <string>
 #include <random>
 
+#include "global-setting.hpp"
+
 // Function Declarations
 float magnitude(const sf::Vector2f &v);
 float distance(const sf::Vector2f &a, const sf::Vector2f &b);
@@ -19,3 +21,19 @@ extern std::function<std::string(float)> floatToPercentage;
 extern std::mt19937 rng;
 
 float randFloat(float L, float R);
+
+template <float DurationSeconds>
+class CountDownClock {
+public:
+    CountDownClock();
+
+    sf::Time getRemainingTime() const;
+    bool isFinished() const;
+    void restart();
+
+private:
+    sf::Clock m_clock;
+    sf::Time m_startTime;
+};
+
+template class CountDownClock<Setting::animationDelay>;

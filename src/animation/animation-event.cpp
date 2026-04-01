@@ -28,9 +28,8 @@ void AnimationManager<TypeUI>::popAnimation() {
 
     int currEvent = eventIDQueue.front();
     while (eventIDQueue.size() && eventIDQueue.front() == currEvent) {
-        // std::cerr << "Popping Animation: " << typeid(*animationQueue.front()).name() << std::endl;
-
-        animationQueue.front()->apply(getCurrentUI());
+        std::cerr << "Popping Animation: " << typeid(*animationQueue.front()).name() << std::endl;
+        if (animationQueue.front()->apply(getCurrentUI())) internalClock.restart();
         animationQueue.pop();
         eventIDQueue.pop();
     }
@@ -70,9 +69,8 @@ void AnimationManager<TypeUI>::nextState() {
 template <typename TypeUI>
 void AnimationManager<TypeUI>::timePropagation (float deltaTime) {
     getCurrentUI().timePropagation(deltaTime);
-    if (clockInternal.getElapsedTime().asSeconds() < Setting::animationDelay) return;
+    if (!internalClock.isFinished()) return;
     // std::cerr << "Got here, not returned" << std::endl;
-    clockInternal.restart();
     popAnimation();
     getCurrentUI().calculatePositions();
 }

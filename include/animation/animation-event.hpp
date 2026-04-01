@@ -6,13 +6,14 @@
 
 #include "../core/global-setting.hpp"
 #include "../components/binary-tree.hpp"
+#include "../core/utility.hpp"
 
 template <typename TypeUI>
 class AnimationEvent {
 private:
 public:
     virtual ~AnimationEvent() = default;
-    virtual void apply (TypeUI &ui) = 0;
+    virtual bool apply (TypeUI &ui) = 0;
 };
 
 template <typename TypeUI>
@@ -23,7 +24,7 @@ private:
     std::queue<int> eventIDQueue;
     int currentEventStep, displayEventStep, stateIterator;
     std::function<void(bool)> callbackSetNextStateButton, callbackSetPreviousStateButton;
-    sf::Clock clockInternal;
+    CountDownClock<Setting::animationDelay> internalClock;
 
 public:
     /**

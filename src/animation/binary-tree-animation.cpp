@@ -5,16 +5,18 @@
 BinaryTreeCreateNode::BinaryTreeCreateNode (const std::string &s) : msgString(s), isRoot(false) {}
 BinaryTreeCreateNode::BinaryTreeCreateNode (const std::string &s, bool isRoot) : msgString(s), isRoot(isRoot) {}
 
-void BinaryTreeCreateNode::apply (UI::BinaryTree &ui) {
+bool BinaryTreeCreateNode::apply (UI::BinaryTree &ui) {
     ui.createNode(msgString, isRoot);
+    return true;
 }
 
 // ========== BINARY TREE DELETE NODE ========== //
 
 BinaryTreeDeleteNode::BinaryTreeDeleteNode (int nodeID) : nodeID(nodeID) {}
 
-void BinaryTreeDeleteNode::apply (UI::BinaryTree &ui) {
+bool BinaryTreeDeleteNode::apply (UI::BinaryTree &ui) {
     ui.deleteNode(nodeID);
+    return true;
 }
 
 // ========== BINARY TREE ADD EDGE ========== //
@@ -22,30 +24,31 @@ void BinaryTreeDeleteNode::apply (UI::BinaryTree &ui) {
 BinaryTreeAddEdge::BinaryTreeAddEdge (int parent, int childNode, bool isLeft) :
     parent(parent), childNode(childNode), isLeft(isLeft) {}
 
-void BinaryTreeAddEdge::apply (UI::BinaryTree &ui) {
-    ui.addEdge(parent, childNode, isLeft);
+bool BinaryTreeAddEdge::apply (UI::BinaryTree &ui) {
+    return ui.addEdge(parent, childNode, isLeft);
 }
 
 // ========== BINARY TREE CHANGE ROOT ========== //
 
 BinaryTreeChangeRoot::BinaryTreeChangeRoot (int newRoot) : newRoot(newRoot) {}
 
-void BinaryTreeChangeRoot::apply (UI::BinaryTree &ui) {
-    ui.setRootNode(newRoot);
+bool BinaryTreeChangeRoot::apply (UI::BinaryTree &ui) {
+    return ui.setRootNode(newRoot);
 }
 
 // ========== BINARY TREE CHANGE ROOT ========== //
 
 BinaryTreeSwapValue::BinaryTreeSwapValue (int a, int b) : a(a), b(b) {}
 
-void BinaryTreeSwapValue::apply (UI::BinaryTree &ui) {
+bool BinaryTreeSwapValue::apply (UI::BinaryTree &ui) {
     ui.swapNode(a, b);
+    return true;
 }
 
 // ========== BINARY TREE HIGHLIGHT NODE ========== //
 
 BinaryTreeHighlightNode::BinaryTreeHighlightNode (int targetNode) : targetNode(targetNode) {}
 
-void BinaryTreeHighlightNode::apply (UI::BinaryTree &ui) {
-    ui.setHighlight(targetNode);
+bool BinaryTreeHighlightNode::apply (UI::BinaryTree &ui) {
+    return ui.setHighlight(targetNode);
 }

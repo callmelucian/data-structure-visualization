@@ -27,3 +27,30 @@ std::mt19937 rng(21);
 float randFloat(float L, float R) {
     return std::uniform_real_distribution<float>(L, R)(rng);
 }
+
+// ========== COUNTDOWN CLOCK ==========
+
+template <float DurationSeconds>
+CountDownClock<DurationSeconds>::CountDownClock() 
+    : m_startTime(sf::seconds(-DurationSeconds)) {}
+
+template <float DurationSeconds>
+sf::Time CountDownClock<DurationSeconds>::getRemainingTime() const {
+    sf::Time elapsed = m_clock.getElapsedTime() - m_startTime;
+    sf::Time total = sf::seconds(DurationSeconds);
+
+    if (elapsed >= total) {
+        return sf::Time::Zero;
+    }
+    return total - elapsed;
+}
+
+template <float DurationSeconds>
+bool CountDownClock<DurationSeconds>::isFinished() const {
+    return (m_clock.getElapsedTime() - m_startTime).asSeconds() >= DurationSeconds;
+}
+
+template <float DurationSeconds>
+void CountDownClock<DurationSeconds>::restart() {
+    m_startTime = m_clock.getElapsedTime();
+}

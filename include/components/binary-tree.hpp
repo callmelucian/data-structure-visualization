@@ -34,9 +34,9 @@ public:
 
     void deleteNode(int nodeID);
 
-    void addEdge(int parentNode, int childNode, bool isLeft);
+    bool addEdge(int parentNode, int childNode, bool isLeft);
 
-    void setRootNode(int targetNode);
+    bool setRootNode(int targetNode);
 
     void swapNode(int nodeA, int nodeB);
 
@@ -58,7 +58,7 @@ public:
     
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
-    void setHighlight (int nodeID);
+    bool setHighlight (int nodeID);
 };
 
 } // namespace UI

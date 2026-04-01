@@ -10,7 +10,7 @@ public:
     BinaryTreeCreateNode (const std::string &s);
     BinaryTreeCreateNode (const std::string &s, bool isRoot);
 
-    void apply (UI::BinaryTree &ui) override;
+    bool apply (UI::BinaryTree &ui) override;
 };
 
 class BinaryTreeDeleteNode : public AnimationEvent<UI::BinaryTree> {
@@ -19,7 +19,7 @@ private:
 public:
     BinaryTreeDeleteNode (int nodeID);
 
-    void apply (UI::BinaryTree &ui) override;
+    bool apply (UI::BinaryTree &ui) override;
 };
 
 class BinaryTreeAddEdge : public AnimationEvent<UI::BinaryTree> {
@@ -29,7 +29,7 @@ private:
 public:
     BinaryTreeAddEdge (int parent, int childNode, bool isLeft);
     
-    void apply (UI::BinaryTree &ui) override;
+    bool apply (UI::BinaryTree &ui) override;
 };
 
 class BinaryTreeChangeRoot : public AnimationEvent<UI::BinaryTree> {
@@ -38,7 +38,7 @@ private:
 public:
     BinaryTreeChangeRoot (int newRoot);
 
-    void apply (UI::BinaryTree &ui) override;
+    bool apply (UI::BinaryTree &ui) override;
 };
 
 class BinaryTreeSwapValue : public AnimationEvent<UI::BinaryTree> {
@@ -47,7 +47,7 @@ private:
 public:
     BinaryTreeSwapValue (int a, int b);
 
-    void apply (UI::BinaryTree &ui) override;
+    bool apply (UI::BinaryTree &ui) override;
 };
 
 class BinaryTreeHighlightNode : public AnimationEvent<UI::BinaryTree> {
@@ -56,5 +56,5 @@ private:
 public:
     BinaryTreeHighlightNode (int targetNode);
 
-    void apply (UI::BinaryTree &ui) override;
+    bool apply (UI::BinaryTree &ui) override;
 };
