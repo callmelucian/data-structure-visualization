@@ -25,14 +25,15 @@ void AnimationManager<TypeUI>::nextStep() {
 template <typename TypeUI>
 void AnimationManager<TypeUI>::popAnimation() {
     if (eventIDQueue.empty()) return;
-    while (eventIDQueue.size() && eventIDQueue.front() == displayEventStep) {
-        std::cerr << "Popping Animation: " << typeid(*animationQueue.front()).name() << std::endl;
+
+    int currEvent = eventIDQueue.front();
+    while (eventIDQueue.size() && eventIDQueue.front() == currEvent) {
+        // std::cerr << "Popping Animation: " << typeid(*animationQueue.front()).name() << std::endl;
 
         animationQueue.front()->apply(getCurrentUI());
         animationQueue.pop();
         eventIDQueue.pop();
     }
-    displayEventStep++;
 }
 
 template<typename TypeUI>

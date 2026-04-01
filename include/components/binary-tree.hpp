@@ -9,6 +9,7 @@
 
 #include "ui-base.hpp"
 #include "nodes.hpp"
+#include "highlight-circle.hpp"
 #include "../core/global-setting.hpp"
 #include "../../assets/theme.hpp"
 
@@ -20,11 +21,11 @@ namespace UI {
 class BinaryTree : public UI::Base {
 private:
     std::vector<int> leftChild, rightChild, parent;
-    std::vector<AnimatedNode> nodeUI;
+    std::vector<AnimatedNode*> nodeUI; // there are reasons for using a pointer here
     std::vector<bool> isDeleted;
-    int rootNode, treeSize, highlightID;
-    sf::Vector2f targetOrigin, targetHighlight;
-    sf::CircleShape highlightCircle;
+    int rootNode, treeSize;
+    sf::Vector2f targetOrigin;
+    UI::HighlightCircle highlighter;
 
 public:
     BinaryTree();

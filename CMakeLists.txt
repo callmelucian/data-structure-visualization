@@ -21,6 +21,7 @@ add_executable(DataVisApp
     src/components/input-field.cpp
     src/components/nodes.cpp
     src/components/slider.cpp
+    src/components/highlight-circle.cpp
     src/core/utility.cpp
     src/animation/animation-event.cpp
     src/animation/binary-tree-animation.cpp

@@ -78,6 +78,11 @@ float AnimatedNode::getTargetY() const {
     return targetPosition.y;
 }
 
+
+sf::Vector2f AnimatedNode::getTargetPosition() const {
+    return targetPosition;
+}
+
 void AnimatedNode::timePropagation(float deltaTime) {
     sf::Vector2f displacement = targetPosition - nodeUI.getPosition();
     if (magnitude(displacement) < eps) nodeUI.setPosition(targetPosition);
@@ -117,13 +122,13 @@ void AnimatedNode::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 
 // Standalone Helper Implementation
-void drawEdge(sf::RenderTarget &target, sf::RenderStates state, const AnimatedNode &from, const AnimatedNode &to, float thickness) {
-    if (from.getPosition() == to.getPosition()) return;
+void drawEdge(sf::RenderTarget &target, sf::RenderStates state, const AnimatedNode* from, const AnimatedNode* to, float thickness) {
+    if (from->getPosition() == to->getPosition()) return;
 
     // get centers of the endpoints
-    sf::Vector2f fromCenter = from.getPosition();
-    sf::Vector2f toCenter = to.getPosition();
-    sf::Vector2f shift = (toCenter - fromCenter) * from.getRadius() / distance(fromCenter, toCenter);
+    sf::Vector2f fromCenter = from->getPosition();
+    sf::Vector2f toCenter = to->getPosition();
+    sf::Vector2f shift = (toCenter - fromCenter) * from->getRadius() / distance(fromCenter, toCenter);
 
     // pre calculations
     sf::Vector2f start = fromCenter + shift;

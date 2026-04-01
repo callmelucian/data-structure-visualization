@@ -65,6 +65,8 @@ public:
 
     float getTargetY() const;
 
+    sf::Vector2f getTargetPosition() const;
+
     void timePropagation(float deltaTime);
 
     sf::FloatRect getGlobalBounds() const;
@@ -83,6 +85,6 @@ public:
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };
 
-void drawEdge(sf::RenderTarget &target, sf::RenderStates state, const AnimatedNode &from, const AnimatedNode &to, float thickness = 2.f);
+void drawEdge(sf::RenderTarget &target, sf::RenderStates state, const AnimatedNode* from, const AnimatedNode* to, float thickness = 2.f);
 
 } // namespace UI
