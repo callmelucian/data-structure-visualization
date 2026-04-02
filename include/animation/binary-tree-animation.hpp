@@ -58,3 +58,10 @@ public:
 
     bool apply (UI::BinaryTree &ui) override;
 };
+
+class BinaryTreeLockHighlight : public AnimationEvent<UI::BinaryTree> {
+public:
+    BinaryTreeLockHighlight();
+
+    bool apply (UI::BinaryTree &ui) override;
+};

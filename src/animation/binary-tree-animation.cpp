@@ -52,3 +52,11 @@ BinaryTreeHighlightNode::BinaryTreeHighlightNode (int targetNode) : targetNode(t
 bool BinaryTreeHighlightNode::apply (UI::BinaryTree &ui) {
     return ui.setHighlight(targetNode);
 }
+
+// ========== BINARY TREE LOCK HIGHLIGHT ========== //
+
+BinaryTreeLockHighlight::BinaryTreeLockHighlight() {}
+
+bool BinaryTreeLockHighlight::apply (UI::BinaryTree &ui) {
+    return ui.lockHighlight(), false;
+}

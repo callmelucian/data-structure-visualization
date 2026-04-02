@@ -155,8 +155,15 @@ bool BinaryTree::setHighlight (int nodeID) {
     }
     else {
         if (highlighter.getAddress() == nodeUI[nodeID]) return false;
-        return highlighter.setTargetNode(nodeUI[nodeID]), true;
+        highlighter.setTargetNode(nodeUI[nodeID]);
+        return true;
     }
 }
+
+void BinaryTree::lockHighlight() {
+    highlighter.lockHighlight();
+}
+
+
 
 } // namespace UI

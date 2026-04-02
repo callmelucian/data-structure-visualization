@@ -59,6 +59,8 @@ public:
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
     bool setHighlight (int nodeID);
+
+    void lockHighlight();
 };
 
 } // namespace UI

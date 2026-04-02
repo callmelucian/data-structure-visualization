@@ -92,6 +92,11 @@ public:
                 treeUI.createAnimationEvent(
                     std::make_unique<BinaryTreeHighlightNode>(nodeID)
                 );
+                // treeUI.nextStep();
+                // treeUI.createAnimationEvent(
+                //     std::make_unique<BinaryTreeLockHighlight>()  
+                // );
+                // treeUI.nextStep();
             });
 
             // set callback functions: input field and button for insertion
@@ -159,7 +164,7 @@ public:
         window.draw(insertButton);
         window.draw(eraseField);
         window.draw(eraseButton);
-        window.draw(highlightField);
-        window.draw(highlightButton);
+        // window.draw(highlightField);
+        // window.draw(highlightButton);
     }
 };

@@ -14,7 +14,7 @@ namespace UI {
 class HighlightCircle : public UI::Base {
 private:
     sf::CircleShape circle;
-    bool chasing;
+    bool highlightLocked;
     const AnimatedNode* nodeObserver;
 
 public:
@@ -36,6 +36,8 @@ public:
     void handleTextEntered (const char &unicode) override;
 
     void draw (sf::RenderTarget &target, sf::RenderStates states) const override;
+
+    void lockHighlight();
 };
 
 }; // namespace UI

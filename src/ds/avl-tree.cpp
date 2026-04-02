@@ -89,8 +89,11 @@ Node* AVLTree::selfBalancing (Node *ptr) {
 
 Node* AVLTree::insertValue (Node *ptr, int insertKey) {
     // insertion happen at this node
-    if (ptr == nullptr)
-        return callbackCreateNode(insertKey, false), new Node(insertKey, nodeCounter++);
+    if (ptr == nullptr) {
+        callbackCreateNode(insertKey, false);
+        Node* newNode = new Node(insertKey, nodeCounter++);
+        return newNode;
+    }
     
     callbackHighlightNode(getVisualID(ptr));
     callbackApplyAnimation();

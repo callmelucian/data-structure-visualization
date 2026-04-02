@@ -28,7 +28,7 @@ void AnimationManager<TypeUI>::popAnimation() {
 
     int currEvent = eventIDQueue.front();
     while (eventIDQueue.size() && eventIDQueue.front() == currEvent) {
-        std::cerr << "Popping Animation: " << typeid(*animationQueue.front()).name() << std::endl;
+        // std::cerr << "Popping Animation: " << typeid(*animationQueue.front()).name() << std::endl;
         if (animationQueue.front()->apply(getCurrentUI())) internalClock.restart();
         animationQueue.pop();
         eventIDQueue.pop();
