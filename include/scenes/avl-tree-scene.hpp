@@ -26,77 +26,89 @@ int convert (const std::string &s) {
 
 class AVLTreeScene : public Scene {
 private:
-    UI::Button insertButton, eraseButton, highlightButton;
-    UI::TextInputField insertField, eraseField, highlightField;
-    UI::BinaryTree avlTreeUI;
+    UI::Button insertButton, eraseButton;
+    UI::TextInputField insertField, eraseField;
     DS::AVLTree avlTreeLogic;
     AnimationManager<UI::BinaryTree> treeUI;
-    int counter;
+
+    UI::Button prevStepButton, prevOperationButton;
+    UI::Button nextStepButton, nextOperationButton;
 
 public:
     AVLTreeScene (const sf::RenderWindow &window) :
-        Scene(window), insertButton(100, 30), eraseButton(100, 30), highlightButton(100, 30), insertField(150, 30), eraseField(150, 30), highlightField(150, 30), treeUI(UI::BinaryTree()), counter(0) {
+        Scene(window), insertButton(100, 30), eraseButton(100, 30),
+        insertField(150, 30), eraseField(150, 30),
+        treeUI(UI::BinaryTree()),
+        prevStepButton(50, 30), prevOperationButton(50, 30),
+        nextStepButton(50, 30), nextOperationButton(50, 30) {
             // intialize buttons
-            insertButton.setString("INSERT");
-            eraseButton.setString("ERASE");
+            insertButton.setString("Insert");
+            eraseButton.setString("Erase");
+
+            prevStepButton.setString("<");
+            prevOperationButton.setString("<<");
+            nextStepButton.setString(">");
+            nextOperationButton.setString(">>");
 
             // set positions for objects
             insertButton.setPosition({240, 850});
             insertField.setPosition({115, 850});
             eraseButton.setPosition({525, 850});
             eraseField.setPosition({400, 850});
-            highlightButton.setPosition({810, 850});
-            highlightField.setPosition({685, 850});
-            avlTreeUI.setPosition({Setting::screenWidth / 2.f, Setting::screenHeight / 2.f});
 
-            // set callback functions tree UI
-            treeUI.setCallbackSetPreviousStateButton([&] (bool f) { return; });
-            treeUI.setCallbackSetNextStateButton([&] (bool f) { return; });
+            prevOperationButton.setPosition({700, 850});
+            prevStepButton.setPosition({760, 850});
+            nextStepButton.setPosition({820, 850});
+            nextOperationButton.setPosition({880, 850});
+
+            // set callback functions: AVL Tree UI
+            treeUI.setCallbackEnableButtons([&] (bool f) {
+                if (f) {
+                    insertButton.enableButton();
+                    eraseButton.enableButton();
+                }
+                else {
+                    insertButton.disableButton();
+                    eraseButton.disableButton();
+                }
+            });
 
             // set callback functions: AVL Tree Logic object
             avlTreeLogic.setCallbackCreateNode([&] (int value, bool isRoot) {
-                avlTreeUI.createNode(std::to_string(value), isRoot);
                 treeUI.createAnimationEvent(
                     std::make_unique<BinaryTreeCreateNode>(std::to_string(value), isRoot)
                 );
             });
             avlTreeLogic.setCallbackAddEdge([&] (int parent, int node, bool isLeft) {
-                avlTreeUI.addEdge(parent, node, isLeft);
                 treeUI.createAnimationEvent(
                     std::make_unique<BinaryTreeAddEdge>(parent, node, isLeft)
                 );
             });
             avlTreeLogic.setCallbackChangeRoot([&] (int newRoot) {
-                avlTreeUI.setRootNode(newRoot);
                 treeUI.createAnimationEvent(
                     std::make_unique<BinaryTreeChangeRoot>(newRoot)
                 );
             });
             avlTreeLogic.setCallbackDeleteNode([&] (int visualID) {
-                avlTreeUI.deleteNode(visualID);
                 treeUI.createAnimationEvent(
                     std::make_unique<BinaryTreeDeleteNode>(visualID)
                 );
             });
             avlTreeLogic.setCallbackSwapValue([&] (int a, int b) {
-                avlTreeUI.swapNode(a, b);
                 treeUI.createAnimationEvent(
                     std::make_unique<BinaryTreeSwapValue>(a, b)
                 );
             });
             avlTreeLogic.setCallbackApplyAnimation([&]() {
-                avlTreeUI.calculatePositions();
                 treeUI.nextStep();
             });
             avlTreeLogic.setCallbackHighlightNode([&] (int nodeID) {
                 treeUI.createAnimationEvent(
                     std::make_unique<BinaryTreeHighlightNode>(nodeID)
                 );
-                // treeUI.nextStep();
-                // treeUI.createAnimationEvent(
-                //     std::make_unique<BinaryTreeLockHighlight>()  
-                // );
-                // treeUI.nextStep();
+            });
+            avlTreeLogic.setCallbackCompleteAnimation([&]() {
+                treeUI.completeAnimation();
             });
 
             // set callback functions: input field and button for insertion
@@ -125,13 +137,18 @@ public:
                 eraseField.releaseText();
             });
 
-            // set callback functions: input field and button for highlighting
-            highlightField.setCallbackFunction([&] (const std::string &msg) {
-                int value = convert(msg);
-                avlTreeUI.setHighlight(value);
+            // set callback functions: previous/next buttons
+            prevOperationButton.setCallback([&]() {
+                treeUI.previousCompleteState();
             });
-            highlightButton.setCallback([&]() {
-                highlightField.releaseText();
+            prevStepButton.setCallback([&]() {
+                treeUI.previousState();
+            });
+            nextOperationButton.setCallback([&]() {
+                treeUI.nextCompleteState();
+            });
+            nextStepButton.setCallback([&]() {
+                treeUI.nextState();
             });
         }
     
@@ -144,27 +161,27 @@ public:
         eraseField.handleTextEvents(window, event);
         eraseButton.handleMouseEvents(window, event);
 
-        highlightField.handleMouseEvents(window, event);
-        highlightField.handleTextEvents(window, event);
-        highlightButton.handleMouseEvents(window, event);
+        prevOperationButton.handleMouseEvents(window, event);
+        prevStepButton.handleMouseEvents(window, event);
+        nextOperationButton.handleMouseEvents(window, event);
+        nextStepButton.handleMouseEvents(window, event);
     }
 
     void timePropagation (float delta) override {
         insertField.timePropagation();
         eraseField.timePropagation();
-        highlightField.timePropagation();
-        avlTreeUI.timePropagation(delta);
         treeUI.timePropagation(delta);
     }
 
     void draw (sf::RenderWindow &window) override {
-        // window.draw(avlTreeUI);
         window.draw(treeUI.getCurrentUI());
         window.draw(insertField);
         window.draw(insertButton);
         window.draw(eraseField);
         window.draw(eraseButton);
-        // window.draw(highlightField);
-        // window.draw(highlightButton);
+        window.draw(prevOperationButton);
+        window.draw(prevStepButton);
+        window.draw(nextOperationButton);
+        window.draw(nextStepButton);
     }
 };

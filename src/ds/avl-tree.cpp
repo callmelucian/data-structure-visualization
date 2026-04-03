@@ -181,6 +181,7 @@ void AVLTree::insert (int value) {
     }
     callbackApplyAnimation();
     callbackHighlightNode(-1);
+    callbackCompleteAnimation();
 }
 
 void AVLTree::erase (int value) {
@@ -189,6 +190,7 @@ void AVLTree::erase (int value) {
     callbackChangeRoot(getVisualID(root)); // root could be nullptr
     callbackApplyAnimation();
     callbackHighlightNode(-1);
+    callbackCompleteAnimation();
 }
 
 }; // namespace DS

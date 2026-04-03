@@ -20,27 +20,20 @@ template <typename TypeUI>
 class AnimationManager {
 private:
     std::queue<std::unique_ptr<AnimationEvent<TypeUI>>> animationQueue;
-    std::vector<TypeUI> stateUI;
     std::queue<int> eventIDQueue;
-    int currentEventStep, displayEventStep, stateIterator;
-    std::function<void(bool)> callbackSetNextStateButton, callbackSetPreviousStateButton;
+    std::vector<TypeUI> stateUI;
+    std::vector<bool> completeUI;
+    int currentEventStep, stateIterator;
+    std::function<void(bool)> callbackEnableButtons;
     CountDownClock<Setting::animationDelay> internalClock;
 
 public:
     /**
      * @brief Assign a callback function that will be called
-     * whenever Animation Manager need to enable/disable the next-state button
+     * whenever Animation Manager need to enable/disable any interactions button
      */
-    void setCallbackSetNextStateButton (auto func) {
-        callbackSetNextStateButton = func;
-    }
-
-    /**
-     * @brief Assign a callback function that will be called
-     * whenever Animation Manager need to enable/disable the previous-state button
-     */
-    void setCallbackSetPreviousStateButton (auto func) {
-        callbackSetPreviousStateButton = func;
+    void setCallbackEnableButtons (auto func) {
+        callbackEnableButtons = func;
     }
 
     /**
@@ -69,19 +62,39 @@ public:
     TypeUI& getCurrentUI();
 
     /**
+     * @brief check whether the current UI is complete
+     */
+    bool isComplete();
+
+    /**
      * @brief go back to the previous UI state
      */
-    void previousState();
+    bool previousState();
+
+    /**
+     * @brief go back to the previous complete UI state
+     */
+    bool previousCompleteState();
 
     /**
      * @brief pass to the next UI state
      */
-    void nextState();
+    bool nextState();
+
+    /**
+     * @brief pass to the next complete UI stat
+     */
+    bool nextCompleteState();
 
     /**
      * @brief time propagration
      */
     void timePropagation (float deltaTime);
+
+    /**
+     * @brief mark the last UI state as complete
+     */
+    void completeAnimation();
 };
 
 template class AnimationManager<UI::BinaryTree>;
