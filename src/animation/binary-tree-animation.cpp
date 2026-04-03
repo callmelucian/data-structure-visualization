@@ -5,7 +5,7 @@
 BinaryTreeCreateNode::BinaryTreeCreateNode (const std::string &s) : msgString(s), isRoot(false) {}
 BinaryTreeCreateNode::BinaryTreeCreateNode (const std::string &s, bool isRoot) : msgString(s), isRoot(isRoot) {}
 
-bool BinaryTreeCreateNode::apply (UI::BinaryTree &ui) {
+int BinaryTreeCreateNode::apply (UI::BinaryTree &ui) {
     ui.createNode(msgString, isRoot);
     return true;
 }
@@ -14,7 +14,7 @@ bool BinaryTreeCreateNode::apply (UI::BinaryTree &ui) {
 
 BinaryTreeDeleteNode::BinaryTreeDeleteNode (int nodeID) : nodeID(nodeID) {}
 
-bool BinaryTreeDeleteNode::apply (UI::BinaryTree &ui) {
+int BinaryTreeDeleteNode::apply (UI::BinaryTree &ui) {
     ui.deleteNode(nodeID);
     return true;
 }
@@ -24,7 +24,7 @@ bool BinaryTreeDeleteNode::apply (UI::BinaryTree &ui) {
 BinaryTreeAddEdge::BinaryTreeAddEdge (int parent, int childNode, bool isLeft) :
     parent(parent), childNode(childNode), isLeft(isLeft) {}
 
-bool BinaryTreeAddEdge::apply (UI::BinaryTree &ui) {
+int BinaryTreeAddEdge::apply (UI::BinaryTree &ui) {
     return ui.addEdge(parent, childNode, isLeft);
 }
 
@@ -32,7 +32,7 @@ bool BinaryTreeAddEdge::apply (UI::BinaryTree &ui) {
 
 BinaryTreeChangeRoot::BinaryTreeChangeRoot (int newRoot) : newRoot(newRoot) {}
 
-bool BinaryTreeChangeRoot::apply (UI::BinaryTree &ui) {
+int BinaryTreeChangeRoot::apply (UI::BinaryTree &ui) {
     return ui.setRootNode(newRoot);
 }
 
@@ -40,7 +40,7 @@ bool BinaryTreeChangeRoot::apply (UI::BinaryTree &ui) {
 
 BinaryTreeSwapValue::BinaryTreeSwapValue (int a, int b) : a(a), b(b) {}
 
-bool BinaryTreeSwapValue::apply (UI::BinaryTree &ui) {
+int BinaryTreeSwapValue::apply (UI::BinaryTree &ui) {
     ui.swapNode(a, b);
     return true;
 }
@@ -49,7 +49,7 @@ bool BinaryTreeSwapValue::apply (UI::BinaryTree &ui) {
 
 BinaryTreeHighlightNode::BinaryTreeHighlightNode (int targetNode) : targetNode(targetNode) {}
 
-bool BinaryTreeHighlightNode::apply (UI::BinaryTree &ui) {
+int BinaryTreeHighlightNode::apply (UI::BinaryTree &ui) {
     return ui.setHighlight(targetNode);
 }
 
@@ -57,6 +57,14 @@ bool BinaryTreeHighlightNode::apply (UI::BinaryTree &ui) {
 
 BinaryTreeLockHighlight::BinaryTreeLockHighlight() {}
 
-bool BinaryTreeLockHighlight::apply (UI::BinaryTree &ui) {
+int BinaryTreeLockHighlight::apply (UI::BinaryTree &ui) {
     return ui.lockHighlight(), false;
+}
+
+// ========== BINARY TREE COMPLETE ANIMATION ========== //
+
+BinaryTreeCompleteAnimation::BinaryTreeCompleteAnimation() {}
+
+int BinaryTreeCompleteAnimation::apply (UI::BinaryTree &ui) {
+    return 2;
 }

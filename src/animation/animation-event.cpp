@@ -26,14 +26,17 @@ template <typename TypeUI>
 void AnimationManager<TypeUI>::popAnimation() {
     if (eventIDQueue.empty()) return;
 
-    TypeUI tmp = getCurrentUI();
-    bool changeTracker = false;
+    TypeUI tmp = getCurrentUI().copyBinaryTree();
+    bool changeTracker = false, completed = false;
 
     int currEvent = eventIDQueue.front();
     while (eventIDQueue.size() && eventIDQueue.front() == currEvent) {
-        // std::cerr << "Popping Animation: " << typeid(*animationQueue.front()).name() << std::endl;
-        if (animationQueue.front()->apply(tmp))
+        std::cerr << "Popping Animation: " << typeid(*animationQueue.front()).name() << std::endl;
+        int animationResult = animationQueue.front()->apply(tmp);
+        if (animationResult == 1) // UI modified
             internalClock.restart(), changeTracker = true;
+        else if (animationResult == 2) // animation completed
+            completed = true;
         animationQueue.pop();
         eventIDQueue.pop();
     }
@@ -41,13 +44,10 @@ void AnimationManager<TypeUI>::popAnimation() {
     if (changeTracker) {
         while (stateIterator + 1 < stateUI.size())
             stateUI.pop_back(), completeUI.pop_back();
-        if (completeUI.empty() or completeUI.back() == false) {
-            std::cerr << "You may quit CP" << std::endl;
-        }
         stateUI.push_back(tmp), stateIterator++;
-        completeUI.push_back(false);
+        completeUI.push_back(completed);
     }
-    else getCurrentUI() = tmp;
+    else getCurrentUI() = tmp, completeUI.back() = completed;
 }
 
 template<typename TypeUI>
@@ -64,7 +64,10 @@ template <typename TypeUI>
 bool AnimationManager<TypeUI>::previousState() {
     if (stateIterator == 0) return false;
     stateIterator--;
+    std::cerr << "Fast forwarding " << stateIterator << std::endl;
+    getCurrentUI().fastForward();
     callbackEnableButtons(completeUI[stateIterator]);
+    stateUI[stateIterator].fastForward();
     return true;
 }
 
@@ -79,6 +82,7 @@ template <typename TypeUI>
 bool AnimationManager<TypeUI>::nextState() {
     if (stateIterator + 1 == stateUI.size()) return false;
     stateIterator++;
+    getCurrentUI().fastForward();
     callbackEnableButtons(completeUI[stateIterator]);
     return true;
 }
@@ -92,14 +96,10 @@ bool AnimationManager<TypeUI>::nextCompleteState() {
 
 template <typename TypeUI>
 void AnimationManager<TypeUI>::timePropagation (float deltaTime) {
+    // getCurrentUI().fastForward();
+    // std::cerr << "Time propagating " << stateIterator << std::endl;
     getCurrentUI().timePropagation(deltaTime);
     if (!internalClock.isFinished()) return;
     popAnimation();
     getCurrentUI().calculatePositions();
-}
-
-template <typename TypeUI>
-void AnimationManager<TypeUI>::completeAnimation() {
-    if (completeUI.empty()) return;
-    completeUI.back() = true;
 }

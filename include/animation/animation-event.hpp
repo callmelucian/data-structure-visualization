@@ -13,7 +13,7 @@ class AnimationEvent {
 private:
 public:
     virtual ~AnimationEvent() = default;
-    virtual bool apply (TypeUI &ui) = 0;
+    virtual int apply (TypeUI &ui) = 0;
 };
 
 template <typename TypeUI>
@@ -90,11 +90,6 @@ public:
      * @brief time propagration
      */
     void timePropagation (float deltaTime);
-
-    /**
-     * @brief mark the last UI state as complete
-     */
-    void completeAnimation();
 };
 
 template class AnimationManager<UI::BinaryTree>;

@@ -69,6 +69,8 @@ public:
 
     void timePropagation(float deltaTime);
 
+    void fastForward();
+
     sf::FloatRect getGlobalBounds() const;
 
     sf::Vector2f getPosition() const;

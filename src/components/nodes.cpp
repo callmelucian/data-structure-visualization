@@ -92,6 +92,10 @@ void AnimatedNode::timePropagation(float deltaTime) {
     }
 }
 
+void AnimatedNode::fastForward() {
+    nodeUI.setPosition(targetPosition);
+}
+
 sf::FloatRect AnimatedNode::getGlobalBounds() const {
     return nodeUI.getGlobalBounds();
 }

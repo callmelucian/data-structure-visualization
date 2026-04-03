@@ -182,6 +182,7 @@ void AVLTree::insert (int value) {
     callbackApplyAnimation();
     callbackHighlightNode(-1);
     callbackCompleteAnimation();
+    callbackApplyAnimation();
 }
 
 void AVLTree::erase (int value) {
@@ -191,6 +192,7 @@ void AVLTree::erase (int value) {
     callbackApplyAnimation();
     callbackHighlightNode(-1);
     callbackCompleteAnimation();
+    callbackApplyAnimation();
 }
 
 }; // namespace DS

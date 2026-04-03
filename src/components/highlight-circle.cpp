@@ -30,17 +30,11 @@ void HighlightCircle::timePropagation (float deltaTime) {
             setPosition(getPosition() + dVelo);
         }
     }
-    
-    // if (chasing) // directly jump to target node
-    //     setPosition(nodeObserver->getPosition());
-    // else {
-    //     sf::Vector2f displacement = nodeObserver->getPosition() - getPosition();
-    //     if (magnitude(displacement) < HIGHLIGHT_SMALL_DISTANCE) {
-    //         setPosition(nodeObserver->getPosition()), chasing = true;
-    //         std::cerr << "Locked in" << std::endl;
-    //     }
-    //     else setPosition(getPosition() + displacement * Setting::animationFactor * deltaTime * 5.f);
-    // }
+}
+
+void HighlightCircle::fastForward() {
+    if (nodeObserver)
+        setPosition(nodeObserver->getPosition());
 }
 
 void HighlightCircle::free() {

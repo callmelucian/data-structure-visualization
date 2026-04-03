@@ -23,6 +23,8 @@ public:
     void setTargetNode (AnimatedNode* ptr);
 
     void timePropagation (float deltaTime);
+
+    void fastForward();
     
     void free();
 

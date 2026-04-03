@@ -164,6 +164,29 @@ void BinaryTree::lockHighlight() {
     highlighter.lockHighlight();
 }
 
+void BinaryTree::fastForward() {
+    std::cerr << "Fast forwarded" << std::endl;
+    // call time-propagation for member components
+    for (AnimatedNode* node : nodeUI) node->fastForward();
+    highlighter.fastForward();
+    // re-align origin
+    setOrigin(targetOrigin);
+}
 
+BinaryTree BinaryTree::copyBinaryTree() {
+    BinaryTree newBinaryTree = *this;
+    for (int i = 0; i < nodeUI.size(); i++) {
+        AnimatedNode* ptr = new AnimatedNode(*nodeUI[i]);
+        newBinaryTree.changeNodeUI(i, ptr);
+        if (highlighter.getAddress() == nodeUI[i])
+            newBinaryTree.setHighlight(i);
+
+    }
+    return newBinaryTree;
+}
+
+void BinaryTree::changeNodeUI (int pos, AnimatedNode* ptr) {
+    nodeUI[pos] = ptr;
+}
 
 } // namespace UI

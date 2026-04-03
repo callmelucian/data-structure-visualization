@@ -108,7 +108,9 @@ public:
                 );
             });
             avlTreeLogic.setCallbackCompleteAnimation([&]() {
-                treeUI.completeAnimation();
+                treeUI.createAnimationEvent(
+                    std::make_unique<BinaryTreeCompleteAnimation>()
+                );
             });
 
             // set callback functions: input field and button for insertion

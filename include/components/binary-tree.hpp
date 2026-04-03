@@ -61,6 +61,12 @@ public:
     bool setHighlight (int nodeID);
 
     void lockHighlight();
+
+    void fastForward();
+
+    BinaryTree copyBinaryTree();
+
+    void changeNodeUI (int pos, AnimatedNode* ptr);
 };
 
 } // namespace UI
