@@ -22,9 +22,10 @@ add_executable(DataVisApp
     src/components/nodes.cpp
     src/components/slider.cpp
     src/components/highlight-circle.cpp
+    src/components/code-highlighter.cpp
     src/core/utility.cpp
-    src/animation/animation-event.cpp
-    src/animation/binary-tree-animation.cpp
+    src/animation/animation-manager.cpp
+    src/animation/events.cpp
     src/scenes/avl-tree-scene.cpp
 )
 

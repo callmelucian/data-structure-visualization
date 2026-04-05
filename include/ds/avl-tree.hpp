@@ -1,6 +1,9 @@
 #pragma once
 #include <functional>
 #include <algorithm>
+#include <iostream>
+
+#include "../core/code-snippets.hpp"
 
 namespace DS {
 struct Node {
@@ -24,6 +27,8 @@ private:
     std::function<void()> callbackApplyAnimation;
     std::function<void(int)> callbackHighlightNode;
     std::function<void()> callbackCompleteAnimation;
+    std::function<void(const std::vector<std::string>&)> callbackLoadCode;
+    std::function<void(int)> callbackHighlightCode;
 
     /**
      * @brief Get the height of the node given by ptr in O(1)
@@ -168,6 +173,24 @@ public:
     void setCallbackCompleteAnimation (auto func) {
         callbackCompleteAnimation = func;
     }
+
+    /**
+     * @brief Assign a callback function that will be called
+     * whenever AVL Tree wants to load a new piece of code
+     */
+    void setCallbackLoadCode (auto func) {
+        callbackLoadCode = func;
+    }
+    
+    /**
+     * @brief Assign a callback function that will be called
+     * whenever AVL Tree wants to highlight another line of code
+     */
+    void setCallbackHighlightCode (auto func) {
+        callbackHighlightCode = func;
+    }
+    
+    void checkCallbackFunctions();
 
     /**
      * @brief Insert a value and rebalance itself accordingly

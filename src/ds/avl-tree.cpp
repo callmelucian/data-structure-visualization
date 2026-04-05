@@ -1,5 +1,4 @@
 #include "../../include/ds/avl-tree.hpp"
-#include <iostream>
 
 namespace DS {
 
@@ -64,11 +63,13 @@ Node* AVLTree::selfBalancing (Node *ptr) {
             ptr->lpt = leftRotation(ptr->lpt);
             callbackAddEdge(getVisualID(ptr), getVisualID(ptr->lpt), true);
             callbackHighlightNode(getVisualID(ptr->lpt));
+            callbackHighlightCode(4);
             callbackApplyAnimation();
         }
         // resolve the Left-Left unbalanceness
         Node* newRoot = rightRotation(ptr);
         callbackHighlightNode(getVisualID(newRoot));
+        callbackHighlightCode(5);
         return newRoot;
     }
 
@@ -77,12 +78,19 @@ Node* AVLTree::selfBalancing (Node *ptr) {
         if (getBalance(ptr->rpt) > 0) { // turn the Right-Left case into the Right-Right case
             ptr->rpt = rightRotation(ptr->rpt);
             callbackAddEdge(getVisualID(ptr), getVisualID(ptr->rpt), false);
+            callbackHighlightNode(getVisualID(ptr->lpt));
+            callbackHighlightCode(8);
+            callbackApplyAnimation();
         }
         // resolve the Right-Right unbalanceness
         Node* newRoot = leftRotation(ptr);
         callbackHighlightNode(getVisualID(newRoot));
+        callbackHighlightCode(9);
         return newRoot;
     }
+
+    callbackHighlightCode(11);
+    callbackApplyAnimation();
     return ptr;
 }
 
@@ -90,31 +98,40 @@ Node* AVLTree::insertValue (Node *ptr, int insertKey) {
     // insertion happen at this node
     if (ptr == nullptr) {
         callbackCreateNode(insertKey, false);
+        callbackHighlightCode(1);
         Node* newNode = new Node(insertKey, nodeCounter++);
         return newNode;
     }
     
     callbackHighlightNode(getVisualID(ptr));
-    callbackApplyAnimation();
-    
     // recursive call for either subtree
-    if (insertKey == ptr->value) return ptr->count++, ptr;
+    if (insertKey == ptr->value) {
+        callbackHighlightCode(2);
+        return ptr->count++, ptr;
+    }
+    
+    callbackApplyAnimation();
     if (insertKey < ptr->value) {
-        // callbackAddEdge(getVisualID(ptr), -1, true);
+        callbackHighlightCode(3);
         ptr->lpt = insertValue(ptr->lpt, insertKey);
         callbackAddEdge(getVisualID(ptr), getVisualID(ptr->lpt), true);
         callbackApplyAnimation();
     }
     if (insertKey > ptr->value) {
+        callbackHighlightCode(4);
         ptr->rpt = insertValue(ptr->rpt, insertKey);
         callbackAddEdge(getVisualID(ptr), getVisualID(ptr->rpt), false);
         callbackApplyAnimation();
     }
 
     callbackHighlightNode(getVisualID(ptr));
+    callbackHighlightCode(5);
     callbackApplyAnimation();
 
-    return selfBalancing(ptr);
+    callbackLoadCode(CodeRepo::AVL_TREE_SELF_BALANCING);
+    Node* newRoot = selfBalancing(ptr);
+    callbackLoadCode(CodeRepo::AVL_TREE_INSERT);
+    return newRoot;
 }
 
 Node* AVLTree::eraseValue (Node *ptr, int deleteKey) {
@@ -198,6 +215,8 @@ void AVLTree::copyFrom (const AVLTree &other) {
     this->callbackApplyAnimation = other.callbackApplyAnimation;
     this->callbackHighlightNode = other.callbackHighlightNode;
     this->callbackCompleteAnimation = other.callbackCompleteAnimation;
+    this->callbackLoadCode = other.callbackLoadCode;
+    this->callbackHighlightCode = other.callbackHighlightCode;
 }
 
 // ========== AVL TREE PUBLIC FUNCTIONS ==========
@@ -221,9 +240,18 @@ AVLTree& AVLTree::operator=(const AVLTree& other) {
     return *this;
 }
 
+void AVLTree::checkCallbackFunctions() {
+    if (!callbackLoadCode)
+        std::cerr << "No load code function" << std::endl;
+    if (!callbackHighlightCode)
+        std::cerr << "No highlight code function" << std::endl;
+}
+
 void AVLTree::insert (int value) {
+    callbackLoadCode(CodeRepo::AVL_TREE_INSERT);
     if (root == nullptr) {
         callbackCreateNode(value, true);
+        callbackHighlightCode(1);
         root = new Node(value, nodeCounter++);
     }
     else {

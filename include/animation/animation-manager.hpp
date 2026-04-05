@@ -4,23 +4,38 @@
 #include <memory>
 #include <functional>
 
+// utilites
 #include "../core/global-setting.hpp"
-#include "../components/binary-tree.hpp"
 #include "../core/utility.hpp"
-#include "../ds/avl-tree.hpp"
+#include "events.hpp"
 
-#include "binary-tree-animation.hpp"
+// UI components
+#include "../components/binary-tree.hpp"
+#include "../components/code-highlighter.hpp"
+
+// data structures
+#include "../ds/avl-tree.hpp"
 
 template <typename TypeUI, typename TypeLogic>
 class AnimationManager {
 private:
+    // animation queues
     std::queue<std::unique_ptr<AnimationEvent<TypeUI>>> animationQueue;
     std::queue<int> eventIDQueue;
+
+    // objects with history manager
     std::vector<TypeUI> stateUI;
+    std::vector<UI::CodeHighlighter> stateCode;
     std::vector<bool> completeUI;
     std::vector<TypeLogic> stateLogic;
-    int currentEventStep, stateUIIterator, stateLogicIterator;
+
+    // iterators
+    int currentEventStep, stateUIIterator, stateLogicIterator, stateCodeIterator;
+    
+    // callback functions
     std::function<void(int)> callbackEnableButtons;
+
+    // countdown clock
     CountDownClock<Setting::animationDelay> internalClock;
 
 public:
@@ -61,6 +76,11 @@ public:
      * @brief get the current logic object
      */
     TypeLogic& getCurrentLogic();
+
+    /**
+     * @brief Return the current CodeHighlighter object
+     */
+    UI::CodeHighlighter& getCurrentCode();
 
     /**
      * @brief check whether the current UI is complete

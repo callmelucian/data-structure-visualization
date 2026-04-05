@@ -107,6 +107,7 @@ void AVLTreeScene::timePropagation(float delta) {
 
 void AVLTreeScene::draw(sf::RenderWindow &window) {
     window.draw(treeUI.getCurrentUI());
+    window.draw(treeUI.getCurrentCode());
     window.draw(insertField);
     window.draw(insertButton);
     window.draw(eraseField);

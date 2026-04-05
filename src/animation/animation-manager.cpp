@@ -1,14 +1,14 @@
-#include "../../include/animation/animation-event.hpp"
+#include "../../include/animation/animation-manager.hpp"
 
 template <typename TypeUI, typename TypeLogic>
 AnimationManager<TypeUI, TypeLogic>::AnimationManager (const TypeUI &init) :
-    stateUI(1, init), completeUI(1, true), stateLogic(1), currentEventStep(0), stateUIIterator(0), stateLogicIterator(0) {
+    stateUI(1, init), completeUI(1, true), stateLogic(1), stateCode(1),
+    currentEventStep(0), stateUIIterator(0), stateLogicIterator(0), stateCodeIterator(0) {
 
-    // center UI
-    stateUI[0].setPosition({
-        Setting::screenWidth / 2.f,
-        Setting::screenHeight / 2.f
-    });
+    // set position for UI and code highlighter
+    stateUI[0].setPosition({Setting::screenWidth / 2.f, Setting::screenHeight / 2.f});
+    stateCode[0].setPosition({Setting::screenWidth - 20.f, Setting::screenHeight - 20.f});
+
     // initialize callback functions
     initCallbackFunctions();
 }
@@ -28,13 +28,14 @@ template <typename TypeUI, typename TypeLogic>
 void AnimationManager<TypeUI, TypeLogic>::popAnimation() {
     if (eventIDQueue.empty()) return;
 
-    TypeUI tmp = getCurrentUI();
+    TypeUI tempUI = getCurrentUI();
+    UI::CodeHighlighter tempCode = getCurrentCode();
     bool changeTracker = false, completed = false;
 
     int currEvent = eventIDQueue.front();
     while (eventIDQueue.size() && eventIDQueue.front() == currEvent) {
         // std::cerr << "Popping Animation: " << typeid(*animationQueue.front()).name() << std::endl;
-        int animationResult = animationQueue.front()->apply(tmp);
+        int animationResult = animationQueue.front()->apply(tempUI, tempCode);
         if (animationResult == 1) // UI modified
             internalClock.restart(), changeTracker = true;
         else if (animationResult == 2) // animation completed
@@ -45,12 +46,17 @@ void AnimationManager<TypeUI, TypeLogic>::popAnimation() {
 
     if (changeTracker) {
         while (stateUIIterator + 1 < stateUI.size())
-            stateUI.pop_back(), completeUI.pop_back();
-        stateUI.push_back(tmp);
+            stateUI.pop_back(), stateCode.pop_back(), completeUI.pop_back();
+        stateUI.push_back(tempUI);
+        stateCode.push_back(tempCode);
         completeUI.push_back(completed);
-        stateUIIterator++;
+        stateUIIterator++, stateCodeIterator++;
     }
-    else getCurrentUI() = tmp, completeUI.back() = completed;
+    else {
+        getCurrentUI() = tempUI;
+        getCurrentCode() = tempCode;
+        completeUI.back() = completed;
+    }
 }
 
 template <typename TypeUI, typename TypeLogic>
@@ -61,6 +67,11 @@ TypeUI& AnimationManager<TypeUI, TypeLogic>::getCurrentUI() {
 template <typename TypeUI, typename TypeLogic>
 TypeLogic& AnimationManager<TypeUI, TypeLogic>::getCurrentLogic() {
     return stateLogic[stateLogicIterator];
+}
+
+template <typename TypeUI, typename TypeLogic>
+UI::CodeHighlighter& AnimationManager<TypeUI, TypeLogic>::getCurrentCode() {
+    return stateCode[stateCodeIterator];
 }
 
 template <typename TypeUI, typename TypeLogic>
@@ -158,6 +169,16 @@ void AnimationManager<UI::BinaryTree, DS::AVLTree>::initCallbackFunctions() {
     stateLogic[0].setCallbackCompleteAnimation([&]() {
         this->createAnimationEvent(
             std::make_unique<BinaryTreeCompleteAnimation>()
+        );
+    });
+    stateLogic[0].setCallbackLoadCode([&] (const std::vector<std::string> &vec) {
+        this->createAnimationEvent(
+            std::make_unique<CodeHighlightLoadCode<UI::BinaryTree>>(vec)
+        );
+    });
+    stateLogic[0].setCallbackHighlightCode([&] (int row) {
+        this->createAnimationEvent(
+            std::make_unique<CodeHighlighting<UI::BinaryTree>>(row)
         );
     });
 }

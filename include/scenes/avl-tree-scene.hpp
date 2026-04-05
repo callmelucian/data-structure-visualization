@@ -6,8 +6,8 @@
 #include "scene-manager.hpp"
 #include "../core/utility.hpp"
 #include "../ds/avl-tree.hpp"
-#include "../animation/animation-event.hpp"
-#include "../animation/binary-tree-animation.hpp"
+#include "../animation/animation-manager.hpp"
+#include "../animation/events.hpp"
 
 // UI components
 #include "../components/action-bar.hpp"
