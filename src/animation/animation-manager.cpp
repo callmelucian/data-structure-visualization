@@ -3,7 +3,7 @@
 template <typename TypeUI, typename TypeLogic>
 AnimationManager<TypeUI, TypeLogic>::AnimationManager (const TypeUI &init) :
     stateUI(1, init), completeUI(1, true), stateLogic(1), stateCode(1),
-    currentEventStep(0), stateUIIterator(0), stateLogicIterator(0), stateCodeIterator(0) {
+    currentEventStep(0), stateUIIterator(0), stateLogicIterator(0) {
 
     // set position for UI and code highlighter
     stateUI[0].setPosition({Setting::screenWidth / 2.f, Setting::screenHeight / 2.f});
@@ -50,7 +50,7 @@ void AnimationManager<TypeUI, TypeLogic>::popAnimation() {
         stateUI.push_back(tempUI);
         stateCode.push_back(tempCode);
         completeUI.push_back(completed);
-        stateUIIterator++, stateCodeIterator++;
+        stateUIIterator++;
     }
     else {
         getCurrentUI() = tempUI;
@@ -71,7 +71,7 @@ TypeLogic& AnimationManager<TypeUI, TypeLogic>::getCurrentLogic() {
 
 template <typename TypeUI, typename TypeLogic>
 UI::CodeHighlighter& AnimationManager<TypeUI, TypeLogic>::getCurrentCode() {
-    return stateCode[stateCodeIterator];
+    return stateCode[stateUIIterator];
 }
 
 template <typename TypeUI, typename TypeLogic>

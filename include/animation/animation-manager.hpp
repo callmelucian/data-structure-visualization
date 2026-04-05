@@ -30,7 +30,7 @@ private:
     std::vector<TypeLogic> stateLogic;
 
     // iterators
-    int currentEventStep, stateUIIterator, stateLogicIterator, stateCodeIterator;
+    int currentEventStep, stateUIIterator, stateLogicIterator;
     
     // callback functions
     std::function<void(int)> callbackEnableButtons;
