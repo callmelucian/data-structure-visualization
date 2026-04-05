@@ -7,6 +7,49 @@ namespace UI {
 
 BinaryTree::BinaryTree() : rootNode(0), treeSize(0), targetOrigin({0, 0}) {}
 
+BinaryTree::BinaryTree (const BinaryTree &o) : UI::Base(o) {
+    leftChild = o.leftChild, rightChild = o.rightChild, parent = o.parent;
+    highlighter = o.highlighter;
+    for (AnimatedNode* tmpElement : o.nodeUI) {
+        AnimatedNode* ptr = new AnimatedNode(*tmpElement);
+        if (o.highlighter.getAddress() == tmpElement)
+            highlighter.setTargetNode(ptr);
+        nodeUI.push_back(ptr);
+    }
+    isDeleted = o.isDeleted;
+    rootNode = o.rootNode, treeSize = o.treeSize;
+    targetOrigin = o.targetOrigin;
+}
+
+BinaryTree::~BinaryTree() {
+    for (AnimatedNode* &ptr : nodeUI) delete ptr;
+}
+
+BinaryTree& BinaryTree::operator= (const BinaryTree &o) {
+    if (this == &o) return *this;
+    UI::Base::operator=(o);
+
+    // copy from destructor
+    for (AnimatedNode* ptr : nodeUI) delete ptr;
+    nodeUI.clear();
+
+    // copy from copy constructor
+    leftChild = o.leftChild, rightChild = o.rightChild, parent = o.parent;
+    highlighter = o.highlighter;
+    for (AnimatedNode* tmpElement : o.nodeUI) {
+        AnimatedNode* ptr = new AnimatedNode(*tmpElement);
+        if (o.highlighter.getAddress() == tmpElement)
+            highlighter.setTargetNode(ptr);
+        nodeUI.push_back(ptr);
+    }
+    isDeleted = o.isDeleted;
+    rootNode = o.rootNode, treeSize = o.treeSize;
+    targetOrigin = o.targetOrigin;
+
+    // return reference
+    return *this;
+}
+
 void BinaryTree::createNode(const std::string &s, bool isRoot) {
     nodeUI.push_back(new AnimatedNode(s));
     isDeleted.push_back(false);
@@ -141,14 +184,7 @@ void BinaryTree::timePropagation (float deltaTime) {
 }
 
 bool BinaryTree::setHighlight (int nodeID) {
-    // remove highlight from previously highlighted node
-    // if (highlightID != -1)
-    //     nodeUI[highlightID].unHighlightNode();
-    // if (nodeID != -1) {
-    //     nodeUI[nodeID].highlightNode();
-    //     targetHighlight = nodeUI[nodeID].getPosition();
-    // }
-    // highlightID = nodeID, highlightFixed = false;
+    if (nodeID == -2) return highlighter.free(), true;
     if (nodeID == -1) {
         if (highlighter.getAddress() == nullptr) return false;
         return highlighter.free(), true;
@@ -165,24 +201,11 @@ void BinaryTree::lockHighlight() {
 }
 
 void BinaryTree::fastForward() {
-    std::cerr << "Fast forwarded" << std::endl;
     // call time-propagation for member components
     for (AnimatedNode* node : nodeUI) node->fastForward();
     highlighter.fastForward();
     // re-align origin
     setOrigin(targetOrigin);
-}
-
-BinaryTree BinaryTree::copyBinaryTree() {
-    BinaryTree newBinaryTree = *this;
-    for (int i = 0; i < nodeUI.size(); i++) {
-        AnimatedNode* ptr = new AnimatedNode(*nodeUI[i]);
-        newBinaryTree.changeNodeUI(i, ptr);
-        if (highlighter.getAddress() == nodeUI[i])
-            newBinaryTree.setHighlight(i);
-
-    }
-    return newBinaryTree;
 }
 
 void BinaryTree::changeNodeUI (int pos, AnimatedNode* ptr) {

@@ -28,8 +28,13 @@ class AVLTreeScene : public Scene {
 private:
     UI::Button insertButton, eraseButton;
     UI::TextInputField insertField, eraseField;
-    DS::AVLTree avlTreeLogic;
+    // DS::AVLTree avlTreeLogic;
     AnimationManager<UI::BinaryTree> treeUI;
+
+    // will wrap into a VersionManager later
+    std::vector<DS::AVLTree> avlTreeLogic;
+    int versionIterator;
+    // ====
 
     UI::Button prevStepButton, prevOperationButton;
     UI::Button nextStepButton, nextOperationButton;
@@ -39,6 +44,7 @@ public:
         Scene(window), insertButton(100, 30), eraseButton(100, 30),
         insertField(150, 30), eraseField(150, 30),
         treeUI(UI::BinaryTree()),
+        avlTreeLogic(1), versionIterator(0),
         prevStepButton(50, 30), prevOperationButton(50, 30),
         nextStepButton(50, 30), nextOperationButton(50, 30) {
             // intialize buttons
@@ -62,52 +68,55 @@ public:
             nextOperationButton.setPosition({880, 850});
 
             // set callback functions: AVL Tree UI
-            treeUI.setCallbackEnableButtons([&] (bool f) {
-                if (f) {
+            treeUI.setCallbackEnableButtons([&] (int f) {
+                if (abs(f) == 2) {
                     insertButton.enableButton();
                     eraseButton.enableButton();
                 }
-                else {
+                else if (abs(f) == 1) {
                     insertButton.disableButton();
                     eraseButton.disableButton();
                 }
+
+                if (f == -2) versionIterator--;
+                else if (f == 2) versionIterator++;
             });
 
             // set callback functions: AVL Tree Logic object
-            avlTreeLogic.setCallbackCreateNode([&] (int value, bool isRoot) {
+            avlTreeLogic[0].setCallbackCreateNode([&] (int value, bool isRoot) {
                 treeUI.createAnimationEvent(
                     std::make_unique<BinaryTreeCreateNode>(std::to_string(value), isRoot)
                 );
             });
-            avlTreeLogic.setCallbackAddEdge([&] (int parent, int node, bool isLeft) {
+            avlTreeLogic[0].setCallbackAddEdge([&] (int parent, int node, bool isLeft) {
                 treeUI.createAnimationEvent(
                     std::make_unique<BinaryTreeAddEdge>(parent, node, isLeft)
                 );
             });
-            avlTreeLogic.setCallbackChangeRoot([&] (int newRoot) {
+            avlTreeLogic[0].setCallbackChangeRoot([&] (int newRoot) {
                 treeUI.createAnimationEvent(
                     std::make_unique<BinaryTreeChangeRoot>(newRoot)
                 );
             });
-            avlTreeLogic.setCallbackDeleteNode([&] (int visualID) {
+            avlTreeLogic[0].setCallbackDeleteNode([&] (int visualID) {
                 treeUI.createAnimationEvent(
                     std::make_unique<BinaryTreeDeleteNode>(visualID)
                 );
             });
-            avlTreeLogic.setCallbackSwapValue([&] (int a, int b) {
+            avlTreeLogic[0].setCallbackSwapValue([&] (int a, int b) {
                 treeUI.createAnimationEvent(
                     std::make_unique<BinaryTreeSwapValue>(a, b)
                 );
             });
-            avlTreeLogic.setCallbackApplyAnimation([&]() {
+            avlTreeLogic[0].setCallbackApplyAnimation([&]() {
                 treeUI.nextStep();
             });
-            avlTreeLogic.setCallbackHighlightNode([&] (int nodeID) {
+            avlTreeLogic[0].setCallbackHighlightNode([&] (int nodeID) {
                 treeUI.createAnimationEvent(
                     std::make_unique<BinaryTreeHighlightNode>(nodeID)
                 );
             });
-            avlTreeLogic.setCallbackCompleteAnimation([&]() {
+            avlTreeLogic[0].setCallbackCompleteAnimation([&]() {
                 treeUI.createAnimationEvent(
                     std::make_unique<BinaryTreeCompleteAnimation>()
                 );
@@ -120,7 +129,10 @@ public:
                     std::cerr << "Input field contains non-numerical value!" << std::endl;
                     return;
                 }
-                avlTreeLogic.insert(value);
+                DS::AVLTree newLogicVersion = avlTreeLogic[versionIterator];
+                while (versionIterator + 1 < avlTreeLogic.size()) avlTreeLogic.pop_back();
+                newLogicVersion.insert(value);
+                avlTreeLogic.push_back(newLogicVersion), versionIterator++;
             });
             insertButton.setCallback([&]() {
                 insertField.releaseText();
@@ -133,7 +145,10 @@ public:
                     std::cerr << "Input field contains non-numerical value!" << std::endl;
                     return;
                 }
-                avlTreeLogic.erase(value);
+                DS::AVLTree newLogicVersion = avlTreeLogic[versionIterator];
+                while (versionIterator + 1 < avlTreeLogic.size()) avlTreeLogic.pop_back();
+                if (newLogicVersion.erase(value))
+                    avlTreeLogic.push_back(newLogicVersion), versionIterator++;
             });
             eraseButton.setCallback([&]() {
                 eraseField.releaseText();

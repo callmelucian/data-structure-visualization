@@ -80,8 +80,30 @@ private:
      */
     Node* eraseValue(Node *ptr, int deleteKey);
 
+    /**
+     * @brief Helper function to perform deep-copy on this AVL Tree
+     */
+    Node* copyNodes (Node* otherNode);
+
+    /**
+     * @brief Helper function to perform deletion on this AVL Tree
+     */
+    void destroyTree(Node *node);
+
+    /**
+     * @brief Helper function to copy member variables and callback functions
+     */
+    void copyFrom(const AVLTree &other);
+
 public:
     AVLTree();
+    AVLTree(const AVLTree &other);
+    ~AVLTree();
+
+    /**
+     * @brief Assigment operator to perform deep-copy
+     */
+    AVLTree& operator=(const AVLTree &other);
 
     /**
      * @brief Assign a callback function that will be called
@@ -153,8 +175,9 @@ public:
     void insert(int value);
 
     /**
-     * @brief Deleta a value and rebalance itself accordingly
+     * @brief Delete a value and rebalance itself accordingly
+     * and return a boolean flag to tell whether the node is actually deleted
      */
-    void erase(int value);
+    bool erase(int value);
 };
 };

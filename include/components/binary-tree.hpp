@@ -29,6 +29,11 @@ private:
 
 public:
     BinaryTree();
+    BinaryTree(const BinaryTree &o);
+
+    ~BinaryTree();
+
+    BinaryTree& operator= (const BinaryTree &o);
 
     void createNode(const std::string &s, bool isRoot = false);
 
@@ -63,8 +68,6 @@ public:
     void lockHighlight();
 
     void fastForward();
-
-    BinaryTree copyBinaryTree();
 
     void changeNodeUI (int pos, AnimatedNode* ptr);
 };

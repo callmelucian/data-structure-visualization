@@ -7,8 +7,7 @@ namespace DS {
 Node::Node() : value(0), visualID(0), height(0), count(0), lpt(nullptr), rpt(nullptr) {}
 Node::Node (int value, int visualID) : value(value), visualID(visualID), height(1), count(1), lpt(nullptr), rpt(nullptr) {}
 
-// === Class AVLTree ===
-AVLTree::AVLTree() : root(nullptr), nodeCounter(0) {}
+// ========== AVL TREE PRIVATE FUNCTIONS ==========
 
 int AVLTree::getHeight (Node *ptr) {
     return ptr ? ptr->height : 0;
@@ -170,6 +169,58 @@ Node* AVLTree::eraseValue (Node *ptr, int deleteKey) {
     return ptr ? selfBalancing(ptr) : nullptr;
 }
 
+Node* AVLTree::copyNodes(Node* otherNode) {
+    if (otherNode == nullptr) return nullptr;
+    Node* newNode = new Node(otherNode->value, otherNode->visualID);
+    newNode->height = otherNode->height;
+    newNode->count = otherNode->count;
+    newNode->lpt = copyNodes(otherNode->lpt);
+    newNode->rpt = copyNodes(otherNode->rpt);
+    return newNode;
+}
+
+void AVLTree::destroyTree(Node* node) {
+    if (node == nullptr) return;
+    destroyTree(node->lpt);
+    destroyTree(node->rpt);
+    delete node;
+}
+
+void AVLTree::copyFrom (const AVLTree &other) {
+    this->nodeCounter = other.nodeCounter;
+    this->root = copyNodes(other.root);
+
+    this->callbackCreateNode = other.callbackCreateNode;
+    this->callbackDeleteNode = other.callbackDeleteNode;
+    this->callbackSwapValue = other.callbackSwapValue;
+    this->callbackAddEdge = other.callbackAddEdge;
+    this->callbackChangeRoot = other.callbackChangeRoot;
+    this->callbackApplyAnimation = other.callbackApplyAnimation;
+    this->callbackHighlightNode = other.callbackHighlightNode;
+    this->callbackCompleteAnimation = other.callbackCompleteAnimation;
+}
+
+// ========== AVL TREE PUBLIC FUNCTIONS ==========
+
+AVLTree::AVLTree() : root(nullptr), nodeCounter(0) {}
+
+AVLTree::AVLTree(const AVLTree& other) {
+    copyFrom(other);
+}
+
+AVLTree::~AVLTree() {
+    destroyTree(root);
+    root = nullptr;
+}
+
+AVLTree& AVLTree::operator=(const AVLTree& other) {
+    if (this != &other) {
+        destroyTree(root);
+        copyFrom(other);
+    }
+    return *this;
+}
+
 void AVLTree::insert (int value) {
     if (root == nullptr) {
         callbackCreateNode(value, true);
@@ -185,14 +236,15 @@ void AVLTree::insert (int value) {
     callbackApplyAnimation();
 }
 
-void AVLTree::erase (int value) {
-    if (root == nullptr) return;
+bool AVLTree::erase (int value) {
+    if (root == nullptr) return false;
     root = eraseValue(root, value);
     callbackChangeRoot(getVisualID(root)); // root could be nullptr
     callbackApplyAnimation();
     callbackHighlightNode(-1);
     callbackCompleteAnimation();
     callbackApplyAnimation();
+    return true;
 }
 
 }; // namespace DS

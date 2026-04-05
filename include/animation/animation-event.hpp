@@ -24,7 +24,7 @@ private:
     std::vector<TypeUI> stateUI;
     std::vector<bool> completeUI;
     int currentEventStep, stateIterator;
-    std::function<void(bool)> callbackEnableButtons;
+    std::function<void(int)> callbackEnableButtons;
     CountDownClock<Setting::animationDelay> internalClock;
 
 public:

@@ -26,12 +26,12 @@ template <typename TypeUI>
 void AnimationManager<TypeUI>::popAnimation() {
     if (eventIDQueue.empty()) return;
 
-    TypeUI tmp = getCurrentUI().copyBinaryTree();
+    TypeUI tmp = getCurrentUI();
     bool changeTracker = false, completed = false;
 
     int currEvent = eventIDQueue.front();
     while (eventIDQueue.size() && eventIDQueue.front() == currEvent) {
-        std::cerr << "Popping Animation: " << typeid(*animationQueue.front()).name() << std::endl;
+        // std::cerr << "Popping Animation: " << typeid(*animationQueue.front()).name() << std::endl;
         int animationResult = animationQueue.front()->apply(tmp);
         if (animationResult == 1) // UI modified
             internalClock.restart(), changeTracker = true;
@@ -44,8 +44,9 @@ void AnimationManager<TypeUI>::popAnimation() {
     if (changeTracker) {
         while (stateIterator + 1 < stateUI.size())
             stateUI.pop_back(), completeUI.pop_back();
-        stateUI.push_back(tmp), stateIterator++;
+        stateUI.push_back(tmp);
         completeUI.push_back(completed);
+        stateIterator++;
     }
     else getCurrentUI() = tmp, completeUI.back() = completed;
 }
@@ -64,10 +65,8 @@ template <typename TypeUI>
 bool AnimationManager<TypeUI>::previousState() {
     if (stateIterator == 0) return false;
     stateIterator--;
-    std::cerr << "Fast forwarding " << stateIterator << std::endl;
     getCurrentUI().fastForward();
-    callbackEnableButtons(completeUI[stateIterator]);
-    stateUI[stateIterator].fastForward();
+    callbackEnableButtons(completeUI[stateIterator] ? -2 : -1);
     return true;
 }
 
@@ -83,7 +82,7 @@ bool AnimationManager<TypeUI>::nextState() {
     if (stateIterator + 1 == stateUI.size()) return false;
     stateIterator++;
     getCurrentUI().fastForward();
-    callbackEnableButtons(completeUI[stateIterator]);
+    callbackEnableButtons(completeUI[stateIterator] ? 2 : 1);
     return true;
 }
 
@@ -96,8 +95,6 @@ bool AnimationManager<TypeUI>::nextCompleteState() {
 
 template <typename TypeUI>
 void AnimationManager<TypeUI>::timePropagation (float deltaTime) {
-    // getCurrentUI().fastForward();
-    // std::cerr << "Time propagating " << stateIterator << std::endl;
     getCurrentUI().timePropagation(deltaTime);
     if (!internalClock.isFinished()) return;
     popAnimation();
