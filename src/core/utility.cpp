@@ -12,6 +12,15 @@ float cube(float a) {
     return a * a * a; 
 }
 
+int convert (const std::string &s) {
+    int ans = 0;
+    for (char c : s) {
+        if (c < '0' || '9' < c) return -1;
+        ans = ans * 10 + c - '0';
+    }
+    return ans;
+}
+
 std::ostream& operator<<(std::ostream &oup, const sf::Vector2f &v) {
     return oup << "(" << v.x << ", " << v.y << ")", oup;
 }

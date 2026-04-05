@@ -1,6 +1,13 @@
 #pragma once
 #include "../components/binary-tree.hpp"
-#include "animation-event.hpp"
+
+template <typename TypeUI>
+class AnimationEvent {
+private:
+public:
+    virtual ~AnimationEvent() = default;
+    virtual int apply (TypeUI &ui) = 0;
+};
 
 class BinaryTreeCreateNode : public AnimationEvent<UI::BinaryTree> {
 private:

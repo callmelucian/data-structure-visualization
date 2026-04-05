@@ -1,29 +1,31 @@
 #include "../../include/animation/animation-event.hpp"
 
-template <typename TypeUI>
-AnimationManager<TypeUI>::AnimationManager (const TypeUI &init) :
-    stateUI(1, init), completeUI(1, true), currentEventStep(0), stateIterator(0) {
+template <typename TypeUI, typename TypeLogic>
+AnimationManager<TypeUI, TypeLogic>::AnimationManager (const TypeUI &init) :
+    stateUI(1, init), completeUI(1, true), stateLogic(1), currentEventStep(0), stateUIIterator(0), stateLogicIterator(0) {
 
     // center UI
     stateUI[0].setPosition({
         Setting::screenWidth / 2.f,
         Setting::screenHeight / 2.f
     });
+    // initialize callback functions
+    initCallbackFunctions();
 }
 
-template <typename TypeUI>
-void AnimationManager<TypeUI>::createAnimationEvent (std::unique_ptr<AnimationEvent<TypeUI>> event) {
+template <typename TypeUI, typename TypeLogic>
+void AnimationManager<TypeUI, TypeLogic>::createAnimationEvent (std::unique_ptr<AnimationEvent<TypeUI>> event) {
     animationQueue.push(std::move(event));
     eventIDQueue.push(currentEventStep);
 }
 
-template <typename TypeUI>
-void AnimationManager<TypeUI>::nextStep() {
+template <typename TypeUI, typename TypeLogic>
+void AnimationManager<TypeUI, TypeLogic>::nextStep() {
     currentEventStep++;
 }
 
-template <typename TypeUI>
-void AnimationManager<TypeUI>::popAnimation() {
+template <typename TypeUI, typename TypeLogic>
+void AnimationManager<TypeUI, TypeLogic>::popAnimation() {
     if (eventIDQueue.empty()) return;
 
     TypeUI tmp = getCurrentUI();
@@ -42,61 +44,120 @@ void AnimationManager<TypeUI>::popAnimation() {
     }
 
     if (changeTracker) {
-        while (stateIterator + 1 < stateUI.size())
+        while (stateUIIterator + 1 < stateUI.size())
             stateUI.pop_back(), completeUI.pop_back();
         stateUI.push_back(tmp);
         completeUI.push_back(completed);
-        stateIterator++;
+        stateUIIterator++;
     }
     else getCurrentUI() = tmp, completeUI.back() = completed;
 }
 
-template<typename TypeUI>
-TypeUI& AnimationManager<TypeUI>::getCurrentUI() {
-    return stateUI[stateIterator];
+template <typename TypeUI, typename TypeLogic>
+TypeUI& AnimationManager<TypeUI, TypeLogic>::getCurrentUI() {
+    return stateUI[stateUIIterator];
 }
 
-template<typename TypeUI>
-bool AnimationManager<TypeUI>::isComplete() {
-    return completeUI[stateIterator];
+template <typename TypeUI, typename TypeLogic>
+TypeLogic& AnimationManager<TypeUI, TypeLogic>::getCurrentLogic() {
+    return stateLogic[stateLogicIterator];
 }
 
-template <typename TypeUI>
-bool AnimationManager<TypeUI>::previousState() {
-    if (stateIterator == 0) return false;
-    stateIterator--;
+template <typename TypeUI, typename TypeLogic>
+bool AnimationManager<TypeUI, TypeLogic>::isComplete() {
+    return completeUI[stateUIIterator];
+}
+
+template <typename TypeUI, typename TypeLogic>
+bool AnimationManager<TypeUI, TypeLogic>::previousState() {
+    if (stateUIIterator == 0) return false;
+    stateUIIterator--;
     getCurrentUI().fastForward();
-    callbackEnableButtons(completeUI[stateIterator] ? -2 : -1);
+    callbackEnableButtons(completeUI[stateUIIterator]);
+    stateLogicIterator -= completeUI[stateUIIterator];
     return true;
 }
 
-template <typename TypeUI>
-bool AnimationManager<TypeUI>::previousCompleteState() {
+template <typename TypeUI, typename TypeLogic>
+bool AnimationManager<TypeUI, TypeLogic>::previousCompleteState() {
     bool lastModify = true;
     while (lastModify = previousState() && !isComplete());
     return lastModify;
 }
 
-template <typename TypeUI>
-bool AnimationManager<TypeUI>::nextState() {
-    if (stateIterator + 1 == stateUI.size()) return false;
-    stateIterator++;
+template <typename TypeUI, typename TypeLogic>
+bool AnimationManager<TypeUI, TypeLogic>::nextState() {
+    if (stateUIIterator + 1 == stateUI.size()) return false;
+    stateUIIterator++;
     getCurrentUI().fastForward();
-    callbackEnableButtons(completeUI[stateIterator] ? 2 : 1);
+    callbackEnableButtons(completeUI[stateUIIterator]);
+    stateLogicIterator += completeUI[stateUIIterator];
     return true;
 }
 
-template <typename TypeUI>
-bool AnimationManager<TypeUI>::nextCompleteState() {
+template <typename TypeUI, typename TypeLogic>
+bool AnimationManager<TypeUI, TypeLogic>::nextCompleteState() {
     bool lastModify = true;
     while (lastModify = nextState() && !isComplete());
     return lastModify;
 }
 
-template <typename TypeUI>
-void AnimationManager<TypeUI>::timePropagation (float deltaTime) {
+template <typename TypeUI, typename TypeLogic>
+void AnimationManager<TypeUI, TypeLogic>::timePropagation (float deltaTime) {
     getCurrentUI().timePropagation(deltaTime);
     if (!internalClock.isFinished()) return;
     popAnimation();
     getCurrentUI().calculatePositions();
+}
+
+template <typename TypeUI, typename TypeLogic>
+void AnimationManager<TypeUI, TypeLogic>::transformLogic (std::function<bool(TypeLogic&)> transformFunction) {
+    TypeLogic newLogicVersion = getCurrentLogic();
+    while (stateLogicIterator + 1 < stateLogic.size()) stateLogic.pop_back();
+    if (transformFunction(newLogicVersion))
+        stateLogic.push_back(newLogicVersion), stateLogicIterator++;
+}
+
+// ========== TEMPLATE-SPECIFIC FUNCTIONS: AnimationManager<UI::BinaryTree, DS::AVLTree> ==========
+
+template<>
+void AnimationManager<UI::BinaryTree, DS::AVLTree>::initCallbackFunctions() {
+    stateLogic[0].setCallbackCreateNode([this] (int value, bool isRoot) {
+        this->createAnimationEvent(
+            std::make_unique<BinaryTreeCreateNode>(std::to_string(value), isRoot)
+        );
+    });
+    stateLogic[0].setCallbackAddEdge([&] (int parent, int node, bool isLeft) {
+        this->createAnimationEvent(
+            std::make_unique<BinaryTreeAddEdge>(parent, node, isLeft)
+        );
+    });
+    stateLogic[0].setCallbackChangeRoot([&] (int newRoot) {
+        this->createAnimationEvent(
+            std::make_unique<BinaryTreeChangeRoot>(newRoot)
+        );
+    });
+    stateLogic[0].setCallbackDeleteNode([&] (int visualID) {
+        this->createAnimationEvent(
+            std::make_unique<BinaryTreeDeleteNode>(visualID)
+        );
+    });
+    stateLogic[0].setCallbackSwapValue([&] (int a, int b) {
+        this->createAnimationEvent(
+            std::make_unique<BinaryTreeSwapValue>(a, b)
+        );
+    });
+    stateLogic[0].setCallbackApplyAnimation([&]() {
+        this->nextStep();
+    });
+    stateLogic[0].setCallbackHighlightNode([&] (int nodeID) {
+        this->createAnimationEvent(
+            std::make_unique<BinaryTreeHighlightNode>(nodeID)
+        );
+    });
+    stateLogic[0].setCallbackCompleteAnimation([&]() {
+        this->createAnimationEvent(
+            std::make_unique<BinaryTreeCompleteAnimation>()
+        );
+    });
 }

@@ -7,23 +7,19 @@
 #include "../core/global-setting.hpp"
 #include "../components/binary-tree.hpp"
 #include "../core/utility.hpp"
+#include "../ds/avl-tree.hpp"
 
-template <typename TypeUI>
-class AnimationEvent {
-private:
-public:
-    virtual ~AnimationEvent() = default;
-    virtual int apply (TypeUI &ui) = 0;
-};
+#include "binary-tree-animation.hpp"
 
-template <typename TypeUI>
+template <typename TypeUI, typename TypeLogic>
 class AnimationManager {
 private:
     std::queue<std::unique_ptr<AnimationEvent<TypeUI>>> animationQueue;
     std::queue<int> eventIDQueue;
     std::vector<TypeUI> stateUI;
     std::vector<bool> completeUI;
-    int currentEventStep, stateIterator;
+    std::vector<TypeLogic> stateLogic;
+    int currentEventStep, stateUIIterator, stateLogicIterator;
     std::function<void(int)> callbackEnableButtons;
     CountDownClock<Setting::animationDelay> internalClock;
 
@@ -57,9 +53,14 @@ public:
     void popAnimation();
 
     /**
-     * @brief get the current UI to draw
+     * @brief get the current UI object
      */
     TypeUI& getCurrentUI();
+
+    /**
+     * @brief get the current logic object
+     */
+    TypeLogic& getCurrentLogic();
 
     /**
      * @brief check whether the current UI is complete
@@ -90,6 +91,16 @@ public:
      * @brief time propagration
      */
     void timePropagation (float deltaTime);
+
+    /**
+     * @brief Apply transformation on logic structure
+     */
+    void transformLogic (std::function<bool(TypeLogic&)> transformFunction);
+
+    /**
+     * Initialize callback functions
+     */
+    void initCallbackFunctions();
 };
 
-template class AnimationManager<UI::BinaryTree>;
+template class AnimationManager<UI::BinaryTree, DS::AVLTree>;

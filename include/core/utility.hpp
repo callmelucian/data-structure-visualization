@@ -12,6 +12,7 @@
 float magnitude(const sf::Vector2f &v);
 float distance(const sf::Vector2f &a, const sf::Vector2f &b);
 float cube(float a);
+int convert (const std::string &s);
 
 // Overloading operator declaration
 std::ostream& operator<<(std::ostream &oup, const sf::Vector2f &v);
