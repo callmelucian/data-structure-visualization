@@ -72,16 +72,19 @@ public:
     void fastForward();
 
     sf::FloatRect getGlobalBounds() const;
-
+    
+    float getRadius() const;
+    
+    friend void swapAnimatedNode(AnimatedNode &a, AnimatedNode &b);
+    
+    void highlightNode();
+    
+    void unHighlightNode();
+    
     sf::Vector2f getPosition() const;
 
-    float getRadius() const;
-
-    friend void swapAnimatedNode(AnimatedNode &a, AnimatedNode &b);
-
-    void highlightNode();
-
-    void unHighlightNode();
+    void setPosition (const sf::Vector2f vec);
+    void randomPosition();
 
     // draw node onto the screen
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

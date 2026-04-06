@@ -70,6 +70,10 @@ public:
     void fastForward();
 
     void changeNodeUI (int pos, AnimatedNode* ptr);
+
+    void copyPosition (const BinaryTree &o);
+
+    void printPosition() const;
 };
 
 } // namespace UI

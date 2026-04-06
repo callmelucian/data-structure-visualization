@@ -45,6 +45,7 @@ void AnimationManager<TypeUI, TypeLogic>::popAnimation() {
     }
 
     if (changeTracker) {
+        // getCurrentUI().fastForward();
         while (stateUIIterator + 1 < stateUI.size())
             stateUI.pop_back(), stateCode.pop_back(), completeUI.pop_back();
         stateUI.push_back(tempUI);
@@ -82,8 +83,10 @@ bool AnimationManager<TypeUI, TypeLogic>::isComplete() {
 template <typename TypeUI, typename TypeLogic>
 bool AnimationManager<TypeUI, TypeLogic>::previousState() {
     if (stateUIIterator == 0) return false;
+    // getCurrentUI().fastForward();
+    TypeUI tempUI = getCurrentUI();
     stateUIIterator--;
-    getCurrentUI().fastForward();
+    getCurrentUI().copyPosition(tempUI);
     callbackEnableButtons(completeUI[stateUIIterator]);
     stateLogicIterator -= completeUI[stateUIIterator];
     return true;
@@ -91,16 +94,20 @@ bool AnimationManager<TypeUI, TypeLogic>::previousState() {
 
 template <typename TypeUI, typename TypeLogic>
 bool AnimationManager<TypeUI, TypeLogic>::previousCompleteState() {
+    TypeUI tempUI = getCurrentUI();
+    // getCurrentUI().fastForward();
     bool lastModify = true;
     while (lastModify = previousState() && !isComplete());
+    getCurrentUI().copyPosition(tempUI);
     return lastModify;
 }
 
 template <typename TypeUI, typename TypeLogic>
 bool AnimationManager<TypeUI, TypeLogic>::nextState() {
     if (stateUIIterator + 1 == stateUI.size()) return false;
+    TypeUI tempUI = getCurrentUI();
     stateUIIterator++;
-    getCurrentUI().fastForward();
+    getCurrentUI().copyPosition(tempUI);
     callbackEnableButtons(completeUI[stateUIIterator]);
     stateLogicIterator += completeUI[stateUIIterator];
     return true;
@@ -108,8 +115,10 @@ bool AnimationManager<TypeUI, TypeLogic>::nextState() {
 
 template <typename TypeUI, typename TypeLogic>
 bool AnimationManager<TypeUI, TypeLogic>::nextCompleteState() {
+    TypeUI tempUI = getCurrentUI();
     bool lastModify = true;
     while (lastModify = nextState() && !isComplete());
+    getCurrentUI().copyPosition(tempUI);
     return lastModify;
 }
 

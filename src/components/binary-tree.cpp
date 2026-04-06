@@ -212,4 +212,20 @@ void BinaryTree::changeNodeUI (int pos, AnimatedNode* ptr) {
     nodeUI[pos] = ptr;
 }
 
+void BinaryTree::copyPosition (const BinaryTree &o) {
+    for (int i = 0; i < nodeUI.size(); i++) {
+        if (i < o.nodeUI.size())
+            nodeUI[i]->setPosition(o.nodeUI[i]->getPosition());
+        else nodeUI[i]->randomPosition();
+    }
+    highlighter.setPosition(o.highlighter.getPosition());
+    setOrigin(o.getOrigin());
+}
+
+void BinaryTree::printPosition() const {
+    for (int i = 0; i < nodeUI.size(); i++)
+        std::cerr << nodeUI[i]->getPosition() << " ";
+    std::cerr << "\n";
+}
+
 } // namespace UI

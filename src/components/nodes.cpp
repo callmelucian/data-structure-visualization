@@ -100,10 +100,6 @@ sf::FloatRect AnimatedNode::getGlobalBounds() const {
     return nodeUI.getGlobalBounds();
 }
 
-sf::Vector2f AnimatedNode::getPosition() const {
-    return nodeUI.getPosition();
-}
-
 float AnimatedNode::getRadius() const {
     return nodeUI.getRadius();
 }
@@ -118,6 +114,21 @@ void AnimatedNode::highlightNode() {
 
 void AnimatedNode::unHighlightNode() {
     nodeUI.setColor(Theme::getTransparent());
+}
+
+sf::Vector2f AnimatedNode::getPosition() const {
+    return nodeUI.getPosition();
+}
+
+void AnimatedNode::setPosition (const sf::Vector2f vec) {
+    nodeUI.setPosition(vec);
+}
+
+void AnimatedNode::randomPosition() {
+    nodeUI.setPosition({
+        randFloat(0, Setting::screenWidth),
+        randFloat(0, Setting::screenHeight)
+    });
 }
 
 void AnimatedNode::draw(sf::RenderTarget& target, sf::RenderStates states) const {
