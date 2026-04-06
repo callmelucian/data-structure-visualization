@@ -57,75 +57,121 @@ Node* AVLTree::selfBalancing (Node *ptr) {
     updateHeight(ptr);
     int balanceFactor = getBalance(ptr);
 
+    callbackHighlightCode(0);
+    callbackApplyAnimation();
+    callbackHighlightCode(1);
+    callbackApplyAnimation();
+    callbackHighlightCode(2);
+    callbackApplyAnimation();
+
     // rebalance tree: unbalanceness caused by left subtree
+    callbackHighlightCode(3);
+    callbackApplyAnimation();
     if (balanceFactor > 1) {
+        callbackHighlightCode(4);
+        callbackApplyAnimation();
         if (getBalance(ptr->lpt) < 0) { // turn the Left-Right case into the Left-Left case
             ptr->lpt = leftRotation(ptr->lpt);
+            callbackHighlightCode(5);
             callbackAddEdge(getVisualID(ptr), getVisualID(ptr->lpt), true);
             callbackHighlightNode(getVisualID(ptr->lpt));
-            callbackHighlightCode(4);
             callbackApplyAnimation();
         }
         // resolve the Left-Left unbalanceness
+        callbackHighlightCode(6);
+        callbackApplyAnimation();
+
         Node* newRoot = rightRotation(ptr);
         callbackHighlightNode(getVisualID(newRoot));
-        callbackHighlightCode(5);
         return newRoot;
     }
 
     // rebalance tree: unbalanceness caused by right subtree
+    callbackHighlightCode(8);
+    callbackApplyAnimation();
     if (balanceFactor < -1) {
+        callbackHighlightCode(9);
+        callbackApplyAnimation();
         if (getBalance(ptr->rpt) > 0) { // turn the Right-Left case into the Right-Right case
             ptr->rpt = rightRotation(ptr->rpt);
+            callbackHighlightCode(10);
             callbackAddEdge(getVisualID(ptr), getVisualID(ptr->rpt), false);
             callbackHighlightNode(getVisualID(ptr->lpt));
-            callbackHighlightCode(8);
             callbackApplyAnimation();
         }
         // resolve the Right-Right unbalanceness
+        callbackHighlightCode(11);
+        callbackApplyAnimation();
+
         Node* newRoot = leftRotation(ptr);
         callbackHighlightNode(getVisualID(newRoot));
-        callbackHighlightCode(9);
         return newRoot;
     }
 
-    callbackHighlightCode(11);
+    callbackHighlightCode(13);
     callbackApplyAnimation();
     return ptr;
 }
 
 Node* AVLTree::insertValue (Node *ptr, int insertKey) {
     // insertion happen at this node
+    callbackHighlightCode(0);
+    callbackHighlightNode(getVisualID(ptr));
+    callbackApplyAnimation();
+
+    callbackHighlightCode(1);
+    callbackApplyAnimation();
+
+    // empty node, insertion
     if (ptr == nullptr) {
+        callbackHighlightCode(2);
         callbackCreateNode(insertKey, false);
-        callbackHighlightCode(1);
         Node* newNode = new Node(insertKey, nodeCounter++);
         return newNode;
     }
     
+    callbackHighlightCode(3);
     callbackHighlightNode(getVisualID(ptr));
-    // recursive call for either subtree
+    callbackApplyAnimation();
+
+    // node already inserted, no insertion happen
     if (insertKey == ptr->value) {
-        callbackHighlightCode(2);
+        callbackHighlightCode(4);
+        callbackApplyAnimation();
         return ptr->count++, ptr;
     }
     
+    // go to left subtree
+    callbackHighlightCode(5);
     callbackApplyAnimation();
     if (insertKey < ptr->value) {
-        callbackHighlightCode(3);
+        callbackHighlightCode(6);
+        callbackApplyAnimation();
         ptr->lpt = insertValue(ptr->lpt, insertKey);
         callbackAddEdge(getVisualID(ptr), getVisualID(ptr->lpt), true);
         callbackApplyAnimation();
-    }
-    if (insertKey > ptr->value) {
-        callbackHighlightCode(4);
-        ptr->rpt = insertValue(ptr->rpt, insertKey);
-        callbackAddEdge(getVisualID(ptr), getVisualID(ptr->rpt), false);
+
+        callbackHighlightCode(6);
+        callbackHighlightNode(getVisualID(ptr));
         callbackApplyAnimation();
     }
 
-    callbackHighlightNode(getVisualID(ptr));
-    callbackHighlightCode(5);
+    // go to right subtree
+    callbackHighlightCode(7);
+    callbackApplyAnimation();
+    if (insertKey > ptr->value) {
+        callbackHighlightCode(8);
+        callbackApplyAnimation();
+        ptr->rpt = insertValue(ptr->rpt, insertKey);
+        callbackAddEdge(getVisualID(ptr), getVisualID(ptr->rpt), false);
+        callbackApplyAnimation();
+
+        callbackHighlightCode(8);
+        callbackHighlightNode(getVisualID(ptr));
+        callbackApplyAnimation();
+    }
+
+    callbackHighlightCode(9);
     callbackApplyAnimation();
 
     callbackLoadCode(CodeRepo::AVL_TREE_SELF_BALANCING);

@@ -5,8 +5,10 @@ namespace CodeRepo {
 
 inline const std::vector<std::string> AVL_TREE_INSERT = {
     "Node* insertValue (Node *ptr, int insertKey) {",
-    "   if (ptr == nullptr) return new Node(insertKey);",
-    "   if (insertKey == ptr->value) return ptr;",
+    "   if (ptr == nullptr)",
+    "      return new Node(insertKey);",
+    "   if (insertKey == ptr->value)",
+    "      return ptr;",
     "   if (insertKey < ptr->value)",
     "      ptr->lpt = insertValue(ptr->lpt, insertKey);",
     "   if (insertKey > ptr->value)",
