@@ -10,9 +10,16 @@
 
 // Function Declarations
 float magnitude(const sf::Vector2f &v);
+float squaredMagnitude (const sf::Vector2f &v);
 float distance(const sf::Vector2f &a, const sf::Vector2f &b);
+float squaredDistance (const sf::Vector2f &a, const sf::Vector2f &b);
 float cube(float a);
 int convert (const std::string &s);
+
+/**
+ * @brief Return a unit vector pointing from a to b
+ */
+sf::Vector2f unitVector (const sf::Vector2f &a, const sf::Vector2f &b);
 
 // Overloading operator declaration
 std::ostream& operator<<(std::ostream &oup, const sf::Vector2f &v);

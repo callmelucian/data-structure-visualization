@@ -4,8 +4,20 @@ float magnitude(const sf::Vector2f &v) {
     return std::sqrt(v.x * v.x + v.y * v.y); 
 }
 
+float squaredMagnitude (const sf::Vector2f &v) {
+    return v.x * v.x + v.y * v.y;
+}
+
 float distance(const sf::Vector2f &a, const sf::Vector2f &b) { 
     return magnitude(a - b); 
+}
+
+float squaredDistance (const sf::Vector2f &a, const sf::Vector2f &b) {
+    return squaredMagnitude(a - b);
+}
+
+sf::Vector2f unitVector (const sf::Vector2f &a, const sf::Vector2f &b) {
+    return (b - a) / distance(a, b);
 }
 
 float cube(float a) { 

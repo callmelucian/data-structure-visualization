@@ -26,11 +26,18 @@ int main() {
 
     // anti aliasing
     sf::ContextSettings settings;
-    settings.antiAliasingLevel = 100;
+    settings.antiAliasingLevel = 8;
 
     // initialize window & fonts
-    auto window = sf::RenderWindow(sf::VideoMode({(int)Setting::screenWidth, (int)Setting::screenHeight}), "Data Structures Visualizer");
+    auto window = sf::RenderWindow(
+        sf::VideoMode({(int)Setting::screenWidth, (int)Setting::screenHeight}),
+        "Data Structures Visualizer",
+        sf::Style::Default,
+        sf::State::Windowed,
+        settings
+    );
     window.setPosition({50, 50});
+    window.setFramerateLimit(60);
     SceneManager manager;
 
     // manager.changeScene(std::make_unique<TestButtonScene>(window));

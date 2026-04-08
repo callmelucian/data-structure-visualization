@@ -23,6 +23,7 @@ add_executable(DataVisApp
     src/components/slider.cpp
     src/components/highlight-circle.cpp
     src/components/code-highlighter.cpp
+    src/components/graph.cpp
     src/core/utility.cpp
     src/animation/animation-manager.cpp
     src/animation/events.cpp

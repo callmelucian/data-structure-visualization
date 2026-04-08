@@ -4,7 +4,7 @@ const float eps = 1e-6;
 
 namespace UI {
 
-// Node Implementation
+// ========== NODE ==========
 Node::Node(const std::string &msg, float radius, float thickness) :
     circle(radius, 100), label(Theme::ibmRegular, msg) {
     
@@ -46,12 +46,19 @@ void Node::setColor (const sf::Color &color) {
     circle.setFillColor(color);
 }
 
+void Node::randomPosition() {
+    circle.setPosition({
+        randFloat(0, Setting::screenWidth),
+        randFloat(0, Setting::screenHeight)
+    });
+}
+
 void Node::handleMousePress(const sf::Vector2f &mousePos) {}
 void Node::handleMouseMovement(const sf::Vector2f &mousePos) {}
 void Node::handleMouseRelease(const sf::Vector2f &mousePos) {}
 void Node::handleTextEntered(const char &unicode) {}
 
-// AnimatedNode Implementation
+// ========== ANIMATED NODE ==========
 AnimatedNode::AnimatedNode(const std::string &msg, float radius, float thickness) :
     nodeUI(msg, radius, thickness), 
     targetPosition({randFloat(0, Setting::screenWidth), randFloat(0, Setting::screenHeight)}) {
@@ -125,18 +132,41 @@ void AnimatedNode::setPosition (const sf::Vector2f vec) {
 }
 
 void AnimatedNode::randomPosition() {
-    nodeUI.setPosition({
-        randFloat(0, Setting::screenWidth),
-        randFloat(0, Setting::screenHeight)
-    });
+    nodeUI.randomPosition();
 }
 
 void AnimatedNode::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     nodeUI.draw(target, states);
 }
 
+// ========== FLOATING NODE ==========
+FloatingNode::FloatingNode(const std::string &msg, float radius, float thickness) :
+    nodeUI(msg, radius, thickness) {
+        nodeUI.randomPosition();
+}
 
-// Standalone Helper Implementation
+void FloatingNode::applyAcceleration (sf::Vector2f targetAcceleration) {
+    acceleration = targetAcceleration;
+}
+
+void FloatingNode::addAcceleration (sf::Vector2f addedAcceleration) {
+    acceleration += addedAcceleration;
+}
+
+void FloatingNode::resetAcceleration() {
+    acceleration = {0, 0};
+}
+
+void FloatingNode::timePropagation (float deltaTime) {
+    velocity += acceleration * deltaTime;
+    nodeUI.setPosition(nodeUI.getPosition() + velocity * deltaTime);
+}
+
+sf::Vector2f FloatingNode::getPosition() const {
+    return nodeUI.getPosition();
+}
+
+// ========== HELPER FUNCTIONS ==========
 void drawEdge(sf::RenderTarget &target, sf::RenderStates state, const AnimatedNode* from, const AnimatedNode* to, float thickness) {
     if (from->getPosition() == to->getPosition()) return;
 

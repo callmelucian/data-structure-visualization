@@ -17,5 +17,5 @@ namespace Setting {
     inline constexpr float focusX = 1600;
     inline constexpr float focusY = 600;
 
-    inline constexpr float animationDelay = 0.5f;
+    inline constexpr float animationDelay = 1.f;
 };

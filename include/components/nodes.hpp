@@ -34,6 +34,8 @@ public:
 
     void setColor (const sf::Color &color);
 
+    void randomPosition();
+
     // handle mouse press
     void handleMousePress(const sf::Vector2f &mousePos) override;
     
@@ -88,6 +90,25 @@ public:
 
     // draw node onto the screen
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+};
+
+class FloatingNode : public sf::Drawable {
+private:
+    Node nodeUI;
+    sf::Vector2f velocity, acceleration;
+
+public:
+    FloatingNode(const std::string &msg, float radius = 30.f, float thickness = 2.f);
+
+    void applyAcceleration (sf::Vector2f targetAcceleration);
+
+    void addAcceleration (sf::Vector2f addedAcceleration);
+
+    void resetAcceleration();
+
+    sf::Vector2f getPosition() const;
+
+    void timePropagation (float deltaTime);
 };
 
 void drawEdge(sf::RenderTarget &target, sf::RenderStates state, const AnimatedNode* from, const AnimatedNode* to, float thickness = 2.f);
