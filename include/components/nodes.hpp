@@ -106,11 +106,17 @@ public:
 
     void resetAcceleration();
 
-    sf::Vector2f getPosition() const;
+    void applyDamping(float coefficient);
 
     void timePropagation (float deltaTime);
+
+    sf::Vector2f getPosition() const;
+    float getRadius() const;
+
+    void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };
 
 void drawEdge(sf::RenderTarget &target, sf::RenderStates state, const AnimatedNode* from, const AnimatedNode* to, float thickness = 2.f);
+void drawEdge(sf::RenderTarget &target, sf::RenderStates state, const FloatingNode* from, const FloatingNode* to, float thickness = 2.f);
 
 } // namespace UI

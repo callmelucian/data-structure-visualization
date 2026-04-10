@@ -17,6 +17,7 @@ float squaredDistance (const sf::Vector2f &a, const sf::Vector2f &b) {
 }
 
 sf::Vector2f unitVector (const sf::Vector2f &a, const sf::Vector2f &b) {
+    if (a == b) return sf::Vector2f({0, 0});
     return (b - a) / distance(a, b);
 }
 

@@ -15,7 +15,9 @@ include_directories(include)
 # 5. Create the executable from your source files
 add_executable(DataVisApp
     src/main.cpp
+    
     src/ds/avl-tree.cpp
+
     src/components/binary-tree.cpp
     src/components/button.cpp
     src/components/input-field.cpp
@@ -24,10 +26,15 @@ add_executable(DataVisApp
     src/components/highlight-circle.cpp
     src/components/code-highlighter.cpp
     src/components/graph.cpp
+
     src/core/utility.cpp
+
     src/animation/animation-manager.cpp
     src/animation/events.cpp
+
     src/scenes/avl-tree-scene.cpp
+    src/scenes/scene-manager.cpp
+    src/scenes/dijkstra-scene.cpp
 )
 
 # 6. Link SFML to your app

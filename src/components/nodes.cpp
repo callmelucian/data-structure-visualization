@@ -47,7 +47,7 @@ void Node::setColor (const sf::Color &color) {
 }
 
 void Node::randomPosition() {
-    circle.setPosition({
+    setPosition({
         randFloat(0, Setting::screenWidth),
         randFloat(0, Setting::screenHeight)
     });
@@ -157,17 +157,55 @@ void FloatingNode::resetAcceleration() {
     acceleration = {0, 0};
 }
 
+void FloatingNode::applyDamping (float coefficient) {
+    velocity *= coefficient;
+}
+
 void FloatingNode::timePropagation (float deltaTime) {
     velocity += acceleration * deltaTime;
-    nodeUI.setPosition(nodeUI.getPosition() + velocity * deltaTime);
+    nodeUI.setPosition(nodeUI.getPosition() + velocity * deltaTime * 50.f);
 }
 
 sf::Vector2f FloatingNode::getPosition() const {
     return nodeUI.getPosition();
 }
 
+float FloatingNode::getRadius() const {
+    return nodeUI.getRadius();
+}
+
+void FloatingNode::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+    target.draw(nodeUI, states);
+}
+
 // ========== HELPER FUNCTIONS ==========
 void drawEdge(sf::RenderTarget &target, sf::RenderStates state, const AnimatedNode* from, const AnimatedNode* to, float thickness) {
+    if (from->getPosition() == to->getPosition()) return;
+
+    // get centers of the endpoints
+    sf::Vector2f fromCenter = from->getPosition();
+    sf::Vector2f toCenter = to->getPosition();
+    sf::Vector2f shift = (toCenter - fromCenter) * from->getRadius() / distance(fromCenter, toCenter);
+
+    // pre calculations
+    sf::Vector2f start = fromCenter + shift;
+    sf::Vector2f end = toCenter - shift;
+    sf::Vector2f delta = end - start;
+    float dist = distance(start, end);
+    float angle = std::atan2(delta.y, delta.x);
+
+    // setup line
+    sf::RectangleShape line({dist, thickness});
+    line.setOrigin({0, thickness / 2.0f});
+    line.setPosition(start);
+    line.setRotation(sf::radians(angle));
+    line.setFillColor(sf::Color::Black);
+
+    // draw
+    target.draw(line, state);
+}
+
+void drawEdge(sf::RenderTarget &target, sf::RenderStates state, const FloatingNode* from, const FloatingNode* to, float thickness) {
     if (from->getPosition() == to->getPosition()) return;
 
     // get centers of the endpoints
