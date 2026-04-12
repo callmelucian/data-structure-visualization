@@ -6,7 +6,7 @@ namespace UI {
 
 // ========== NODE ==========
 Node::Node(const std::string &msg, float radius, float thickness) :
-    circle(radius, 100), label(Theme::ibmRegular, msg) {
+    circle(radius, 100), label(Theme::ibmRegular, msg), annotation(Theme::ibmRegular) {
     
     // setup circle
     circle.setOrigin({radius, radius});
@@ -14,11 +14,16 @@ Node::Node(const std::string &msg, float radius, float thickness) :
     circle.setOutlineColor(Theme::getPrimary());
     circle.setOutlineThickness(thickness);
 
-    // setup annotation
+    // setup label
     float squareSize = std::sqrt(2 * radius * radius);
     label.setAutoCharacterSize(squareSize, squareSize);
     label.setFillColor(sf::Color::Black);
     label.centerOrigin();
+
+    // setup annotation
+    annotation.setCharacterSize(20);
+    annotation.setFillColor(sf::Color::Red);
+    annotation.setPosition({0, -radius - 15.f});
 }
 
 void Node::draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -28,6 +33,7 @@ void Node::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     // show circle and annotation
     target.draw(circle, states);
     target.draw(label, states);
+    target.draw(annotation, states);
 }
 
 float Node::getRadius() const {
@@ -51,6 +57,11 @@ void Node::randomPosition() {
         randFloat(0, Setting::screenWidth),
         randFloat(0, Setting::screenHeight)
     });
+}
+
+void Node::setAnnotation (const std::string &msg) {
+    annotation.setString(msg);
+    annotation.centerOrigin();
 }
 
 void Node::handleMousePress(const sf::Vector2f &mousePos) {}
@@ -164,6 +175,10 @@ void FloatingNode::applyDamping (float coefficient) {
 void FloatingNode::timePropagation (float deltaTime) {
     velocity += acceleration * deltaTime;
     nodeUI.setPosition(nodeUI.getPosition() + velocity * deltaTime * 50.f);
+}
+
+void FloatingNode::setAnnotation (const std::string &msg) {
+    nodeUI.setAnnotation(msg);
 }
 
 sf::Vector2f FloatingNode::getPosition() const {

@@ -39,6 +39,12 @@ public:
 
     void insertEdge (int fromNode, int toNode);
 
+    void setAnnotation (int nodeID, int value);
+
+    void setTargetOrigin (const sf::Vector2f &pos);
+
+    void autosetTargetOrigin();
+
     sf::FloatRect getBoundary() const override;
 
     void handleMousePress (const sf::Vector2f &mousePos) override;

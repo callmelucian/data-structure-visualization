@@ -20,6 +20,9 @@
 class DijkstraScene : public Scene {
 private:
     UI::Graph graph;
+    UI::Button insertButton;
+    int counter;
+
 public:
     DijkstraScene(const sf::RenderWindow &window);
 

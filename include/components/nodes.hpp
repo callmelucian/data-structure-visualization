@@ -18,7 +18,7 @@ namespace UI {
 class Node : public UI::Base {
 private:
     sf::CircleShape circle;
-    UI::Text label;
+    UI::Text label, annotation;
 
 public:
     Node(const std::string &msg, float radius = 30.f, float thickness = 2.f);
@@ -35,6 +35,8 @@ public:
     void setColor (const sf::Color &color);
 
     void randomPosition();
+
+    void setAnnotation (const std::string &msg);
 
     // handle mouse press
     void handleMousePress(const sf::Vector2f &mousePos) override;
@@ -109,6 +111,8 @@ public:
     void applyDamping(float coefficient);
 
     void timePropagation (float deltaTime);
+
+    void setAnnotation (const std::string &msg);
 
     sf::Vector2f getPosition() const;
     float getRadius() const;

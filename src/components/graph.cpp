@@ -71,6 +71,35 @@ void Graph::timePropagation (float deltaTime) {
     }
 
     // re-align origin
+    if (getOrigin() == targetOrigin) {
+        autosetTargetOrigin();
+        setOrigin(targetOrigin);
+    }
+    else {
+        autosetTargetOrigin();
+        sf::Vector2f displacement = targetOrigin - getOrigin();
+        if (magnitude(displacement) < eps) setOrigin(targetOrigin);
+        else {
+            sf::Vector2f newPosition = getOrigin() + displacement * Setting::animationFactor * deltaTime;
+            setOrigin(newPosition);
+        }
+    }
+}
+
+void Graph::insertNode (int label) {
+    nodes.push_back(new FloatingNode(std::to_string(label)));
+    autosetTargetOrigin();
+}
+
+void Graph::insertEdge (int fromNode, int toNode) {
+    edges.emplace(fromNode, toNode);
+}
+
+void Graph::setTargetOrigin (const sf::Vector2f &pos) {
+    targetOrigin = pos;
+}
+
+void Graph::autosetTargetOrigin() {
     float positionXMin = 0.f, positionXMax = 0.f, positionYMin = 0.f, positionYMax = 0.f;
     for (FloatingNode* ptr : nodes) {
         positionXMin = positionXMax = ptr->getPosition().x;
@@ -84,19 +113,16 @@ void Graph::timePropagation (float deltaTime) {
     }
     float originX = (positionXMin + positionXMax) / 2.f;
     float originY = (positionYMin + positionYMax) / 2.f;
-    setOrigin({originX, originY});
-}
-
-void Graph::insertNode (int label) {
-    nodes.push_back(new FloatingNode(std::to_string(label)));
-}
-
-void Graph::insertEdge (int fromNode, int toNode) {
-    edges.emplace(fromNode, toNode);
+    targetOrigin = {originX, originY};
 }
 
 sf::FloatRect Graph::getBoundary() const {
     return sf::FloatRect();
+}
+
+void Graph::setAnnotation (int nodeID, int value) {
+    std::string msg = (value == INT_MAX ? "INF" : std::to_string(value));
+    if (nodeID < nodes.size()) nodes[nodeID]->setAnnotation(msg);
 }
 
 void Graph::handleMousePress (const sf::Vector2f &mousePos) {}
@@ -107,10 +133,10 @@ void Graph::handleTextEntered (const char &unicode) {}
 void Graph::draw (sf::RenderTarget& target, sf::RenderStates states) const {
     states.transform *= getTransform();
 
-    for (UI::FloatingNode* ptr : nodes)
-        target.draw(*ptr, states);
     for (auto [fromID, toID] : edges)
         drawEdge(target, states, nodes[fromID], nodes[toID]);
+    for (UI::FloatingNode* ptr : nodes)
+        target.draw(*ptr, states);
     
     sf::CircleShape dot(4.f);
     dot.setFillColor(sf::Color::Red);
