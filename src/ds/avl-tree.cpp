@@ -3,8 +3,8 @@
 namespace DS {
 
 // === Struct Node ===
-Node::Node() : value(0), visualID(0), height(0), count(0), lpt(nullptr), rpt(nullptr) {}
-Node::Node (int value, int visualID) : value(value), visualID(visualID), height(1), count(1), lpt(nullptr), rpt(nullptr) {}
+AVLTree::Node::Node() : value(0), visualID(0), height(0), count(0), lpt(nullptr), rpt(nullptr) {}
+AVLTree::Node::Node (int value, int visualID) : value(value), visualID(visualID), height(1), count(1), lpt(nullptr), rpt(nullptr) {}
 
 // ========== AVL TREE PRIVATE FUNCTIONS ==========
 
@@ -24,36 +24,36 @@ void AVLTree::updateHeight(Node *ptr) {
     ptr->height = 1 + std::max(getHeight(ptr->lpt), getHeight(ptr->rpt));
 }
 
-Node* AVLTree::leftRotation(Node *ptr) {
-    Node* x = ptr->rpt; // is surely a valid pointer
-    Node* tmp = x->lpt; // this one could be nullptr
+AVLTree::Node* AVLTree::leftRotation(Node *ptr) {
+    Node* rightChild = ptr->rpt; // is surely a valid pointer
+    Node* tmp = rightChild->lpt; // this one could be a nullptr
 
-    x->lpt = ptr;
-    callbackAddEdge(getVisualID(x), getVisualID(ptr), true);
+    rightChild->lpt = ptr;
+    callbackAddEdge(getVisualID(rightChild), getVisualID(ptr), true);
     ptr->rpt = tmp;
     callbackAddEdge(getVisualID(ptr), getVisualID(tmp), false); // tmp could be nullptr
-    updateHeight(ptr), updateHeight(x);
-    return x;
+    updateHeight(ptr), updateHeight(rightChild);
+    return rightChild;
 }
 
-Node* AVLTree::rightRotation(Node *ptr) {
-    Node* x = ptr->lpt; // is surely a valid pointer
-    Node* tmp = x->rpt; // this one could be nullptr
+AVLTree::Node* AVLTree::rightRotation(Node *ptr) {
+    Node* leftChild = ptr->lpt; // is surely a valid pointer
+    Node* tmp = leftChild->rpt; // this one could be a nullptr
 
-    x->rpt = ptr;
-    callbackAddEdge(getVisualID(x), getVisualID(ptr), false);
+    leftChild->rpt = ptr;
+    callbackAddEdge(getVisualID(leftChild), getVisualID(ptr), false);
     ptr->lpt = tmp;
     callbackAddEdge(getVisualID(ptr), getVisualID(tmp), true); // tmp could be nullptr
-    updateHeight(ptr), updateHeight(x);
-    return x;
+    updateHeight(ptr), updateHeight(leftChild);
+    return leftChild;
 }
 
-Node* AVLTree::getSmallestKey (Node *ptr) {
+AVLTree::Node* AVLTree::getSmallestKey (Node *ptr) {
     if (ptr == nullptr or ptr->lpt == nullptr) return ptr;
     return getSmallestKey(ptr->lpt);
 }
 
-Node* AVLTree::selfBalancing (Node *ptr) {
+AVLTree::Node* AVLTree::selfBalancing (Node *ptr) {
     updateHeight(ptr);
     int balanceFactor = getBalance(ptr);
 
@@ -113,7 +113,7 @@ Node* AVLTree::selfBalancing (Node *ptr) {
     return ptr;
 }
 
-Node* AVLTree::insertValue (Node *ptr, int insertKey) {
+AVLTree::Node* AVLTree::insertValue (Node *ptr, int insertKey) {
     // insertion happen at this node
     callbackHighlightCode(0);
     callbackHighlightNode(getVisualID(ptr));
@@ -180,7 +180,7 @@ Node* AVLTree::insertValue (Node *ptr, int insertKey) {
     return newRoot;
 }
 
-Node* AVLTree::eraseValue (Node *ptr, int deleteKey) {
+AVLTree::Node* AVLTree::eraseValue (Node *ptr, int deleteKey) {
     if (ptr == nullptr) return nullptr;
 
     callbackHighlightNode(getVisualID(ptr));
@@ -232,7 +232,7 @@ Node* AVLTree::eraseValue (Node *ptr, int deleteKey) {
     return ptr ? selfBalancing(ptr) : nullptr;
 }
 
-Node* AVLTree::copyNodes(Node* otherNode) {
+AVLTree::Node* AVLTree::copyNodes(Node* otherNode) {
     if (otherNode == nullptr) return nullptr;
     Node* newNode = new Node(otherNode->value, otherNode->visualID);
     newNode->height = otherNode->height;

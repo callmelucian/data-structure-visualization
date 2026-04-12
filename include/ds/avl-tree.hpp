@@ -6,16 +6,16 @@
 #include "../core/code-snippets.hpp"
 
 namespace DS {
-struct Node {
-    int value, visualID, height, count;
-    Node *lpt, *rpt;
-
-    Node();
-    Node(int value, int visualID);
-};
-
+    
 class AVLTree {
 private:
+    struct Node {
+        int value, visualID, height, count;
+        Node *lpt, *rpt;
+    
+        Node();
+        Node(int value, int visualID);
+    };
     Node *root;
     int nodeCounter;
 
