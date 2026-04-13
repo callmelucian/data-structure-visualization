@@ -151,9 +151,8 @@ void AnimatedNode::draw(sf::RenderTarget& target, sf::RenderStates states) const
 }
 
 // ========== FLOATING NODE ==========
-FloatingNode::FloatingNode(const std::string &msg, float radius, float thickness) :
-    nodeUI(msg, radius, thickness) {
-        nodeUI.randomPosition();
+FloatingNode::FloatingNode(const std::string &msg, float radius, float thickness) : Node(msg, radius, thickness), isClicked(false), isActivated(false) {
+    randomPosition();
 }
 
 void FloatingNode::applyAcceleration (sf::Vector2f targetAcceleration) {
@@ -174,23 +173,53 @@ void FloatingNode::applyDamping (float coefficient) {
 
 void FloatingNode::timePropagation (float deltaTime) {
     velocity += acceleration * deltaTime;
-    nodeUI.setPosition(nodeUI.getPosition() + velocity * deltaTime * 50.f);
+    setPosition(getPosition() + velocity * deltaTime * 50.f);
 }
 
-void FloatingNode::setAnnotation (const std::string &msg) {
-    nodeUI.setAnnotation(msg);
+// sf::Vector2f FloatingNode::getPosition() const {
+//     return nodeUI.getPosition();
+// }
+
+// float FloatingNode::getRadius() const {
+//     return nodeUI.getRadius();
+// }
+
+// void FloatingNode::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+//     target.draw(nodeUI, states);
+// }
+
+void FloatingNode::activateNode() {
+    isActivated = true;
+    setColor(sf::Color::Green);
 }
 
-sf::Vector2f FloatingNode::getPosition() const {
-    return nodeUI.getPosition();
+void FloatingNode::deactivateNode() {
+    isActivated = false;
+    setColor(Theme::getButton());
 }
 
-float FloatingNode::getRadius() const {
-    return nodeUI.getRadius();
+void FloatingNode::handleMousePress (const sf::Vector2f &mousePos) {
+    if (!containPosition(mousePos) || isActivated) return;
+    setColor(Theme::getPressedButton());
+    setScale({0.97f, 0.97f});
+    isClicked = true;
 }
 
-void FloatingNode::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    target.draw(nodeUI, states);
+void FloatingNode::handleMouseRelease (const sf::Vector2f &mousePos) {
+    if (!isClicked || isActivated) return;
+    setColor(containPosition(mousePos) ?
+        Theme::getHoveredButton() : Theme::getButton()
+    );
+    setScale({1.f, 1.f});
+    isClicked = false;
+    callbackOnClick();
+}
+
+void FloatingNode::handleMouseMovement (const sf::Vector2f &mousePos) {
+    if (isClicked || isActivated) return;
+    setColor(containPosition(mousePos) ?
+        Theme::getHoveredButton() : Theme::getButton()
+    );
 }
 
 // ========== HELPER FUNCTIONS ==========
@@ -220,30 +249,80 @@ void drawEdge(sf::RenderTarget &target, sf::RenderStates state, const AnimatedNo
     target.draw(line, state);
 }
 
-void drawEdge(sf::RenderTarget &target, sf::RenderStates state, const FloatingNode* from, const FloatingNode* to, float thickness) {
+// void drawEdge(sf::RenderTarget &target, sf::RenderStates state, const FloatingNode* from, const FloatingNode* to, sf::Color edgeColor, float thickness) {
+//     if (from->getPosition() == to->getPosition()) return;
+
+//     // get centers of the endpoints
+//     sf::Vector2f fromCenter = from->getPosition();
+//     sf::Vector2f toCenter = to->getPosition();
+//     sf::Vector2f shift = (toCenter - fromCenter) * from->getRadius() / distance(fromCenter, toCenter);
+
+//     // pre calculations
+//     sf::Vector2f start = fromCenter + shift;
+//     sf::Vector2f end = toCenter - shift;
+//     sf::Vector2f delta = end - start;
+//     float dist = distance(start, end);
+//     float angle = std::atan2(delta.y, delta.x);
+
+//     // setup line
+//     sf::RectangleShape line({dist, thickness});
+//     line.setOrigin({0, thickness / 2.0f});
+//     line.setPosition(start);
+//     line.setRotation(sf::radians(angle));
+//     line.setFillColor(edgeColor);
+
+//     // draw
+//     target.draw(line, state);
+// }
+
+void drawEdge(sf::RenderTarget &target, sf::RenderStates state, 
+              const FloatingNode* from, const FloatingNode* to,
+              int weight, sf::Color edgeColor, float thickness) {
+    
     if (from->getPosition() == to->getPosition()) return;
 
-    // get centers of the endpoints
     sf::Vector2f fromCenter = from->getPosition();
     sf::Vector2f toCenter = to->getPosition();
-    sf::Vector2f shift = (toCenter - fromCenter) * from->getRadius() / distance(fromCenter, toCenter);
-
-    // pre calculations
+    float d = distance(fromCenter, toCenter);
+    
+    sf::Vector2f shift = (toCenter - fromCenter) * from->getRadius() / d;
     sf::Vector2f start = fromCenter + shift;
     sf::Vector2f end = toCenter - shift;
+    
     sf::Vector2f delta = end - start;
-    float dist = distance(start, end);
+    float dist = std::sqrt(delta.x * delta.x + delta.y * delta.y);
     float angle = std::atan2(delta.y, delta.x);
 
-    // setup line
     sf::RectangleShape line({dist, thickness});
     line.setOrigin({0, thickness / 2.0f});
     line.setPosition(start);
     line.setRotation(sf::radians(angle));
-    line.setFillColor(sf::Color::Black);
-
-    // draw
+    line.setFillColor(edgeColor);
     target.draw(line, state);
+
+    float arrowSize = thickness * 3.0f;
+    sf::ConvexShape arrowhead;
+    arrowhead.setPointCount(3);
+    arrowhead.setPoint(0, {0, 0});                          // Tip of arrow
+    arrowhead.setPoint(1, {-arrowSize, -arrowSize * 0.8f}); // Back top
+    arrowhead.setPoint(2, {-arrowSize,  arrowSize * 0.8f}); // Back bottom
+    
+    arrowhead.setPosition(end);
+    arrowhead.setRotation(sf::radians(angle));
+    arrowhead.setFillColor(edgeColor);
+    target.draw(arrowhead, state);
+
+    Text text(Theme::ibmRegular, std::to_string(weight), 15);
+    text.setFillColor(edgeColor);
+    text.centerOrigin();
+
+    // position text at midpoint
+    sf::Vector2f midpoint = (start + end) / 2.0f;
+    sf::Vector2f unitNormal(-delta.y / dist, delta.x / dist);
+    float textOffset = 15.0f + thickness; 
+    text.setPosition(midpoint + unitNormal * textOffset);
+
+    target.draw(text, state);
 }
 
 }; // namespace UI

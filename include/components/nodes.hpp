@@ -1,3 +1,7 @@
+/**
+ * BIG TODO: RE-ORGANIZE THE DRAW EDGE FUNCTION !!
+ */
+
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <string>
@@ -5,6 +9,7 @@
 #include <cmath>
 #include <random>
 #include <iostream>
+#include <utility>
 
 #include "ui-base.hpp"
 #include "../assets/theme.hpp"
@@ -15,10 +20,10 @@ extern const float eps;
 
 namespace UI {
 
-class Node : public UI::Base {
+class Node : public Base {
 private:
     sf::CircleShape circle;
-    UI::Text label, annotation;
+    Text label, annotation;
 
 public:
     Node(const std::string &msg, float radius = 30.f, float thickness = 2.f);
@@ -94,13 +99,18 @@ public:
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };
 
-class FloatingNode : public sf::Drawable {
+class FloatingNode : public Node {
 private:
-    Node nodeUI;
     sf::Vector2f velocity, acceleration;
+    bool isClicked, isActivated;
+    std::function<void()> callbackOnClick;
 
 public:
     FloatingNode(const std::string &msg, float radius = 30.f, float thickness = 2.f);
+
+    void setCallbackOnClick (auto func) {
+        callbackOnClick = func;
+    }
 
     void applyAcceleration (sf::Vector2f targetAcceleration);
 
@@ -112,15 +122,22 @@ public:
 
     void timePropagation (float deltaTime);
 
-    void setAnnotation (const std::string &msg);
+    void activateNode();
 
-    sf::Vector2f getPosition() const;
-    float getRadius() const;
+    void deactivateNode();
 
-    void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+    // handle mouse press
+    void handleMousePress(const sf::Vector2f &mousePos) override;
+    
+    // handle mouse movement
+    void handleMouseMovement(const sf::Vector2f &mousePos) override;
+    
+    // handle mouse release
+    void handleMouseRelease(const sf::Vector2f &mousePos) override;
 };
 
 void drawEdge(sf::RenderTarget &target, sf::RenderStates state, const AnimatedNode* from, const AnimatedNode* to, float thickness = 2.f);
-void drawEdge(sf::RenderTarget &target, sf::RenderStates state, const FloatingNode* from, const FloatingNode* to, float thickness = 2.f);
+// void drawEdge(sf::RenderTarget &target, sf::RenderStates state, const FloatingNode* from, const FloatingNode* to, sf::Color edgeColor = sf::Color::Black, float thickness = 2.f);
+void drawEdge(sf::RenderTarget &target, sf::RenderStates state, const FloatingNode* from, const FloatingNode* to, int weight = 0, sf::Color edgeColor = sf::Color::Black, float thickness = 2.f);
 
 } // namespace UI

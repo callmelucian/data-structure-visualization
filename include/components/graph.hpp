@@ -22,14 +22,35 @@ namespace UI {
 
 class Graph : public UI::Base {
 private:
+    struct Edge {
+        int fromNode, toNode, weight;
+        bool isDeleted, isActivated, isHovered;
+
+        Edge() : fromNode(0), toNode(0), weight(0), isDeleted(false), isActivated(false), isHovered(false) {}
+        Edge (int fromNode, int toNode, int weight) :
+            fromNode(fromNode), toNode(toNode), weight(weight), isDeleted(false), isActivated(false), isHovered(false) {}
+    };
     std::vector<UI::FloatingNode*> nodes;
-    std::set<std::pair<int,int>> edges;
+    std::vector<Edge> edges;
     UI::HighlightCircle highlighter;
     sf::Vector2f targetOrigin;
+    int activatedNode;
+
+    std::function<void(bool)> callbackAllowEdit;
+    std::function<bool(const sf::Vector2f &mousePos)> callbackIsEditing;
+
 public:
     Graph();
     Graph (const Graph &other);
     ~Graph();
+
+    void setCallbackAllowEdit (auto func) {
+        callbackAllowEdit = func;
+    }
+
+    void setCallbackIsEditing (auto func) {
+        callbackIsEditing = func;
+    }
 
     Graph& operator= (const Graph &other);
 
@@ -44,6 +65,8 @@ public:
     void setTargetOrigin (const sf::Vector2f &pos);
 
     void autosetTargetOrigin();
+
+    void changeWeight (int newWeight);
 
     sf::FloatRect getBoundary() const override;
 

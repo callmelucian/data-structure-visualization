@@ -21,6 +21,13 @@ sf::Vector2f unitVector (const sf::Vector2f &a, const sf::Vector2f &b) {
     return (b - a) / distance(a, b);
 }
 
+bool isPointOnSegment (sf::Vector2f a, sf::Vector2f b, sf::Vector2f p, float epsilon) {
+    float ab = distance(a, b);
+    float ap = distance(a, p);
+    float bp = distance(b, p);
+    return std::abs(ab - (ap + bp)) <= epsilon;
+}
+
 float cube(float a) { 
     return a * a * a; 
 }
@@ -48,6 +55,10 @@ std::mt19937 rng(21);
 
 float randFloat(float L, float R) {
     return std::uniform_real_distribution<float>(L, R)(rng);
+}
+
+int randInt (int L, int R) {
+    return std::uniform_int_distribution<int>(L, R)(rng);
 }
 
 // ========== COUNTDOWN CLOCK ==========
