@@ -21,7 +21,7 @@ class DijkstraScene : public Scene {
 private:
     UI::Graph graph;
     UI::TextInputField editField;
-    UI::Button insertButton, editButton;
+    UI::Button insertButton, editButton, deleteButton;
     int counter;
 
 public:

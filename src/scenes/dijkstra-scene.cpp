@@ -1,6 +1,6 @@
 #include "../../include/scenes/dijkstra-scene.hpp"
 
-DijkstraScene::DijkstraScene (const sf::RenderWindow &window) : Scene(window), editField(150, 30), insertButton(100, 30), editButton(100, 30) {
+DijkstraScene::DijkstraScene (const sf::RenderWindow &window) : Scene(window), editField(150, 30), insertButton(100, 30), editButton(100, 30), deleteButton(100, 30) {
     graph.setPosition({
         Setting::screenWidth / 2.f,
         Setting::screenHeight / 2.f
@@ -9,8 +9,12 @@ DijkstraScene::DijkstraScene (const sf::RenderWindow &window) : Scene(window), e
         if (f) editButton.enableButton(), editField.enable();
         else editButton.disableButton(), editField.disable();
     });
+    graph.setCallbackAllowDelete([&] (bool f) {
+        if (f) deleteButton.enableButton();
+        else deleteButton.disableButton();
+    });
     graph.setCallbackIsEditing([&] (const sf::Vector2f &mousePos) {
-        return editField.containPosition(mousePos) || editButton.containPosition(mousePos);
+        return editField.containPosition(mousePos) || editButton.containPosition(mousePos) || deleteButton.containPosition(mousePos);
     });
 
     editField.setPosition({115, 850});
@@ -40,6 +44,14 @@ DijkstraScene::DijkstraScene (const sf::RenderWindow &window) : Scene(window), e
         graph.insertNode(counter);
         counter++;
     });
+
+    deleteButton.disableButton();
+    deleteButton.setPosition({550, 850});
+    deleteButton.setString("Delete");
+    deleteButton.setCallback([&]() {
+        if (graph.nodeActivated()) graph.deleteNode();
+        if (graph.edgeActivated()) graph.deleteEdge();
+    });
 }
 
 void DijkstraScene::handleEvent (sf::RenderWindow &window, const std::optional<sf::Event> &event) {
@@ -47,6 +59,7 @@ void DijkstraScene::handleEvent (sf::RenderWindow &window, const std::optional<s
     editField.handleMouseEvents(window, event);
     insertButton.handleMouseEvents(window, event);
     editButton.handleMouseEvents(window, event);
+    deleteButton.handleMouseEvents(window, event);
 
     editField.handleTextEvents(window, event);
 }
@@ -61,4 +74,5 @@ void DijkstraScene::draw (sf::RenderWindow &window) {
     window.draw(editField);
     window.draw(insertButton);
     window.draw(editButton);
+    window.draw(deleteButton);
 }

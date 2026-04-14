@@ -31,12 +31,14 @@ private:
             fromNode(fromNode), toNode(toNode), weight(weight), isDeleted(false), isActivated(false), isHovered(false) {}
     };
     std::vector<UI::FloatingNode*> nodes;
+    std::vector<bool> isDeleted;
     std::vector<Edge> edges;
     UI::HighlightCircle highlighter;
     sf::Vector2f targetOrigin;
     int activatedNode;
 
     std::function<void(bool)> callbackAllowEdit;
+    std::function<void(bool)> callbackAllowDelete;
     std::function<bool(const sf::Vector2f &mousePos)> callbackIsEditing;
 
 public:
@@ -46,6 +48,10 @@ public:
 
     void setCallbackAllowEdit (auto func) {
         callbackAllowEdit = func;
+    }
+
+    void setCallbackAllowDelete (auto func) {
+        callbackAllowDelete = func;
     }
 
     void setCallbackIsEditing (auto func) {
@@ -67,8 +73,15 @@ public:
     void autosetTargetOrigin();
 
     void changeWeight (int newWeight);
+    
+    void deleteEdge();
+
+    void deleteNode();
 
     sf::FloatRect getBoundary() const override;
+    
+    bool nodeActivated() const;
+    bool edgeActivated() const;
 
     void handleMousePress (const sf::Vector2f &mousePos) override;
     void handleMouseRelease (const sf::Vector2f &mousePos) override;
