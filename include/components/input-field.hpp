@@ -15,7 +15,7 @@ private:
     std::string currentMessage;
     UI::Text label;
     sf::RectangleShape rectangle, cursor;
-    bool activation, focus, showCursor;
+    bool focus, showCursor, isEnabled;
     sf::Clock blinkClock;
     std::function<void(const std::string&)> callbackFunction;
 
@@ -56,6 +56,12 @@ public:
 
     // time propagation
     void timePropagation();
+
+    // enable input field
+    void enable();
+
+    // disable input field
+    void disable();
 };
 
 } // namespace UI

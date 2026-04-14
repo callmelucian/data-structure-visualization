@@ -6,8 +6,8 @@ DijkstraScene::DijkstraScene (const sf::RenderWindow &window) : Scene(window), e
         Setting::screenHeight / 2.f
     });
     graph.setCallbackAllowEdit([&] (bool f) {
-        if (f) editButton.enableButton();
-        else editButton.disableButton();
+        if (f) editButton.enableButton(), editField.enable();
+        else editButton.disableButton(), editField.disable();
     });
     graph.setCallbackIsEditing([&] (const sf::Vector2f &mousePos) {
         return editField.containPosition(mousePos) || editButton.containPosition(mousePos);
@@ -17,6 +17,7 @@ DijkstraScene::DijkstraScene (const sf::RenderWindow &window) : Scene(window), e
     editButton.setPosition({240, 850});
     editButton.setString("Edit weight");
     editButton.disableButton();
+    editField.disable();
     editField.setCallbackFunction([&] (const std::string &msg) {
         int value = convert(msg);
         if (value == -1) {

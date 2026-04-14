@@ -5,7 +5,7 @@ const float BLINK_INTERVAL = 0.3f;
 namespace UI {
 
 TextInputField::TextInputField(float width, float height) 
-    : label(Theme::notoRegular), activation(false), focus(false), showCursor(false) {
+    : label(Theme::notoRegular), focus(false), showCursor(false), isEnabled(true) {
     
     // setup rectangle
     rectangle.setSize({width, height});
@@ -47,6 +47,7 @@ void TextInputField::setScale(float scaleConstant) {
 }
 
 void TextInputField::handleMousePress(const sf::Vector2f &mousePos) {
+    if (!isEnabled) return;
     bool contained = containPosition(mousePos);
     if (isFocused() && contained) blinkClock.restart();
     if (!contained) showCursor = false;
@@ -59,7 +60,7 @@ void TextInputField::handleMousePress(const sf::Vector2f &mousePos) {
 void TextInputField::handleMouseRelease(const sf::Vector2f &mousePos) {}
 
 void TextInputField::handleMouseMovement(const sf::Vector2f &mousePos) {
-    if (focus) return;
+    if (focus || !isEnabled) return;
     rectangle.setFillColor(
         containPosition(mousePos) ? Theme::getHoveredButton() : Theme::getButton()
     );
@@ -70,7 +71,7 @@ bool TextInputField::isFocused() const {
 }
 
 void TextInputField::handleTextEntered(const char &unicode) {
-    if (!isFocused()) return;
+    if (!isFocused() || !isEnabled) return;
     if (unicode == 8) { // handle backspace
         if (currentMessage.size())
             currentMessage.erase(currentMessage.size() - 1);
@@ -99,6 +100,17 @@ void TextInputField::timePropagation() {
         showCursor = !showCursor;
         blinkClock.restart();
     }
+}
+
+void TextInputField::enable() {
+    isEnabled = true;
+    rectangle.setFillColor(Theme::getButton());
+}
+
+void TextInputField::disable() {
+    isEnabled = false, focus = false, showCursor = false;
+    currentMessage = "";
+    rectangle.setFillColor(Theme::getIdleButton());
 }
 
 }; // namespace UI
