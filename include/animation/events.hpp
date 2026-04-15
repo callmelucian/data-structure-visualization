@@ -1,6 +1,7 @@
 #pragma once
 #include "../components/binary-tree.hpp"
 #include "../components/code-highlighter.hpp"
+#include "../components/graph.hpp"
 
 template <typename TypeUI>
 class AnimationEvent {
@@ -74,11 +75,97 @@ public:
     int apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) override;
 };
 
-class BinaryTreeCompleteAnimation : public AnimationEvent<UI::BinaryTree> {
-public:
-    BinaryTreeCompleteAnimation();
+class GraphCreateNode : public AnimationEvent<UI::Graph> {
+private:
+    int value;
 
-    int apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) override;
+public:
+    GraphCreateNode (int value);
+
+    int apply (UI::Graph &ui, UI::CodeHighlighter &code) override;
+};
+
+class GraphAddEdge : public AnimationEvent<UI::Graph> {
+private:
+    int fromNode, toNode;
+
+public:
+    GraphAddEdge (int fromNode, int toNode);
+
+    int apply (UI::Graph &ui, UI::CodeHighlighter &code) override;
+};
+
+class GraphDeleteNode : public AnimationEvent<UI::Graph> {
+private:
+    int nodeID;
+
+public:
+    GraphDeleteNode (int nodeID);
+
+    int apply (UI::Graph &ui, UI::CodeHighlighter &code) override;
+};
+
+class GraphDeleteEdge : public AnimationEvent<UI::Graph> {
+private:
+    int edgeID;
+
+public:
+    GraphDeleteEdge (int edge);
+
+    int apply (UI::Graph &ui, UI::CodeHighlighter &code) override;
+};
+
+class GraphEditEdge : public AnimationEvent<UI::Graph> {
+private:
+    int edgeID, newWeight;
+
+public:
+    GraphEditEdge (int edgeID, int newWeight);
+
+    int apply (UI::Graph &ui, UI::CodeHighlighter &code) override;
+};
+
+class GraphClearAnnotation : public AnimationEvent<UI::Graph> {
+public:
+    GraphClearAnnotation();
+
+    int apply (UI::Graph &ui, UI::CodeHighlighter &code) override;
+};
+
+class GraphEditAnnotation : public AnimationEvent<UI::Graph> {
+private:
+    int nodeID, value;
+public:
+    GraphEditAnnotation (int nodeID, int value);
+
+    int apply (UI::Graph &ui, UI::CodeHighlighter &code) override;
+};
+
+class GraphMarkAnnotation : public AnimationEvent<UI::Graph> {
+private:
+    int nodeID;
+public:
+    GraphMarkAnnotation (int nodeID);
+
+    int apply (UI::Graph &ui, UI::CodeHighlighter &code) override;
+};
+
+class GraphHighlightNode : public AnimationEvent<UI::Graph> {
+private:
+    int nodeID;
+public:
+    GraphHighlightNode (int nodeID);
+
+    int apply (UI::Graph &ui, UI::CodeHighlighter &code) override;
+};
+
+class GraphHighlightEdge : public AnimationEvent<UI::Graph> {
+private:
+    int edgeID;
+public:
+    GraphHighlightEdge (int edgeID);
+
+    int apply (UI::Graph &ui, UI::CodeHighlighter &code) override;
 };
 
 template <typename TypeUI>
@@ -103,4 +190,16 @@ public:
     int apply (TypeUI &ui, UI::CodeHighlighter &code) override;
 };
 
+template <typename TypeUI>
+class CompleteAnimation: public AnimationEvent<TypeUI> {
+public:
+    CompleteAnimation();
+
+    int apply (TypeUI &ui, UI::CodeHighlighter &code) override;
+};
+
 template class CodeHighlighting<UI::BinaryTree>;
+template class CodeHighlighting<UI::Graph>;
+
+template class CompleteAnimation<UI::BinaryTree>;
+template class CompleteAnimation<UI::Graph>;

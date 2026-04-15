@@ -39,6 +39,7 @@ private:
 
     std::function<void(bool)> callbackAllowEdit;
     std::function<void(bool)> callbackAllowDelete;
+    std::function<void(int,int)> callbackTriggerAddEdge;
     std::function<bool(const sf::Vector2f &mousePos)> callbackIsEditing;
 
 public:
@@ -52,6 +53,10 @@ public:
 
     void setCallbackAllowDelete (auto func) {
         callbackAllowDelete = func;
+    }
+
+    void setCallbackTriggerAddEdge (auto func) {
+        callbackTriggerAddEdge = func;
     }
 
     void setCallbackIsEditing (auto func) {
@@ -72,16 +77,22 @@ public:
 
     void autosetTargetOrigin();
 
-    void changeWeight (int newWeight);
+    void changeWeight (int edgeID, int newWeight);
     
-    void deleteEdge();
+    void deleteEdge (int edgeID);
 
-    void deleteNode();
+    void deleteNode (int nodeID);
 
     sf::FloatRect getBoundary() const override;
     
-    bool nodeActivated() const;
-    bool edgeActivated() const;
+    int nodeActivated() const;
+    int edgeActivated() const;
+
+    void clearAnnotation();
+    void markAnnotation();
+
+    void highlightNode (int nodeID);
+    void highlightEdge (int edgeID);
 
     void handleMousePress (const sf::Vector2f &mousePos) override;
     void handleMouseRelease (const sf::Vector2f &mousePos) override;

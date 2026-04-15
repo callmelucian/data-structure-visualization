@@ -61,11 +61,93 @@ int BinaryTreeLockHighlight::apply (UI::BinaryTree &ui, UI::CodeHighlighter &cod
     return ui.lockHighlight(), false;
 }
 
-// ========== BINARY TREE COMPLETE ANIMATION ========== //
+// ========== GRAPH CREATE NODE ========== //
 
-BinaryTreeCompleteAnimation::BinaryTreeCompleteAnimation() {}
+GraphCreateNode::GraphCreateNode (int value) : value(value) {}
 
-int BinaryTreeCompleteAnimation::apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) {
+int GraphCreateNode::apply (UI::Graph &ui, UI::CodeHighlighter &code) {
+    return ui.insertNode(value), true;
+}
+
+// ========== GRAPH ADD EDGE ========== //
+
+GraphAddEdge::GraphAddEdge (int fromNode, int toNode) : fromNode(fromNode), toNode(toNode) {}
+
+int GraphAddEdge::apply (UI::Graph &ui, UI::CodeHighlighter &code) {
+    return ui.insertEdge(fromNode, toNode), true;
+}
+
+// ========== GRAPH DELETE NODE ========== //
+
+GraphDeleteNode::GraphDeleteNode (int nodeID) : nodeID(nodeID) {}
+
+int GraphDeleteNode::apply (UI::Graph &ui, UI::CodeHighlighter &code) {
+    return ui.deleteNode(nodeID), true;
+}
+
+// ========== GRAPH DELETE EDGE ========== //
+
+GraphDeleteEdge::GraphDeleteEdge (int edgeID) : edgeID(edgeID) {}
+
+int GraphDeleteEdge::apply (UI::Graph &ui, UI::CodeHighlighter &code) {
+    return ui.deleteEdge(edgeID), true;
+}
+
+// ========== GRAPH EDIT EDGE ========== //
+
+GraphEditEdge::GraphEditEdge (int edgeID, int newWeight) : edgeID(edgeID), newWeight(newWeight) {}
+
+int GraphEditEdge::apply (UI::Graph &ui, UI::CodeHighlighter &code) {
+    return ui.changeWeight(edgeID, newWeight), true;
+}
+
+// ========== GRAPH CLEAR ANNOTATION ========== //
+
+GraphClearAnnotation::GraphClearAnnotation() {}
+
+int GraphClearAnnotation::apply (UI::Graph &ui, UI::CodeHighlighter &code) {
+    return true;
+}
+
+// ========== GRAPH EDIT ANNOTATION ========== //
+
+GraphEditAnnotation::GraphEditAnnotation (int nodeID, int value) : nodeID(nodeID), value(value) {}
+
+int GraphEditAnnotation::apply (UI::Graph &ui, UI::CodeHighlighter &code) {
+    return ui.setAnnotation(nodeID, value), true;
+}
+
+// ========== GRAPH MARK ANNOTATION ========== //
+
+GraphMarkAnnotation::GraphMarkAnnotation (int nodeID) : nodeID(nodeID) {}
+
+int GraphMarkAnnotation::apply (UI::Graph &ui, UI::CodeHighlighter &code) {
+    return true;
+}
+
+// ========== GRAPH HIGHLIGHT NODE ========== //
+
+GraphHighlightNode::GraphHighlightNode (int nodeID) : nodeID(nodeID) {}
+
+int GraphHighlightNode::apply (UI::Graph &ui, UI::CodeHighlighter &code) {
+    return true;
+}
+
+// ========== GRAPH HIGHLIGHT EDGE ========== //
+
+GraphHighlightEdge::GraphHighlightEdge (int edgeID) : edgeID(edgeID) {}
+
+int GraphHighlightEdge::apply (UI::Graph &ui, UI::CodeHighlighter &code) {
+    return true;
+}
+
+// ========== COMPLETE ANIMATION ========== //
+
+template <typename TypeUI>
+CompleteAnimation<TypeUI>::CompleteAnimation() {}
+
+template <typename TypeUI>
+int CompleteAnimation<TypeUI>::apply (TypeUI &ui, UI::CodeHighlighter &code) {
     return 2;
 }
 

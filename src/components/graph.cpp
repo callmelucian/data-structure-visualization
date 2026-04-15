@@ -100,7 +100,7 @@ void Graph::insertNode (int label) {
     nodes.back()->setCallbackOnClick([this, curr]() {
         if (activatedNode == -1) activatedNode = curr;
         else {
-            insertEdge(activatedNode, curr);
+            callbackTriggerAddEdge(activatedNode, curr);
             activatedNode = -1;
         }
     });
@@ -136,31 +136,33 @@ void Graph::autosetTargetOrigin() {
     targetOrigin = {originX, originY};
 }
 
-void Graph::changeWeight (int newWeight) {
-    for (Edge &curr : edges) {
-        if (curr.isActivated) curr.weight = newWeight;
-        curr.isActivated = curr.isHovered = false;
-    }
+void Graph::changeWeight (int edgeID, int newWeight) {
+    edges[edgeID].weight = newWeight;
+    edges[edgeID].isActivated = edges[edgeID].isHovered = false;
+    // for (Edge &curr : edges) {
+    //     if (curr.isActivated) curr.weight = newWeight;
+    //     curr.isActivated = curr.isHovered = false;
+    // }
     callbackAllowEdit(false);
 }
 
-void Graph::deleteEdge() {
-    for (Edge &curr : edges) {
-        if (curr.isActivated) curr.isDeleted = true;
-        curr.isActivated = curr.isHovered = false;
-    }
+void Graph::deleteEdge (int edgeID) {
+    edges[edgeID].isDeleted = true;
+    edges[edgeID].isActivated = edges[edgeID].isHovered = false;
+    // for (Edge &curr : edges) {
+    //     if (curr.isActivated) curr.isDeleted = true;
+    //     curr.isActivated = curr.isHovered = false;
+    // }
     callbackAllowEdit(false);
     callbackAllowDelete(false);
 }
 
-void Graph::deleteNode() {
-    if (activatedNode == -1) return;
-    isDeleted[activatedNode] = true;
+void Graph::deleteNode (int nodeID) {
+    isDeleted[nodeID] = true;
     for (Edge &curr : edges) {
-        if (curr.fromNode != activatedNode && curr.toNode != activatedNode) continue;
+        if (curr.fromNode != nodeID && curr.toNode != nodeID) continue;
         curr.isDeleted = true, curr.isActivated = curr.isHovered = false;
     }
-    activatedNode = -1;
     callbackAllowDelete(false);
 }
 
@@ -168,14 +170,14 @@ sf::FloatRect Graph::getBoundary() const {
     return sf::FloatRect();
 }
 
-bool Graph::nodeActivated() const {
-    return activatedNode != -1;
+int Graph::nodeActivated() const {
+    return activatedNode;
 }
 
-bool Graph::edgeActivated() const {
-    for (Edge item : edges)
-        if (!item.isDeleted && item.isActivated) return true;
-    return false;
+int Graph::edgeActivated() const {
+    for (int i = 0; i < edges.size(); i++)
+        if (!edges[i].isDeleted && edges[i].isActivated) return i;
+    return -1;
 }
 
 void Graph::setAnnotation (int nodeID, int value) {

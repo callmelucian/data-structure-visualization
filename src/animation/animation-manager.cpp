@@ -177,7 +177,7 @@ void AnimationManager<UI::BinaryTree, DS::AVLTree>::initCallbackFunctions() {
     });
     stateLogic[0].setCallbackCompleteAnimation([&]() {
         this->createAnimationEvent(
-            std::make_unique<BinaryTreeCompleteAnimation>()
+            std::make_unique<CompleteAnimation<UI::BinaryTree>>()
         );
     });
     stateLogic[0].setCallbackLoadCode([&] (const std::vector<std::string> &vec) {
@@ -189,5 +189,14 @@ void AnimationManager<UI::BinaryTree, DS::AVLTree>::initCallbackFunctions() {
         this->createAnimationEvent(
             std::make_unique<CodeHighlighting<UI::BinaryTree>>(row)
         );
+    });
+}
+
+// ========== TEMPLATE-SPECIFIC FUNCTIONS: AnimationManager<UI::Graph, DS::Dijkstra> ==========
+
+template<>
+void AnimationManager<UI::Graph, DS::DijkstraAlgorithm>::initCallbackFunctions() {
+    stateLogic[0].setCallbackCreateNode([&] (int value) {
+
     });
 }

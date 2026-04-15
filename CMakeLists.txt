@@ -19,6 +19,7 @@ add_executable(DataVisApp
     src/ds/avl-tree.cpp
     src/ds/dijkstra.cpp
     src/ds/red-black-tree.cpp
+    src/ds/bellman-ford.cpp
 
     src/components/binary-tree.cpp
     src/components/button.cpp
