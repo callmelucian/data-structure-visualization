@@ -108,8 +108,8 @@ void Graph::insertNode (int label) {
     autosetTargetOrigin();
 }
 
-void Graph::insertEdge (int fromNode, int toNode) {
-    edges.emplace_back(fromNode, toNode, randInt(0, 99));
+void Graph::insertEdge (int fromNode, int toNode, int weight) {
+    edges.emplace_back(fromNode, toNode, weight);
 }
 
 void Graph::setTargetOrigin (const sf::Vector2f &pos) {
@@ -178,6 +178,37 @@ int Graph::edgeActivated() const {
     for (int i = 0; i < edges.size(); i++)
         if (!edges[i].isDeleted && edges[i].isActivated) return i;
     return -1;
+}
+
+void Graph::clearAnnotation() {
+    for (FloatingNode* ptr : nodes) {
+        ptr->setAnnotation("");
+        ptr->setAnnotationColor(sf::Color::Red);
+    }
+}
+
+void Graph::markAnnotation() {
+    for (FloatingNode* ptr : nodes)
+        ptr->setAnnotationColor(sf::Color::Green);
+}
+
+void Graph::highlightNode (int nodeID) {
+    if (nodeID == -1) return highlighter.free(), void();
+    highlighter.setTargetNode(nodes[nodeID]);
+}
+
+void Graph::highlightEdge (int edgeID) {
+    for (Edge &curr : edges) curr.isHighlighted = false;
+    if (edgeID != -1) edges[edgeID].isHighlighted = true;
+}
+
+void Graph::copyPosition (const Graph &other) {
+    for (int i = 0; i < nodes.size(); i++) {
+        if (isDeleted[i]) continue;
+        if (i < other.nodes.size() && !other.isDeleted[i])
+            nodes[i]->copyPosition(*other.nodes[i]);
+        else nodes[i]->randomPosition();
+    }
 }
 
 void Graph::setAnnotation (int nodeID, int value) {
@@ -258,7 +289,7 @@ void Graph::draw (sf::RenderTarget& target, sf::RenderStates states) const {
 
     for (Edge item : edges) {
         if (item.isDeleted) continue;
-        sf::Color edgeColor = (item.isActivated ?
+        sf::Color edgeColor = (item.isActivated || item.isHighlighted ?
             sf::Color::Red : (item.isHovered ?
                 Theme::getHoveredButton() : sf::Color::Black));
         drawEdge(target, states, nodes[item.fromNode], nodes[item.toNode], item.weight, edgeColor);

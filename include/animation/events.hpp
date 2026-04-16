@@ -87,10 +87,10 @@ public:
 
 class GraphAddEdge : public AnimationEvent<UI::Graph> {
 private:
-    int fromNode, toNode;
+    int fromNode, toNode, weight;
 
 public:
-    GraphAddEdge (int fromNode, int toNode);
+    GraphAddEdge (int fromNode, int toNode, int weight);
 
     int apply (UI::Graph &ui, UI::CodeHighlighter &code) override;
 };

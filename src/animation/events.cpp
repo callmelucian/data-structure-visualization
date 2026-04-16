@@ -71,10 +71,11 @@ int GraphCreateNode::apply (UI::Graph &ui, UI::CodeHighlighter &code) {
 
 // ========== GRAPH ADD EDGE ========== //
 
-GraphAddEdge::GraphAddEdge (int fromNode, int toNode) : fromNode(fromNode), toNode(toNode) {}
+GraphAddEdge::GraphAddEdge (int fromNode, int toNode, int weight) :
+    fromNode(fromNode), toNode(toNode), weight(weight) {}
 
 int GraphAddEdge::apply (UI::Graph &ui, UI::CodeHighlighter &code) {
-    return ui.insertEdge(fromNode, toNode), true;
+    return ui.insertEdge(fromNode, toNode, weight), true;
 }
 
 // ========== GRAPH DELETE NODE ========== //

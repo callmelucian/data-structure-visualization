@@ -12,7 +12,7 @@ HighlightCircle::HighlightCircle() :
         circle.setOutlineThickness(6.f);
     }
 
-void HighlightCircle::setTargetNode (AnimatedNode* ptr) {
+void HighlightCircle::setTargetNode (Node* ptr) {
     nodeObserver = ptr;
     // highlightLocked = false;
 }
@@ -41,7 +41,7 @@ void HighlightCircle::free() {
     nodeObserver = nullptr, highlightLocked = true;
 }
 
-const AnimatedNode* HighlightCircle::getAddress() const {
+const Node* HighlightCircle::getAddress() const {
     return nodeObserver;
 }
 

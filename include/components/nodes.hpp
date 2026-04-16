@@ -39,6 +39,8 @@ public:
 
     void setColor (const sf::Color &color);
 
+    void setAnnotationColor (const sf::Color &color);
+
     void randomPosition();
 
     void setAnnotation (const std::string &msg);
@@ -125,6 +127,8 @@ public:
     void activateNode();
 
     void deactivateNode();
+
+    void copyPosition (const FloatingNode &other);
 
     // handle mouse press
     void handleMousePress(const sf::Vector2f &mousePos) override;

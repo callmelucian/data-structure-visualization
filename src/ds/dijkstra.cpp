@@ -35,10 +35,12 @@ void DijkstraAlgorithm::deleteEdge (int targetEdge) {
     callbackApplyAnimation();
 }
 
-void DijkstraAlgorithm::editEdge (int targetEdge, int weight) {
+bool DijkstraAlgorithm::editEdge (int targetEdge, int weight) {
+    if (edgeWeight[targetEdge] == weight) return false;
     edgeWeight[targetEdge] = weight;
     callbackEditEdge(targetEdge, weight);
     callbackApplyAnimation();
+    return true;
 }
 
 void DijkstraAlgorithm::run (int source) {

@@ -197,6 +197,74 @@ void AnimationManager<UI::BinaryTree, DS::AVLTree>::initCallbackFunctions() {
 template<>
 void AnimationManager<UI::Graph, DS::DijkstraAlgorithm>::initCallbackFunctions() {
     stateLogic[0].setCallbackCreateNode([&] (int value) {
+        this->createAnimationEvent(
+            std::make_unique<GraphCreateNode>(value)
+        );
+    });
+    stateLogic[0].setCallbackAddEdge([&] (int fromNode, int toNode, int weight) {
+        this->createAnimationEvent(
+            std::make_unique<GraphAddEdge>(fromNode, toNode, weight)
+        );
+    });
+    stateLogic[0].setCallbackDeleteNode([&] (int nodeID) {
+        this->createAnimationEvent(
+            std::make_unique<GraphDeleteNode>(nodeID)
+        );
+    });
+    stateLogic[0].setCallbackDeleteEdge([&] (int edgeID) {
+        this->createAnimationEvent(
+            std::make_unique<GraphDeleteEdge>(edgeID)
+        );
+    });
+    stateLogic[0].setCallbackEditEdge([&] (int edgeID, int newWeight) {
+        this->createAnimationEvent(
+            std::make_unique<GraphEditEdge>(edgeID, newWeight)
+        );
+    });
+    stateLogic[0].setCallbackClearAnnotation([&]() {
+        this->createAnimationEvent(
+            std::make_unique<GraphClearAnnotation>()
+        );
+    });
+    stateLogic[0].setCallbackEditAnnotation([&] (int nodeID, int value) {
+        this->createAnimationEvent(
+            std::make_unique<GraphEditAnnotation>(nodeID, value)
+        );
+    });
+    stateLogic[0].setCallbackMarkAnnotation([&] (int nodeID) {
+        this->createAnimationEvent(
+            std::make_unique<GraphMarkAnnotation>(nodeID)
+        );
+    });
+    stateLogic[0].setCallbackHighlightNode([&] (int nodeID) {
+        this->createAnimationEvent(
+            std::make_unique<GraphHighlightNode>(nodeID)
+        );
+    });
+    stateLogic[0].setCallbackHighlightEdge([&] (int edgeID) {
+        this->createAnimationEvent(
+            std::make_unique<GraphHighlightEdge>(edgeID)
+        );
+    });
+    stateLogic[0].setCallbackApplyAnimation([&]() {
+        this->createAnimationEvent(
+            std::make_unique<CompleteAnimation<UI::Graph>>()
+        );
+    });
+    stateLogic[0].setCallbackLoadCode([&] (const std::vector<std::string> &code) {
+        this->createAnimationEvent(
+            std::make_unique<CodeHighlightLoadCode<UI::Graph>>(code)
+        );
+    });
+    stateLogic[0].setCallbackHighlightCode([&] (int row) {
+        this->createAnimationEvent(
+            std::make_unique<CodeHighlighting<UI::Graph>>(row)
+        );
+    });
 
+    stateUI[0].setCallbackTriggerAddEdge([&] (int fromNode, int toNode) {
+        this->transformLogic([&] (DS::DijkstraAlgorithm &logic) {
+            return logic.createEdge(fromNode, toNode), true;
+        });
     });
 }

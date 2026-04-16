@@ -24,11 +24,11 @@ class Graph : public UI::Base {
 private:
     struct Edge {
         int fromNode, toNode, weight;
-        bool isDeleted, isActivated, isHovered;
+        bool isDeleted, isActivated, isHovered, isHighlighted;
 
-        Edge() : fromNode(0), toNode(0), weight(0), isDeleted(false), isActivated(false), isHovered(false) {}
+        Edge() : fromNode(0), toNode(0), weight(0), isDeleted(false), isActivated(false), isHovered(false), isHighlighted(false) {}
         Edge (int fromNode, int toNode, int weight) :
-            fromNode(fromNode), toNode(toNode), weight(weight), isDeleted(false), isActivated(false), isHovered(false) {}
+            fromNode(fromNode), toNode(toNode), weight(weight), isDeleted(false), isActivated(false), isHovered(false), isHighlighted(false) {}
     };
     std::vector<UI::FloatingNode*> nodes;
     std::vector<bool> isDeleted;
@@ -39,8 +39,8 @@ private:
 
     std::function<void(bool)> callbackAllowEdit;
     std::function<void(bool)> callbackAllowDelete;
-    std::function<void(int,int)> callbackTriggerAddEdge;
     std::function<bool(const sf::Vector2f &mousePos)> callbackIsEditing;
+    std::function<void(int,int)> callbackTriggerAddEdge;
 
 public:
     Graph();
@@ -69,7 +69,7 @@ public:
 
     void insertNode (int label);
 
-    void insertEdge (int fromNode, int toNode);
+    void insertEdge (int fromNode, int toNode, int weight);
 
     void setAnnotation (int nodeID, int value);
 
@@ -93,6 +93,8 @@ public:
 
     void highlightNode (int nodeID);
     void highlightEdge (int edgeID);
+
+    void copyPosition (const Graph &other);
 
     void handleMousePress (const sf::Vector2f &mousePos) override;
     void handleMouseRelease (const sf::Vector2f &mousePos) override;

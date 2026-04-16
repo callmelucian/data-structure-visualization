@@ -52,6 +52,10 @@ void Node::setColor (const sf::Color &color) {
     circle.setFillColor(color);
 }
 
+void Node::setAnnotationColor (const sf::Color &color) {
+    annotation.setFillColor(color);
+}
+
 void Node::randomPosition() {
     setPosition({
         randFloat(0, Setting::screenWidth),
@@ -196,6 +200,12 @@ void FloatingNode::activateNode() {
 void FloatingNode::deactivateNode() {
     isActivated = false;
     setColor(Theme::getButton());
+}
+
+void FloatingNode::copyPosition (const FloatingNode &other) {
+    setPosition(other.getPosition());
+    velocity = other.velocity;
+    acceleration = other.acceleration;
 }
 
 void FloatingNode::handleMousePress (const sf::Vector2f &mousePos) {

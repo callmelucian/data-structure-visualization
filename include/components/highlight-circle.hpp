@@ -15,12 +15,12 @@ class HighlightCircle : public UI::Base {
 private:
     sf::CircleShape circle;
     bool highlightLocked;
-    const AnimatedNode* nodeObserver;
+    const Node* nodeObserver;
 
 public:
     HighlightCircle();
 
-    void setTargetNode (AnimatedNode* ptr);
+    void setTargetNode (Node* ptr);
 
     void timePropagation (float deltaTime);
 
@@ -28,7 +28,7 @@ public:
     
     void free();
 
-    const AnimatedNode* getAddress() const;
+    const Node* getAddress() const;
 
     sf::FloatRect getBoundary() const override;
 

@@ -98,7 +98,7 @@ public:
 
     void deleteEdge (int targetEdge);
 
-    void editEdge (int edgeID, int weight);
+    bool editEdge (int edgeID, int weight);
 
     void run (int source);
 };
