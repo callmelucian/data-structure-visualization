@@ -23,7 +23,7 @@ int main() {
     window.setFramerateLimit(60);
     SceneManager manager;
 
-    manager.changeScene(std::make_unique<AVLTreeScene>(window));
+    manager.changeScene(std::make_unique<DijkstraScene>(window));
     manager.runMainLoop(window);
 
     return 0;

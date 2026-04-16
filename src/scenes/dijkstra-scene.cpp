@@ -67,7 +67,7 @@ DijkstraScene::DijkstraScene (const sf::RenderWindow &window) :
 
     // set callback functions: insert node
     insertButton.setCallback([&]() {
-        ui.transformLogic([&] (DS::DijkstraAlgorithm &logic) {
+        ui.transformLogic([] (DS::DijkstraAlgorithm &logic) {
             return logic.createNode(), true;
         });
     });
@@ -93,6 +93,7 @@ void DijkstraScene::handleEvent (sf::RenderWindow &window, const std::optional<s
     deleteButton.handleMouseEvents(window, event);
 
     editField.handleTextEvents(window, event);
+    // std::cerr << "Very done" << std::endl;
 }
 
 void DijkstraScene::timePropagation (float delta) {

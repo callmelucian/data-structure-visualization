@@ -1,3 +1,5 @@
+// UPDATE HIGHLIGHTER IN COPY OPERATOR
+
 #include "../../include/components/graph.hpp"
 
 // ========== CONSTANTS INITIALIZATION ==========
@@ -15,13 +17,27 @@ Graph::~Graph() {
     for (UI::FloatingNode* ptr : nodes) delete ptr;
 }
 
-Graph::Graph(const Graph &other) : UI::Base(other), edges(other.edges), highlighter(other.highlighter), targetOrigin(other.targetOrigin), activatedNode(activatedNode) {
+Graph::Graph(const Graph &other) : UI::Base(other), isDeleted(other.isDeleted), edges(other.edges), highlighter(other.highlighter), targetOrigin(other.targetOrigin), activatedNode(other.activatedNode) {
+    this->callbackAllowEdit = other.callbackAllowEdit;
+    this->callbackAllowDelete = other.callbackAllowDelete;
+    this->callbackIsEditing = other.callbackIsEditing;
+    this->callbackTriggerAddEdge = other.callbackTriggerAddEdge;
+
     nodes.reserve(other.nodes.size());
-    for (UI::FloatingNode* node : other.nodes) {
-        if (node != nullptr) nodes.push_back(new UI::FloatingNode(*node));
+    for (int i = 0; i < other.nodes.size(); i++) {
+        FloatingNode* node = other.nodes[i];
+        if (node != nullptr) {
+            nodes.push_back(new UI::FloatingNode(*node));
+            nodes.back()->setCallbackOnClick([this, i]() {
+                if (activatedNode == -1) activatedNode = i;
+                else {
+                    callbackTriggerAddEdge(activatedNode, i);
+                    activatedNode = -1;
+                }
+            });
+        }
         else nodes.push_back(nullptr);
     }
-    this->callbackAllowEdit = other.callbackAllowEdit;
 }
 
 Graph& Graph::operator=(const Graph &other) {
@@ -31,16 +47,31 @@ Graph& Graph::operator=(const Graph &other) {
     for (UI::FloatingNode* node : nodes) delete node;
     nodes.clear();
 
+    this->isDeleted = other.isDeleted;
     this->edges = other.edges;
     this->highlighter = other.highlighter;
     this->targetOrigin = other.targetOrigin;
     this->activatedNode = other.activatedNode;
+
     this->callbackAllowEdit = other.callbackAllowEdit;
+    this->callbackAllowDelete = other.callbackAllowDelete;
+    this->callbackIsEditing = other.callbackIsEditing;
+    this->callbackTriggerAddEdge = other.callbackTriggerAddEdge;
 
     this->nodes.reserve(other.nodes.size());
-    for (UI::FloatingNode* node : other.nodes) {
-        if (node != nullptr) this->nodes.push_back(new UI::FloatingNode(*node));
-        else this->nodes.push_back(nullptr);
+    for (int i = 0; i < other.nodes.size(); i++) {
+        FloatingNode* node = other.nodes[i];
+        if (node != nullptr) {
+            nodes.push_back(new UI::FloatingNode(*node));
+            nodes.back()->setCallbackOnClick([this, i]() {
+                if (activatedNode == -1) activatedNode = i;
+                else {
+                    callbackTriggerAddEdge(activatedNode, i);
+                    activatedNode = -1;
+                }
+            });
+        }
+        else nodes.push_back(nullptr);
     }
     return *this;
 }
@@ -252,14 +283,18 @@ void Graph::handleMousePress (const sf::Vector2f &mousePos) {
 
 void Graph::handleMouseRelease (const sf::Vector2f &mousePos) {
     sf::Vector2f localPos = this->getInverseTransform().transformPoint(mousePos);
+    std::cerr << "BRO!" << std::endl;
     for (UI::FloatingNode* ptr : nodes) {
+        assert(ptr);
         ptr->handleMouseRelease(localPos);
         ptr->deactivateNode();
     }
+    std::cerr << "Got here" << std::endl;
     if (activatedNode != -1) {
         nodes[activatedNode]->activateNode();
         callbackAllowDelete(true);
     }
+    std::cerr << "Done" << std::endl;
 }
 
 void Graph::handleMouseMovement (const sf::Vector2f &mousePos) {

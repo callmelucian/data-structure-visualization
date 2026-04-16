@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <iostream>
 
 namespace UI {
     class Base : public sf::Drawable, public sf::Transformable {
