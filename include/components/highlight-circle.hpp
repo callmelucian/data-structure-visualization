@@ -11,16 +11,17 @@ extern const float HIGHLIGHT_SMALL_DISTANCE;
 
 namespace UI {
 
+template <typename NodeType>
 class HighlightCircle : public UI::Base {
 private:
     sf::CircleShape circle;
     bool highlightLocked;
-    const Node* nodeObserver;
+    const NodeType* nodeObserver;
 
 public:
     HighlightCircle();
 
-    void setTargetNode (Node* ptr);
+    void setTargetNode (NodeType* ptr);
 
     void timePropagation (float deltaTime);
 
@@ -28,7 +29,7 @@ public:
     
     void free();
 
-    const Node* getAddress() const;
+    const NodeType* getAddress() const;
 
     sf::FloatRect getBoundary() const override;
 
@@ -41,6 +42,9 @@ public:
 
     void lockHighlight();
 };
+
+template class HighlightCircle<AnimatedNode>;
+template class HighlightCircle<FloatingNode>;
 
 }; // namespace UI
 

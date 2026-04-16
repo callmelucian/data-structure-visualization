@@ -1,3 +1,4 @@
+#pragma once
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <tuple>
@@ -33,7 +34,7 @@ private:
     std::vector<UI::FloatingNode*> nodes;
     std::vector<bool> isDeleted;
     std::vector<Edge> edges;
-    UI::HighlightCircle highlighter;
+    UI::HighlightCircle<FloatingNode> highlighter;
     sf::Vector2f targetOrigin;
     int activatedNode;
 
@@ -95,6 +96,8 @@ public:
     void highlightEdge (int edgeID);
 
     void copyPosition (const Graph &other);
+
+    void calculatePositions();
 
     void handleMousePress (const sf::Vector2f &mousePos) override;
     void handleMouseRelease (const sf::Vector2f &mousePos) override;

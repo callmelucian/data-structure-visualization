@@ -4,7 +4,8 @@ const float HIGHLIGHT_SMALL_DISTANCE = 1e-3;
 
 namespace UI {
 
-HighlightCircle::HighlightCircle() :
+template <typename NodeType>
+HighlightCircle<NodeType>::HighlightCircle() :
     circle(36.f, 100), highlightLocked(true), nodeObserver(nullptr) {
         circle.setOutlineColor(Theme::getFixedColor());
         circle.setFillColor(Theme::getTransparent());
@@ -12,12 +13,14 @@ HighlightCircle::HighlightCircle() :
         circle.setOutlineThickness(6.f);
     }
 
-void HighlightCircle::setTargetNode (Node* ptr) {
+template <typename NodeType>
+void HighlightCircle<NodeType>::setTargetNode (NodeType* ptr) {
     nodeObserver = ptr;
     // highlightLocked = false;
 }
 
-void HighlightCircle::timePropagation (float deltaTime) {
+template <typename NodeType>
+void HighlightCircle<NodeType>::timePropagation (float deltaTime) {
     if (nodeObserver == nullptr) return;
     if (highlightLocked)
         setPosition(nodeObserver->getPosition());
@@ -32,34 +35,44 @@ void HighlightCircle::timePropagation (float deltaTime) {
     }
 }
 
-void HighlightCircle::fastForward() {
+template <typename NodeType>
+void HighlightCircle<NodeType>::fastForward() {
     if (nodeObserver)
         setPosition(nodeObserver->getPosition());
 }
 
-void HighlightCircle::free() {
+template <typename NodeType>
+void HighlightCircle<NodeType>::free() {
     nodeObserver = nullptr, highlightLocked = true;
 }
 
-const Node* HighlightCircle::getAddress() const {
+template <typename NodeType>
+const NodeType* HighlightCircle<NodeType>::getAddress() const {
     return nodeObserver;
 }
 
-sf::FloatRect HighlightCircle::getBoundary() const {
+template <typename NodeType>
+sf::FloatRect HighlightCircle<NodeType>::getBoundary() const {
     return circle.getLocalBounds();
 }
 
-void HighlightCircle::draw (sf::RenderTarget &target, sf::RenderStates states) const {
+template <typename NodeType>
+void HighlightCircle<NodeType>::draw (sf::RenderTarget &target, sf::RenderStates states) const {
     states.transform *= getTransform();
     if (nodeObserver != nullptr) target.draw(circle, states);
 }
 
-void HighlightCircle::handleMousePress (const sf::Vector2f &mousePos) {}
-void HighlightCircle::handleMouseRelease (const sf::Vector2f &mousePos) {}
-void HighlightCircle::handleMouseMovement (const sf::Vector2f &mousePos) {}
-void HighlightCircle::handleTextEntered (const char &unicode) {}
+template <typename NodeType>
+void HighlightCircle<NodeType>::handleMousePress (const sf::Vector2f &mousePos) {}
+template <typename NodeType>
+void HighlightCircle<NodeType>::handleMouseRelease (const sf::Vector2f &mousePos) {}
+template <typename NodeType>
+void HighlightCircle<NodeType>::handleMouseMovement (const sf::Vector2f &mousePos) {}
+template <typename NodeType>
+void HighlightCircle<NodeType>::handleTextEntered (const char &unicode) {}
 
-void HighlightCircle::lockHighlight() {
+template <typename NodeType>
+void HighlightCircle<NodeType>::lockHighlight() {
     highlightLocked = true;
 }
 

@@ -178,7 +178,6 @@ public:
     int apply (TypeUI &ui, UI::CodeHighlighter &code) override;
 };
 
-template class CodeHighlightLoadCode<UI::BinaryTree>;
 
 template <typename TypeUI>
 class CodeHighlighting : public AnimationEvent<TypeUI> {
@@ -193,10 +192,15 @@ public:
 template <typename TypeUI>
 class CompleteAnimation: public AnimationEvent<TypeUI> {
 public:
-    CompleteAnimation();
+CompleteAnimation();
 
-    int apply (TypeUI &ui, UI::CodeHighlighter &code) override;
+int apply (TypeUI &ui, UI::CodeHighlighter &code) override;
 };
+
+// ========== TEMPLATE CLASSES ==========
+
+template class CodeHighlightLoadCode<UI::BinaryTree>;
+template class CodeHighlightLoadCode<UI::Graph>;
 
 template class CodeHighlighting<UI::BinaryTree>;
 template class CodeHighlighting<UI::Graph>;

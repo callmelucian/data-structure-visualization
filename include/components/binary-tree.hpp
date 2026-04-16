@@ -25,7 +25,7 @@ private:
     std::vector<bool> isDeleted;
     int rootNode, treeSize;
     sf::Vector2f targetOrigin;
-    UI::HighlightCircle highlighter;
+    UI::HighlightCircle<AnimatedNode> highlighter;
 
 public:
     BinaryTree();

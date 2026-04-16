@@ -216,6 +216,8 @@ void Graph::setAnnotation (int nodeID, int value) {
     if (nodeID < nodes.size()) nodes[nodeID]->setAnnotation(msg);
 }
 
+void Graph::calculatePositions() {}
+
 void Graph::handleMousePress (const sf::Vector2f &mousePos) {
     if (callbackIsEditing(mousePos)) return;
     sf::Vector2f localPos = this->getInverseTransform().transformPoint(mousePos);
