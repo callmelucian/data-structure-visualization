@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 #include <vector>
 
@@ -53,6 +54,16 @@ inline const std::vector<std::string> AVL_TREE_RIGHT_ROTATION = {
     "    updateHeight(ptr), updateHeight(x);",
     "    return x;",
     "}"
+};
+
+inline const std::vector<std::string> DIJKSTRA_CODE = {
+    "intialize all nodes with infinity distance",
+    "distance[source] := 0",
+    "while queue is not empty:",
+    "    let u be the unvisited node with smallest distance",
+    "    visited[u] := true",
+    "    for v as neighbors of u:",
+    "        distance[v] := min(distance[v], distance[u] + weight)"
 };
 
 }; // namespace CodeRepo

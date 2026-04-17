@@ -2,8 +2,10 @@
 
 DijkstraScene::DijkstraScene (const sf::RenderWindow &window) :
     Scene(window), editField(150, 30),
-    insertButton(100, 30), editButton(100, 30), deleteButton(100, 30),
-    ui(UI::Graph()) {
+    insertButton(100, 30), editButton(100, 30), deleteButton(100, 30), runButton(100, 30),
+    ui(UI::Graph()),
+    prevStepButton(50, 30), prevOperationButton(50, 30),
+    nextStepButton(50, 30), nextOperationButton(50, 30) {
     
     // setup button: editing edges' weight
     editField.setPosition({115, 850});
@@ -11,6 +13,17 @@ DijkstraScene::DijkstraScene (const sf::RenderWindow &window) :
     editButton.setString("Edit weight");
     editButton.disableButton();
     editField.disable();
+
+    // setup buttons: previous and next states
+    prevStepButton.setString("<");
+    prevOperationButton.setString("<<");
+    nextStepButton.setString(">");
+    nextOperationButton.setString(">>");
+
+    prevOperationButton.setPosition({800, 850});
+    prevStepButton.setPosition({860, 850});
+    nextStepButton.setPosition({920, 850});
+    nextOperationButton.setPosition({980, 850});
 
     // setup button: insert node
     insertButton.setPosition({400, 850});
@@ -20,6 +33,10 @@ DijkstraScene::DijkstraScene (const sf::RenderWindow &window) :
     deleteButton.setPosition({550, 850});
     deleteButton.setString("Delete");
     deleteButton.disableButton();
+
+    // run button: run Dijkstra
+    runButton.setPosition({700, 850});
+    runButton.setString("Run");
 
     // set callback functions for button-UI communications
     ui.getCurrentUI().setCallbackAllowEdit([&] (bool f) {
@@ -77,11 +94,34 @@ DijkstraScene::DijkstraScene (const sf::RenderWindow &window) :
         int nodeID = ui.getCurrentUI().nodeActivated();
         int edgeID = ui.getCurrentUI().edgeActivated();
         if (nodeID != -1) ui.transformLogic([&] (DS::DijkstraAlgorithm &logic) {
+            ui.getCurrentUI().highlightNode(-1);
             return logic.deleteNode(nodeID), true;
         });
         if (edgeID != -1) ui.transformLogic([&] (DS::DijkstraAlgorithm &logic) {
+            ui.getCurrentUI().highlightEdge(-1);
             return logic.deleteEdge(edgeID), true;
         });
+    });
+
+    // set callback functions: run Dijkstra
+    runButton.setCallback([&]() {
+        ui.transformLogic([] (DS::DijkstraAlgorithm &logic) {
+            return logic.run(1), true;
+        });
+    });
+
+    // set callback functions: previous and next states
+    prevOperationButton.setCallback([&]() {
+        ui.previousCompleteState();
+    });
+    prevStepButton.setCallback([&]() {
+        ui.previousState();
+    });
+    nextOperationButton.setCallback([&]() {
+        ui.nextCompleteState();
+    });
+    nextStepButton.setCallback([&]() {
+        ui.nextState();
     });
 }
 
@@ -91,9 +131,13 @@ void DijkstraScene::handleEvent (sf::RenderWindow &window, const std::optional<s
     insertButton.handleMouseEvents(window, event);
     editButton.handleMouseEvents(window, event);
     deleteButton.handleMouseEvents(window, event);
+    runButton.handleMouseEvents(window, event);
 
     editField.handleTextEvents(window, event);
-    // std::cerr << "Very done" << std::endl;
+    prevOperationButton.handleMouseEvents(window, event);
+    prevStepButton.handleMouseEvents(window, event);
+    nextOperationButton.handleMouseEvents(window, event);
+    nextStepButton.handleMouseEvents(window, event);
 }
 
 void DijkstraScene::timePropagation (float delta) {
@@ -103,8 +147,14 @@ void DijkstraScene::timePropagation (float delta) {
 
 void DijkstraScene::draw (sf::RenderWindow &window) {
     window.draw(ui.getCurrentUI());
+    window.draw(ui.getCurrentCode());
     window.draw(editField);
     window.draw(insertButton);
     window.draw(editButton);
     window.draw(deleteButton);
+    window.draw(prevOperationButton);
+    window.draw(prevStepButton);
+    window.draw(nextOperationButton);
+    window.draw(nextStepButton);
+    window.draw(runButton);
 }

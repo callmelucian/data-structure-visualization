@@ -90,7 +90,7 @@ public:
     int edgeActivated() const;
 
     void clearAnnotation();
-    void markAnnotation();
+    void markAnnotation (int nodeID);
 
     void highlightNode (int nodeID);
     void highlightEdge (int edgeID);

@@ -22,8 +22,7 @@ void HighlightCircle<NodeType>::setTargetNode (NodeType* ptr) {
 template <typename NodeType>
 void HighlightCircle<NodeType>::timePropagation (float deltaTime) {
     if (nodeObserver == nullptr) return;
-    if (highlightLocked)
-        setPosition(nodeObserver->getPosition());
+    if (highlightLocked) setPosition(nodeObserver->getPosition());
     else {
         sf::Vector2f displacement = nodeObserver->getPosition() - getPosition();
         if (magnitude(displacement) < HIGHLIGHT_SMALL_DISTANCE)
@@ -37,8 +36,7 @@ void HighlightCircle<NodeType>::timePropagation (float deltaTime) {
 
 template <typename NodeType>
 void HighlightCircle<NodeType>::fastForward() {
-    if (nodeObserver)
-        setPosition(nodeObserver->getPosition());
+    if (nodeObserver) setPosition(nodeObserver->getPosition());
 }
 
 template <typename NodeType>

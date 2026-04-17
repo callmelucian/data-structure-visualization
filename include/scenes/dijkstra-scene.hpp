@@ -21,7 +21,10 @@ class DijkstraScene : public Scene {
 private:
     AnimationManager<UI::Graph, DS::DijkstraAlgorithm> ui;
     UI::TextInputField editField;
-    UI::Button insertButton, editButton, deleteButton;
+    UI::Button insertButton, editButton, deleteButton, runButton;
+
+    UI::Button prevStepButton, prevOperationButton;
+    UI::Button nextStepButton, nextOperationButton;
 
 public:
     DijkstraScene(const sf::RenderWindow &window);

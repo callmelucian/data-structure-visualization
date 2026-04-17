@@ -51,35 +51,62 @@ void DijkstraAlgorithm::run (int source) {
     std::priority_queue<Item, std::vector<Item>, std::greater<Item>> pq;
 
     // UI initialization
+    callbackLoadCode(CodeRepo::DIJKSTRA_CODE);
     callbackClearAnnotation();
     for (int i = 0; i < graphSize; i++)
-        if (!nodeDeleted[i])
-            callbackEditAnnotation(i, (i == source ? 0 : INT_MAX));
+        if (!nodeDeleted[i]) callbackEditAnnotation(i, INT_MAX);
+            // callbackEditAnnotation(i, (i == source ? 0 : INT_MAX));
+    callbackHighlightCode(0);
     callbackApplyAnimation();
 
     // Run Dijkstra algorithm
+    pq.emplace(0, source), dist[source] = 0;
+    callbackEditAnnotation(source, 0);
+    callbackHighlightCode(1);
+    callbackApplyAnimation();
+
     while (pq.size()) {
         int curNode = pq.top().second; pq.pop();
-        callbackHighlightNode(curNode);
         if (vist[curNode]) continue;
+
+        callbackHighlightCode(2);
+        callbackApplyAnimation();
+
+        callbackHighlightNode(curNode);
+        callbackHighlightCode(3);
+        callbackApplyAnimation();
+
+        vist[curNode] = true;
+        callbackHighlightCode(4);
         callbackMarkAnnotation(curNode);
+        callbackApplyAnimation();
 
         for (auto [nextNode, edgeID] : adjency[curNode]) {
             if (edgeDeleted[edgeID]) continue;
             callbackHighlightEdge(edgeID);
+            callbackHighlightCode(5);
+            callbackApplyAnimation();
+
             int weight = edgeWeight[edgeID];
+            callbackHighlightCode(6);
             if (dist[curNode] + weight < dist[nextNode]) {
                 dist[nextNode] = dist[curNode] + weight;
                 pq.emplace(dist[nextNode], nextNode);
                 callbackEditAnnotation(nextNode, dist[nextNode]);
             }
+            callbackApplyAnimation();
+
             callbackHighlightEdge(-1);
+            callbackApplyAnimation();
         }
     }
 
     for (int i = 0; i < graphSize; i++)
         if (dist[i] == INT_MAX && !nodeDeleted[i])
             callbackMarkAnnotation(i);
+    
+    callbackHighlightNode(-1);
+    callbackApplyAnimation();
 }
 
 }; // namespace DS

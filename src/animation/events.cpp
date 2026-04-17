@@ -107,7 +107,7 @@ int GraphEditEdge::apply (UI::Graph &ui, UI::CodeHighlighter &code) {
 GraphClearAnnotation::GraphClearAnnotation() {}
 
 int GraphClearAnnotation::apply (UI::Graph &ui, UI::CodeHighlighter &code) {
-    return true;
+    return ui.clearAnnotation(), true;
 }
 
 // ========== GRAPH EDIT ANNOTATION ========== //
@@ -123,7 +123,7 @@ int GraphEditAnnotation::apply (UI::Graph &ui, UI::CodeHighlighter &code) {
 GraphMarkAnnotation::GraphMarkAnnotation (int nodeID) : nodeID(nodeID) {}
 
 int GraphMarkAnnotation::apply (UI::Graph &ui, UI::CodeHighlighter &code) {
-    return true;
+    return ui.markAnnotation(nodeID), true;
 }
 
 // ========== GRAPH HIGHLIGHT NODE ========== //
@@ -131,7 +131,7 @@ int GraphMarkAnnotation::apply (UI::Graph &ui, UI::CodeHighlighter &code) {
 GraphHighlightNode::GraphHighlightNode (int nodeID) : nodeID(nodeID) {}
 
 int GraphHighlightNode::apply (UI::Graph &ui, UI::CodeHighlighter &code) {
-    return true;
+    return ui.highlightNode(nodeID), true;
 }
 
 // ========== GRAPH HIGHLIGHT EDGE ========== //
@@ -139,7 +139,7 @@ int GraphHighlightNode::apply (UI::Graph &ui, UI::CodeHighlighter &code) {
 GraphHighlightEdge::GraphHighlightEdge (int edgeID) : edgeID(edgeID) {}
 
 int GraphHighlightEdge::apply (UI::Graph &ui, UI::CodeHighlighter &code) {
-    return true;
+    return ui.highlightEdge(edgeID), true;
 }
 
 // ========== COMPLETE ANIMATION ========== //

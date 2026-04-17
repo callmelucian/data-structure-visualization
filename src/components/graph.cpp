@@ -35,6 +35,8 @@ Graph::Graph(const Graph &other) : UI::Base(other), isDeleted(other.isDeleted), 
                     activatedNode = -1;
                 }
             });
+            if (highlighter.getAddress() == node)
+                highlighter.setTargetNode(nodes.back());
         }
         else nodes.push_back(nullptr);
     }
@@ -70,6 +72,8 @@ Graph& Graph::operator=(const Graph &other) {
                     activatedNode = -1;
                 }
             });
+            if (highlighter.getAddress() == node)
+                highlighter.setTargetNode(nodes.back());
         }
         else nodes.push_back(nullptr);
     }
@@ -90,7 +94,7 @@ void Graph::timePropagation (float deltaTime) {
             ptr->addAcceleration(repulsiveForce);
         }
     }
-
+    
     // apply spring force
     for (Edge item : edges) {
         if (item.isDeleted) continue;
@@ -100,7 +104,7 @@ void Graph::timePropagation (float deltaTime) {
         nodes[item.fromNode]->addAcceleration(springForce);
         nodes[item.toNode]->addAcceleration(-springForce);
     }
-
+    
     // move nodes
     for (int i = 0; i < nodes.size(); i++) {
         if (isDeleted[i]) continue;
@@ -108,6 +112,7 @@ void Graph::timePropagation (float deltaTime) {
         ptr->applyDamping(FRICTION_CONSTANT);
         ptr->timePropagation(deltaTime);
     }
+    highlighter.timePropagation(deltaTime);
 
     // re-align origin
     if (getOrigin() == targetOrigin) {
@@ -175,6 +180,7 @@ void Graph::changeWeight (int edgeID, int newWeight) {
     //     curr.isActivated = curr.isHovered = false;
     // }
     callbackAllowEdit(false);
+    callbackAllowDelete(false);
 }
 
 void Graph::deleteEdge (int edgeID) {
@@ -218,9 +224,10 @@ void Graph::clearAnnotation() {
     }
 }
 
-void Graph::markAnnotation() {
-    for (FloatingNode* ptr : nodes)
-        ptr->setAnnotationColor(sf::Color::Green);
+void Graph::markAnnotation (int nodeID) {
+    // for (FloatingNode* ptr : nodes)
+    //     ptr->setAnnotationColor(sf::Color::Green);
+    nodes[nodeID]->setAnnotationColor(sf::Color::Green);
 }
 
 void Graph::highlightNode (int nodeID) {
@@ -283,18 +290,15 @@ void Graph::handleMousePress (const sf::Vector2f &mousePos) {
 
 void Graph::handleMouseRelease (const sf::Vector2f &mousePos) {
     sf::Vector2f localPos = this->getInverseTransform().transformPoint(mousePos);
-    std::cerr << "BRO!" << std::endl;
     for (UI::FloatingNode* ptr : nodes) {
         assert(ptr);
         ptr->handleMouseRelease(localPos);
         ptr->deactivateNode();
     }
-    std::cerr << "Got here" << std::endl;
     if (activatedNode != -1) {
         nodes[activatedNode]->activateNode();
         callbackAllowDelete(true);
     }
-    std::cerr << "Done" << std::endl;
 }
 
 void Graph::handleMouseMovement (const sf::Vector2f &mousePos) {
@@ -333,6 +337,7 @@ void Graph::draw (sf::RenderTarget& target, sf::RenderStates states) const {
     }
     for (int i = 0; i < nodes.size(); i++)
         if (!isDeleted[i]) target.draw(*nodes[i], states);
+    target.draw(highlighter, states);
     
     // sf::CircleShape dot(4.f);
     // dot.setFillColor(sf::Color::Red);
