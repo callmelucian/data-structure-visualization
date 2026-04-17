@@ -66,7 +66,7 @@ public:
 
     Graph& operator= (const Graph &other);
 
-    void timePropagation (float deltaTime);
+    void timePropagation (float deltaTime, float maxWidth = Setting::screenWidth, float maxHeight = Setting::screenHeight);
 
     void insertNode (int label);
 

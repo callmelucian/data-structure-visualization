@@ -45,6 +45,8 @@ public:
 
     void setAnnotation (const std::string &msg);
 
+    void clampPosition (const sf::Vector2f &pos, float maxWidth, float maxHeight);
+
     // handle mouse press
     void handleMousePress(const sf::Vector2f &mousePos) override;
     

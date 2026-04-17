@@ -63,6 +63,15 @@ void Node::randomPosition() {
     });
 }
 
+void Node::clampPosition (const sf::Vector2f &pos, float maxWidth, float maxHeight) {
+    float x = getPosition().x, y = getPosition().y;
+    x = std::max(x, pos.x - maxWidth / 2.f + getRadius());
+    x = std::min(x, pos.x + maxWidth / 2.f - getRadius());
+    y = std::max(y, pos.y - maxHeight / 2.f + getRadius());
+    y = std::min(y, pos.y + maxHeight / 2.f - getRadius());
+    setPosition({x, y});
+}
+
 void Node::setAnnotation (const std::string &msg) {
     annotation.setString(msg);
     annotation.centerOrigin();

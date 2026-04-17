@@ -155,6 +155,7 @@ void DijkstraScene::handleEvent (sf::RenderWindow &window, const std::optional<s
 void DijkstraScene::timePropagation (float delta) {
     ui.timePropagation(delta);
     editField.timePropagation();
+    runField.timePropagation();
 }
 
 void DijkstraScene::draw (sf::RenderWindow &window) {

@@ -17,7 +17,11 @@ Graph::~Graph() {
     for (UI::FloatingNode* ptr : nodes) delete ptr;
 }
 
-Graph::Graph(const Graph &other) : UI::Base(other), isDeleted(other.isDeleted), edges(other.edges), highlighter(other.highlighter), targetOrigin(other.targetOrigin), activatedNode(other.activatedNode) {
+Graph::Graph(const Graph &other) :
+    UI::Base(other), isDeleted(other.isDeleted), edges(other.edges),
+    highlighter(other.highlighter), targetOrigin(other.targetOrigin),
+    activatedNode(other.activatedNode) {
+    
     this->callbackAllowEdit = other.callbackAllowEdit;
     this->callbackAllowDelete = other.callbackAllowDelete;
     this->callbackIsEditing = other.callbackIsEditing;
@@ -80,7 +84,7 @@ Graph& Graph::operator=(const Graph &other) {
     return *this;
 }
 
-void Graph::timePropagation (float deltaTime) {
+void Graph::timePropagation (float deltaTime, float maxWidth, float maxHeight) {
     // apply repulsive force
     for (int i = 0; i < nodes.size(); i++) {
         if (isDeleted[i]) continue;
@@ -111,6 +115,7 @@ void Graph::timePropagation (float deltaTime) {
         FloatingNode* ptr = nodes[i];
         ptr->applyDamping(FRICTION_CONSTANT);
         ptr->timePropagation(deltaTime);
+        ptr->clampPosition(getOrigin(), maxWidth, maxHeight);
     }
     highlighter.timePropagation(deltaTime);
 
