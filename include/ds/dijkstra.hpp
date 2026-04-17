@@ -33,6 +33,7 @@ private:
     std::function<void(int)> callbackHighlightNode;
     std::function<void(int)> callbackHighlightEdge;
     std::function<void()> callbackApplyAnimation;
+    std::function<void()> callbackCompleteAnimation;
 
     std::function<void(const std::vector<std::string>&)> callbackLoadCode;
     std::function<void(int)> callbackHighlightCode;
@@ -82,6 +83,10 @@ public:
 
     void setCallbackApplyAnimation (auto func) {
         callbackApplyAnimation = func;
+    }
+
+    void setCallbackCompleteAnimation (auto func) {
+        callbackCompleteAnimation = func;
     }
 
     void setCallbackLoadCode(auto func) {

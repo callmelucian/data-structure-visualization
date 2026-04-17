@@ -8,6 +8,8 @@ void DijkstraAlgorithm::createNode() {
     adjency.push_back(std::vector<std::pair<int,int>>(0));
     nodeDeleted.push_back(false);
     callbackCreateNode(graphSize++);
+    callbackClearAnnotation();
+    callbackCompleteAnimation();
     callbackApplyAnimation();
 }
 
@@ -16,6 +18,8 @@ void DijkstraAlgorithm::createEdge (int fromNode, int toNode) {
     edgeWeight.push_back(randInt(0, 99));
     edgeDeleted.push_back(false);
     callbackAddEdge(fromNode, toNode, edgeWeight.back());
+    callbackClearAnnotation();
+    callbackCompleteAnimation();
     callbackApplyAnimation();
 }
 
@@ -26,12 +30,16 @@ void DijkstraAlgorithm::deleteNode (int targetNode) {
             edgeDeleted[edgeID] = true;
     }
     callbackDeleteNode(targetNode);
+    callbackClearAnnotation();
+    callbackCompleteAnimation();
     callbackApplyAnimation();
 }
 
 void DijkstraAlgorithm::deleteEdge (int targetEdge) {
     edgeDeleted[targetEdge] = true;
     callbackDeleteEdge(targetEdge);
+    callbackClearAnnotation();
+    callbackCompleteAnimation();
     callbackApplyAnimation();
 }
 
@@ -39,11 +47,15 @@ bool DijkstraAlgorithm::editEdge (int targetEdge, int weight) {
     if (edgeWeight[targetEdge] == weight) return false;
     edgeWeight[targetEdge] = weight;
     callbackEditEdge(targetEdge, weight);
+    callbackClearAnnotation();
+    callbackCompleteAnimation();
     callbackApplyAnimation();
     return true;
 }
 
 void DijkstraAlgorithm::run (int source) {
+    if (nodeDeleted[source]) return;
+
     // Logic intialization
     std::vector<int> dist(graphSize, INT_MAX);
     std::vector<bool> vist(graphSize, false);
@@ -106,6 +118,8 @@ void DijkstraAlgorithm::run (int source) {
             callbackMarkAnnotation(i);
     
     callbackHighlightNode(-1);
+    callbackLoadCode({});
+    callbackCompleteAnimation();
     callbackApplyAnimation();
 }
 

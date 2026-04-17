@@ -247,6 +247,7 @@ void Graph::copyPosition (const Graph &other) {
             nodes[i]->copyPosition(*other.nodes[i]);
         else nodes[i]->randomPosition();
     }
+    setOrigin(other.getOrigin());
 }
 
 void Graph::setAnnotation (int nodeID, int value) {

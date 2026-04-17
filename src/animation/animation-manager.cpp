@@ -247,10 +247,12 @@ void AnimationManager<UI::Graph, DS::DijkstraAlgorithm>::initCallbackFunctions()
         );
     });
     stateLogic[0].setCallbackApplyAnimation([&]() {
-        // this->createAnimationEvent(
-        //     std::make_unique<CompleteAnimation<UI::Graph>>()
-        // );
         this->nextStep();
+    });
+    stateLogic[0].setCallbackCompleteAnimation([&]() {
+        this->createAnimationEvent(
+            std::make_unique<CompleteAnimation<UI::Graph>>()
+        );
     });
     stateLogic[0].setCallbackLoadCode([&] (const std::vector<std::string> &code) {
         this->createAnimationEvent(

@@ -1,7 +1,7 @@
 #include "../../include/scenes/dijkstra-scene.hpp"
 
 DijkstraScene::DijkstraScene (const sf::RenderWindow &window) :
-    Scene(window), editField(150, 30),
+    Scene(window), editField(150, 30), runField(150, 30),
     insertButton(100, 30), editButton(100, 30), deleteButton(100, 30), runButton(100, 30),
     ui(UI::Graph()),
     prevStepButton(50, 30), prevOperationButton(50, 30),
@@ -20,10 +20,10 @@ DijkstraScene::DijkstraScene (const sf::RenderWindow &window) :
     nextStepButton.setString(">");
     nextOperationButton.setString(">>");
 
-    prevOperationButton.setPosition({800, 850});
-    prevStepButton.setPosition({860, 850});
-    nextStepButton.setPosition({920, 850});
-    nextOperationButton.setPosition({980, 850});
+    prevOperationButton.setPosition({950, 850});
+    prevStepButton.setPosition({1010, 850});
+    nextStepButton.setPosition({1070, 850});
+    nextOperationButton.setPosition({1130, 850});
 
     // setup button: insert node
     insertButton.setPosition({400, 850});
@@ -35,8 +35,9 @@ DijkstraScene::DijkstraScene (const sf::RenderWindow &window) :
     deleteButton.disableButton();
 
     // run button: run Dijkstra
-    runButton.setPosition({700, 850});
-    runButton.setString("Run");
+    runField.setPosition({725, 850});
+    runButton.setPosition({850, 850});
+    runButton.setString("Run from");
 
     // set callback functions for button-UI communications
     ui.getCurrentUI().setCallbackAllowEdit([&] (bool f) {
@@ -104,10 +105,18 @@ DijkstraScene::DijkstraScene (const sf::RenderWindow &window) :
     });
 
     // set callback functions: run Dijkstra
-    runButton.setCallback([&]() {
-        ui.transformLogic([] (DS::DijkstraAlgorithm &logic) {
-            return logic.run(1), true;
+    runField.setCallbackFunction([&] (const std::string &msg) {
+        int value = convert(msg);
+        if (value == -1) {
+            std::cerr << "Edit field contains non-numerical value!" << std::endl;
+            return;
+        }
+        ui.transformLogic([value] (DS::DijkstraAlgorithm &logic) {
+            return logic.run(value), true;
         });
+    });
+    runButton.setCallback([&]() {
+        runField.releaseText();
     });
 
     // set callback functions: previous and next states
@@ -131,9 +140,12 @@ void DijkstraScene::handleEvent (sf::RenderWindow &window, const std::optional<s
     insertButton.handleMouseEvents(window, event);
     editButton.handleMouseEvents(window, event);
     deleteButton.handleMouseEvents(window, event);
+    editField.handleMouseEvents(window, event);
     runButton.handleMouseEvents(window, event);
+    runField.handleMouseEvents(window, event);
 
     editField.handleTextEvents(window, event);
+    runField.handleTextEvents(window, event);
     prevOperationButton.handleMouseEvents(window, event);
     prevStepButton.handleMouseEvents(window, event);
     nextOperationButton.handleMouseEvents(window, event);
@@ -149,6 +161,7 @@ void DijkstraScene::draw (sf::RenderWindow &window) {
     window.draw(ui.getCurrentUI());
     window.draw(ui.getCurrentCode());
     window.draw(editField);
+    window.draw(runField);
     window.draw(insertButton);
     window.draw(editButton);
     window.draw(deleteButton);
