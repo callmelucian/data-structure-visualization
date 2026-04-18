@@ -8,51 +8,125 @@ const float IDEAL_LENGTH = 100.f;
 const float SPRING_CONSTANT = 0.05f;
 const float FRICTION_CONSTANT = 0.9f;
 
-// ========== GRAPH IMPLEMENTATION ==========
 namespace UI {
 
+// ========== EDGE IMPLEMENTATION ==========
+Edge::Edge() :
+    fromID(0), toID(0), weight(0),
+    isDeleted(false), isActivated(false), isHovered(false), isHighlighted(false), isDirected(false),
+    defaultColor(sf::Color::Black),
+    fromObserver(nullptr), toObserver(nullptr),
+    thickness(0.f) {}
+
+Edge::Edge (int fromNode, int toNode, int weight, Node* fromObserver, Node* toObserver, bool isDirected) :
+    fromID(fromNode), toID(toNode), weight(weight),
+    isDeleted(false), isActivated(false), isHovered(false), isHighlighted(false), isDirected(isDirected),
+    defaultColor(sf::Color::Black),
+    fromObserver(fromObserver), toObserver(toObserver),
+    thickness(2.f) {}
+
+void Edge::updateObserver (Node* newFrom, Node* newTo) {
+    fromObserver = newFrom;
+    toObserver = newTo;
+}
+
+void Edge::setDefaultColor (const sf::Color &color) {
+    defaultColor = color;
+}
+
+sf::Vector2f Edge::getFromPosition() const {
+    return fromObserver ? fromObserver->getPosition() : sf::Vector2f({0, 0});
+}
+
+sf::Vector2f Edge::getToPosition() const {
+    return toObserver ? toObserver->getPosition() : sf::Vector2f({0, 0});
+}
+
+sf::Color Edge::getColor() const {
+    if (isActivated || isHighlighted) return Theme::getAccentMain(0);
+    if (isHovered) return Theme::getEdgeHovered();
+    return defaultColor;
+}
+
+void Edge::drawEdge (sf::RenderTarget &target, sf::RenderStates states, const sf::Vector2f &fromPos, const sf::Vector2f &toPos) const {
+    // pre-calculations
+    sf::Vector2f delta = toPos - fromPos;
+    float dist = std::sqrt(delta.x * delta.x + delta.y * delta.y);
+    float angle = std::atan2(delta.y, delta.x);
+
+    // draw line
+    sf::RectangleShape line({dist, thickness});
+    line.setOrigin({0, thickness / 2.0f});
+    line.setPosition(fromPos);
+    line.setRotation(sf::radians(angle));
+    line.setFillColor(getColor());
+    target.draw(line, states);
+
+    // draw arrow head
+    if (isDirected) {
+        float arrowSize = thickness * 3.0f;
+        sf::ConvexShape arrowhead;
+        arrowhead.setPointCount(3);
+        arrowhead.setPoint(0, {0, 0});
+        arrowhead.setPoint(1, {-arrowSize, -arrowSize * 0.8f});
+        arrowhead.setPoint(2, {-arrowSize,  arrowSize * 0.8f});
+        
+        arrowhead.setPosition(toPos);
+        arrowhead.setRotation(sf::radians(angle));
+        arrowhead.setFillColor(getColor());
+        target.draw(arrowhead, states);
+    }
+}
+
+void Edge::draw (sf::RenderTarget &target, sf::RenderStates states) const {
+    if (getFromPosition() == getToPosition() || isDeleted) return;
+    float d = distance(getFromPosition(), getToPosition());
+    sf::Vector2f shiftFrom = (getToPosition() - getFromPosition()) * fromObserver->getRadius() / d;
+    sf::Vector2f shiftTo = (getFromPosition() - getToPosition()) * toObserver->getRadius() / d;
+    drawEdge(target, states, getFromPosition() + shiftFrom, getToPosition() + shiftTo);
+
+    sf::Vector2f delta = getToPosition() - getFromPosition();
+
+    Text text(Theme::ibmRegular, std::to_string(weight), 15);
+    text.setFillColor(getColor());
+    text.centerOrigin();
+    sf::Vector2f midpoint = (getFromPosition() + getToPosition()) / 2.0f;
+    sf::Vector2f unitNormal(-delta.y / d, delta.x / d);
+    float textOffset = 15.0f + thickness; 
+    text.setPosition(midpoint + unitNormal * textOffset);
+
+    target.draw(text, states);
+}
+
+sf::FloatRect Edge::getBoundary() const {
+    return sf::FloatRect();
+}
+
+void Edge::handleMousePress (const sf::Vector2f &mousePos) {}
+void Edge::handleMouseRelease (const sf::Vector2f &mousePos) {}
+void Edge::handleMouseMovement (const sf::Vector2f &mousePos) {}
+void Edge::handleTextEntered (const char &unicode) {}
+    
+// ========== GRAPH IMPLEMENTATION ==========
 Graph::Graph() : targetOrigin({0, 0}), activatedNode(-1) {}
 
 Graph::~Graph() {
     for (UI::FloatingNode* ptr : nodes) delete ptr;
 }
 
-Graph::Graph(const Graph &other) :
-    UI::Base(other), isDeleted(other.isDeleted), edges(other.edges),
-    highlighter(other.highlighter), targetOrigin(other.targetOrigin),
-    activatedNode(other.activatedNode) {
-    
-    this->callbackAllowEdit = other.callbackAllowEdit;
-    this->callbackAllowDelete = other.callbackAllowDelete;
-    this->callbackIsEditing = other.callbackIsEditing;
-    this->callbackTriggerAddEdge = other.callbackTriggerAddEdge;
-
-    nodes.reserve(other.nodes.size());
-    for (int i = 0; i < other.nodes.size(); i++) {
-        FloatingNode* node = other.nodes[i];
-        if (node != nullptr) {
-            nodes.push_back(new UI::FloatingNode(*node));
-            nodes.back()->setCallbackOnClick([this, i]() {
-                if (activatedNode == -1) activatedNode = i;
-                else {
-                    callbackTriggerAddEdge(activatedNode, i);
-                    activatedNode = -1;
-                }
-            });
-            if (highlighter.getAddress() == node)
-                highlighter.setTargetNode(nodes.back());
-        }
-        else nodes.push_back(nullptr);
-    }
+Graph::Graph(const Graph &other) : UI::Base(other) {
+    copyFrom(other);
 }
 
 Graph& Graph::operator=(const Graph &other) {
     if (this == &other) return *this;
     UI::Base::operator=(other);
-
     for (UI::FloatingNode* node : nodes) delete node;
-    nodes.clear();
+    nodes.clear(), copyFrom(other);
+    return *this;
+}
 
+void Graph::copyFrom (const Graph &other) {
     this->isDeleted = other.isDeleted;
     this->edges = other.edges;
     this->highlighter = other.highlighter;
@@ -81,7 +155,9 @@ Graph& Graph::operator=(const Graph &other) {
         }
         else nodes.push_back(nullptr);
     }
-    return *this;
+
+    for (Edge &curr : edges)
+        curr.updateObserver(this->nodes[curr.fromID], this->nodes[curr.toID]);
 }
 
 void Graph::timePropagation (float deltaTime, float maxWidth, float maxHeight) {
@@ -102,11 +178,11 @@ void Graph::timePropagation (float deltaTime, float maxWidth, float maxHeight) {
     // apply spring force
     for (Edge item : edges) {
         if (item.isDeleted) continue;
-        sf::Vector2f fromPosition = nodes[item.fromNode]->getPosition();
-        sf::Vector2f toPosition = nodes[item.toNode]->getPosition();
+        sf::Vector2f fromPosition = item.getFromPosition();
+        sf::Vector2f toPosition = item.getToPosition();
         sf::Vector2f springForce = unitVector(fromPosition, toPosition) * SPRING_CONSTANT * (distance(fromPosition, toPosition) - IDEAL_LENGTH);
-        nodes[item.fromNode]->addAcceleration(springForce);
-        nodes[item.toNode]->addAcceleration(-springForce);
+        nodes[item.fromID]->addAcceleration(springForce);
+        nodes[item.toID]->addAcceleration(-springForce);
     }
     
     // move nodes
@@ -150,7 +226,7 @@ void Graph::insertNode (int label) {
 }
 
 void Graph::insertEdge (int fromNode, int toNode, int weight) {
-    edges.emplace_back(fromNode, toNode, weight);
+    edges.emplace_back(fromNode, toNode, weight, nodes[fromNode], nodes[toNode], true);
 }
 
 void Graph::setTargetOrigin (const sf::Vector2f &pos) {
@@ -180,10 +256,6 @@ void Graph::autosetTargetOrigin() {
 void Graph::changeWeight (int edgeID, int newWeight) {
     edges[edgeID].weight = newWeight;
     edges[edgeID].isActivated = edges[edgeID].isHovered = false;
-    // for (Edge &curr : edges) {
-    //     if (curr.isActivated) curr.weight = newWeight;
-    //     curr.isActivated = curr.isHovered = false;
-    // }
     callbackAllowEdit(false);
     callbackAllowDelete(false);
 }
@@ -191,10 +263,6 @@ void Graph::changeWeight (int edgeID, int newWeight) {
 void Graph::deleteEdge (int edgeID) {
     edges[edgeID].isDeleted = true;
     edges[edgeID].isActivated = edges[edgeID].isHovered = false;
-    // for (Edge &curr : edges) {
-    //     if (curr.isActivated) curr.isDeleted = true;
-    //     curr.isActivated = curr.isHovered = false;
-    // }
     callbackAllowEdit(false);
     callbackAllowDelete(false);
 }
@@ -202,7 +270,7 @@ void Graph::deleteEdge (int edgeID) {
 void Graph::deleteNode (int nodeID) {
     isDeleted[nodeID] = true;
     for (Edge &curr : edges) {
-        if (curr.fromNode != nodeID && curr.toNode != nodeID) continue;
+        if (curr.fromID != nodeID && curr.toID != nodeID) continue;
         curr.isDeleted = true, curr.isActivated = curr.isHovered = false;
     }
     callbackAllowDelete(false);
@@ -282,8 +350,8 @@ void Graph::handleMousePress (const sf::Vector2f &mousePos) {
         for (int edgeID = (int)edges.size() - 1; edgeID >= 0; edgeID--) {
             Edge &curr = edges[edgeID];
             if (curr.isDeleted) continue;
-            sf::Vector2f fromPos = nodes[curr.fromNode]->getPosition();
-            sf::Vector2f toPos = nodes[curr.toNode]->getPosition();
+            sf::Vector2f fromPos = curr.getFromPosition();
+            sf::Vector2f toPos = curr.getToPosition();
             if (isPointOnSegment(fromPos, toPos, localPos)) {
                 curr.isActivated = true;
                 callbackAllowEdit(true), callbackAllowDelete(true);
@@ -320,8 +388,8 @@ void Graph::handleMouseMovement (const sf::Vector2f &mousePos) {
     for (int edgeID = (int)edges.size() - 1; edgeID >= 0; edgeID--) {
         Edge &curr = edges[edgeID];
         if (curr.isDeleted) continue;
-        sf::Vector2f fromPos = nodes[curr.fromNode]->getPosition();
-        sf::Vector2f toPos = nodes[curr.toNode]->getPosition();
+        sf::Vector2f fromPos = curr.getFromPosition();
+        sf::Vector2f toPos = curr.getToPosition();
         if (isPointOnSegment(fromPos, toPos, localPos)) {
             curr.isHovered = true;
             return;
@@ -334,13 +402,7 @@ void Graph::handleTextEntered (const char &unicode) {}
 void Graph::draw (sf::RenderTarget& target, sf::RenderStates states) const {
     states.transform *= getTransform();
 
-    for (Edge item : edges) {
-        if (item.isDeleted) continue;
-        sf::Color edgeColor = (item.isActivated || item.isHighlighted ?
-            sf::Color::Red : (item.isHovered ?
-                Theme::getHoveredButton() : sf::Color::Black));
-        drawEdge(target, states, nodes[item.fromNode], nodes[item.toNode], item.weight, edgeColor);
-    }
+    for (Edge item : edges) target.draw(item, states);
     for (int i = 0; i < nodes.size(); i++)
         if (!isDeleted[i]) target.draw(*nodes[i], states);
     target.draw(highlighter, states);

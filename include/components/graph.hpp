@@ -8,6 +8,7 @@
 // utilities
 #include "../core/utility.hpp"
 #include "../core/global-setting.hpp"
+#include "../../assets/theme.hpp"
 
 // UI components
 #include "ui-base.hpp"
@@ -21,16 +22,36 @@ extern const float FRICTION_CONSTANT;
 
 namespace UI {
 
+struct Edge : public UI::Base {
+    int fromID, toID, weight;
+    bool isDeleted, isActivated, isHovered, isHighlighted, isDirected;
+    sf::Color defaultColor;
+    Node *fromObserver, *toObserver;
+    float thickness;
+
+    Edge();
+    Edge (int fromNode, int toNode, int weight, Node* fromObserver, Node* toObserver, bool isDirected = false);
+
+    void updateObserver (Node *newFrom, Node* newTo);
+    void setDefaultColor (const sf::Color &color);
+
+    sf::Vector2f getFromPosition() const;
+    sf::Vector2f getToPosition() const;
+    sf::Color getColor() const;
+
+    void drawEdge (sf::RenderTarget &target, sf::RenderStates states, const sf::Vector2f &fromPos, const sf::Vector2f &toPos) const;
+    void draw (sf::RenderTarget& target, sf::RenderStates states) const override;
+
+    sf::FloatRect getBoundary() const override;
+
+    void handleMousePress (const sf::Vector2f &mousePos) override;
+    void handleMouseRelease (const sf::Vector2f &mousePos) override;
+    void handleMouseMovement (const sf::Vector2f &mousePos) override;
+    void handleTextEntered (const char &unicode) override;
+};
+
 class Graph : public UI::Base {
 private:
-    struct Edge {
-        int fromNode, toNode, weight;
-        bool isDeleted, isActivated, isHovered, isHighlighted;
-
-        Edge() : fromNode(0), toNode(0), weight(0), isDeleted(false), isActivated(false), isHovered(false), isHighlighted(false) {}
-        Edge (int fromNode, int toNode, int weight) :
-            fromNode(fromNode), toNode(toNode), weight(weight), isDeleted(false), isActivated(false), isHovered(false), isHighlighted(false) {}
-    };
     std::vector<UI::FloatingNode*> nodes;
     std::vector<bool> isDeleted;
     std::vector<Edge> edges;
@@ -65,6 +86,8 @@ public:
     }
 
     Graph& operator= (const Graph &other);
+
+    void copyFrom (const Graph &other);
 
     void timePropagation (float deltaTime, float maxWidth = Setting::screenWidth, float maxHeight = Setting::screenHeight);
 

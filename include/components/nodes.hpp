@@ -142,8 +142,6 @@ public:
     void handleMouseRelease(const sf::Vector2f &mousePos) override;
 };
 
-void drawEdge(sf::RenderTarget &target, sf::RenderStates state, const AnimatedNode* from, const AnimatedNode* to, float thickness = 2.f);
-// void drawEdge(sf::RenderTarget &target, sf::RenderStates state, const FloatingNode* from, const FloatingNode* to, sf::Color edgeColor = sf::Color::Black, float thickness = 2.f);
-void drawEdge(sf::RenderTarget &target, sf::RenderStates state, const FloatingNode* from, const FloatingNode* to, int weight = 0, sf::Color edgeColor = sf::Color::Black, float thickness = 2.f);
+void drawEdge (sf::RenderTarget &target, sf::RenderStates state, const AnimatedNode* from, const AnimatedNode* to, float thickness = 2.f);
 
 } // namespace UI

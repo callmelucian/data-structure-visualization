@@ -16,6 +16,18 @@ namespace LightModeColors {
     inline constexpr sf::Color hoveredButton = sf::Color({220, 220, 220});
     inline constexpr sf::Color button = sf::Color({255, 255, 255});
     inline constexpr sf::Color idleButton = sf::Color({150, 150, 150});
+
+    inline constexpr sf::Color edgeHovered = sf::Color({73, 80, 87}); // grey
+
+    inline constexpr sf::Color accentMain[2] = {
+        sf::Color({158, 42, 43}), // red
+        sf::Color({0, 0, 0}) // green
+    };
+
+    inline constexpr sf::Color accentSecondary[2] = {
+        sf::Color({84, 11, 14}), // darker red
+        sf::Color({0, 0, 0}), // darker green
+    };
 };
 
 // return colors
@@ -44,6 +56,10 @@ namespace Theme {
     inline sf::Color getHoveredButton() { return LightModeColors::hoveredButton; }
     inline sf::Color getButton() { return LightModeColors::button; }
     inline sf::Color getIdleButton() { return LightModeColors::idleButton; }
+    inline sf::Color getEdgeHovered() { return LightModeColors::edgeHovered; }
+
+    inline sf::Color getAccentMain (int id) { return LightModeColors::accentMain[id]; }
+    inline sf::Color getAccentSecondary (int id) { return LightModeColors::accentSecondary[id]; }
 
     inline sf::Color getTransparent() { return LightModeColors::transparentColor; }
 };
