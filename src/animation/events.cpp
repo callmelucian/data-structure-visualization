@@ -102,6 +102,14 @@ int GraphEditEdge::apply (UI::Graph &ui, UI::CodeHighlighter &code) {
     return ui.changeWeight(edgeID, newWeight), true;
 }
 
+// ========== GRAPH SET EDGE COLOR ========== //
+
+GraphSetEdgeColor::GraphSetEdgeColor (int edgeID, const sf::Color &color) : edgeID(edgeID), color(color) {}
+
+int GraphSetEdgeColor::apply (UI::Graph &ui, UI::CodeHighlighter &code) {
+    return ui.setEdgeColor(edgeID, color), true;
+}
+
 // ========== GRAPH CLEAR ANNOTATION ========== //
 
 GraphClearAnnotation::GraphClearAnnotation() {}

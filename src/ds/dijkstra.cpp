@@ -2,23 +2,35 @@
 
 namespace DS {
 
-DijkstraAlgorithm::DijkstraAlgorithm() : graphSize(0) {}
+DijkstraAlgorithm::DijkstraAlgorithm() : graphSize(0), isDirected(false) {}
+
+void DijkstraAlgorithm::makeDirected() {
+    isDirected = true;
+}
+
+void DijkstraAlgorithm::clearUIState() {
+    for (int i = 0; i < edgeWeight.size(); i++)
+        if (!edgeDeleted[i]) callbackSetEdgeColor(i, sf::Color::Black);
+    callbackClearAnnotation();
+}
 
 void DijkstraAlgorithm::createNode() {
     adjency.push_back(std::vector<std::pair<int,int>>(0));
     nodeDeleted.push_back(false);
     callbackCreateNode(graphSize++);
-    callbackClearAnnotation();
+    clearUIState();
     callbackCompleteAnimation();
     callbackApplyAnimation();
 }
 
 void DijkstraAlgorithm::createEdge (int fromNode, int toNode) {
     adjency[fromNode].emplace_back(toNode, edgeWeight.size());
+    if (!isDirected)
+        adjency[toNode].emplace_back(fromNode, edgeWeight.size());
     edgeWeight.push_back(randInt(0, 99));
     edgeDeleted.push_back(false);
     callbackAddEdge(fromNode, toNode, edgeWeight.back());
-    callbackClearAnnotation();
+    clearUIState();
     callbackCompleteAnimation();
     callbackApplyAnimation();
 }
@@ -30,7 +42,7 @@ void DijkstraAlgorithm::deleteNode (int targetNode) {
             edgeDeleted[edgeID] = true;
     }
     callbackDeleteNode(targetNode);
-    callbackClearAnnotation();
+    clearUIState();
     callbackCompleteAnimation();
     callbackApplyAnimation();
 }
@@ -38,7 +50,7 @@ void DijkstraAlgorithm::deleteNode (int targetNode) {
 void DijkstraAlgorithm::deleteEdge (int targetEdge) {
     edgeDeleted[targetEdge] = true;
     callbackDeleteEdge(targetEdge);
-    callbackClearAnnotation();
+    clearUIState();
     callbackCompleteAnimation();
     callbackApplyAnimation();
 }
@@ -47,7 +59,7 @@ bool DijkstraAlgorithm::editEdge (int targetEdge, int weight) {
     if (edgeWeight[targetEdge] == weight) return false;
     edgeWeight[targetEdge] = weight;
     callbackEditEdge(targetEdge, weight);
-    callbackClearAnnotation();
+    clearUIState();
     callbackCompleteAnimation();
     callbackApplyAnimation();
     return true;
@@ -67,7 +79,6 @@ void DijkstraAlgorithm::run (int source) {
     callbackClearAnnotation();
     for (int i = 0; i < graphSize; i++)
         if (!nodeDeleted[i]) callbackEditAnnotation(i, INT_MAX);
-            // callbackEditAnnotation(i, (i == source ? 0 : INT_MAX));
     callbackHighlightCode(0);
     callbackApplyAnimation();
 
@@ -123,4 +134,77 @@ void DijkstraAlgorithm::run (int source) {
     callbackApplyAnimation();
 }
 
+void DijkstraAlgorithm::runPrim (int source) {
+    if (nodeDeleted[source]) return;
+
+    // Logic intialization
+    std::vector<bool> vist(graphSize, false);
+    std::vector<int> nodeWeight(graphSize, INT_MAX);
+    using Item = std::tuple<int,int,int>;
+    std::priority_queue<Item, std::vector<Item>, std::greater<Item>> pq;
+
+    // UI intialization
+    callbackLoadCode(CodeRepo::PRIM_CODE);
+    callbackClearAnnotation();
+    for (int i = 0; i < edgeWeight.size(); i++)
+        if (!edgeDeleted[i]) callbackSetEdgeColor(i, Theme::getHoveredButton());
+    for (int i = 0; i < graphSize; i++)
+        if (!nodeDeleted[i]) callbackEditAnnotation(i, INT_MAX);
+    callbackHighlightCode(0);
+    callbackApplyAnimation();
+    
+    // Run Dijkstra algorithm
+    pq.emplace(0, source, -1), nodeWeight[source] = 0;
+    callbackEditAnnotation(source, 0);
+    callbackHighlightCode(1);
+    callbackApplyAnimation();
+
+    while (pq.size()) {
+        int w, curNode, edgeID; std::tie(w, curNode, edgeID) = pq.top(); pq.pop();
+        if (vist[curNode]) continue;
+        
+        callbackHighlightCode(2);
+        callbackApplyAnimation();
+        
+        callbackHighlightNode(curNode);
+        callbackHighlightCode(3);
+        callbackApplyAnimation();
+
+        if (curNode != source) {
+            callbackSetEdgeColor(edgeID, Theme::getAccentSecondary(0));
+            callbackHighlightCode(4);
+            callbackApplyAnimation();
+        }
+        
+        vist[curNode] = true;
+        callbackMarkAnnotation(curNode);
+        callbackHighlightCode(5);
+        callbackApplyAnimation();
+
+        for (auto [nextNode, edgeID] : adjency[curNode]) {
+            if (edgeDeleted[edgeID]) continue;
+            callbackHighlightEdge(edgeID);
+            callbackHighlightCode(6);
+            callbackApplyAnimation();
+
+            int weight = edgeWeight[edgeID];
+            callbackHighlightCode(7);
+            if (weight < nodeWeight[nextNode]) {
+                nodeWeight[nextNode] = weight;
+                pq.emplace(nodeWeight[nextNode], nextNode, edgeID);
+                callbackEditAnnotation(nextNode, nodeWeight[nextNode]);
+            }
+            callbackApplyAnimation();
+
+            callbackHighlightEdge(-1);
+            callbackApplyAnimation();
+        }
+    }
+    
+    callbackHighlightNode(-1);
+    callbackClearAnnotation();
+    callbackLoadCode({});
+    callbackCompleteAnimation();
+    callbackApplyAnimation();
+}
 }; // namespace DS

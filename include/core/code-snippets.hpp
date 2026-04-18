@@ -66,4 +66,15 @@ inline const std::vector<std::string> DIJKSTRA_CODE = {
     "        distance[v] := min(distance[v], distance[u] + weight)"
 };
 
+inline const std::vector<std::string> PRIM_CODE = {
+    "initialize all nodes with infinity weight",
+    "weight[source] := 0",
+    "while queue is not empty:",
+    "    let u be the unvisited node with smallest weight",
+    "    if u != source: select the corresponding edge",
+    "    visited[u] := true",
+    "    for v as neighbors of u:",
+    "        weight[v] := min(weight[v], edgeWeight)"
+};
+
 }; // namespace CodeRepo

@@ -125,6 +125,16 @@ public:
     int apply (UI::Graph &ui, UI::CodeHighlighter &code) override;
 };
 
+class GraphSetEdgeColor : public AnimationEvent<UI::Graph> {
+private:
+    int edgeID;
+    sf::Color color;
+public:
+    GraphSetEdgeColor (int edgeID, const sf::Color &color);
+    
+    int apply (UI::Graph &ui, UI::CodeHighlighter &code) override;
+};
+
 class GraphClearAnnotation : public AnimationEvent<UI::Graph> {
 public:
     GraphClearAnnotation();

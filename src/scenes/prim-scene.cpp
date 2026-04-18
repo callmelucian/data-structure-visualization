@@ -1,6 +1,6 @@
-#include "../../include/scenes/dijkstra-scene.hpp"
+#include "../../include/scenes/prim-scene.hpp"
 
-DijkstraScene::DijkstraScene (const sf::RenderWindow &window) :
+PrimScene::PrimScene (const sf::RenderWindow &window) :
     Scene(window), editField(150, 30), runField(150, 30),
     insertButton(100, 30), editButton(100, 30), deleteButton(100, 30), runButton(100, 30),
     ui(UI::Graph()),
@@ -51,10 +51,6 @@ DijkstraScene::DijkstraScene (const sf::RenderWindow &window) :
     ui.getCurrentUI().setCallbackIsEditing([&] (const sf::Vector2f &mousePos) {
         return editField.containPosition(mousePos) || editButton.containPosition(mousePos) || deleteButton.containPosition(mousePos);
     });
-
-    // make edges directed
-    ui.getCurrentUI().makeDirected();
-    ui.getCurrentLogic().makeDirected();
 
     // set callback functions: Graph UI
     ui.setCallbackEnableButtons([&](int f) {
@@ -116,7 +112,7 @@ DijkstraScene::DijkstraScene (const sf::RenderWindow &window) :
             return;
         }
         ui.transformLogic([value] (DS::DijkstraAlgorithm &logic) {
-            return logic.run(value), true;
+            return logic.runPrim(value), true;
         });
     });
     runButton.setCallback([&]() {
@@ -138,7 +134,7 @@ DijkstraScene::DijkstraScene (const sf::RenderWindow &window) :
     });
 }
 
-void DijkstraScene::handleEvent (sf::RenderWindow &window, const std::optional<sf::Event> &event) {
+void PrimScene::handleEvent (sf::RenderWindow &window, const std::optional<sf::Event> &event) {
     ui.getCurrentUI().handleMouseEvents(window, event);
     editField.handleMouseEvents(window, event);
     insertButton.handleMouseEvents(window, event);
@@ -156,13 +152,13 @@ void DijkstraScene::handleEvent (sf::RenderWindow &window, const std::optional<s
     nextStepButton.handleMouseEvents(window, event);
 }
 
-void DijkstraScene::timePropagation (float delta) {
+void PrimScene::timePropagation (float delta) {
     ui.timePropagation(delta);
     editField.timePropagation();
     runField.timePropagation();
 }
 
-void DijkstraScene::draw (sf::RenderWindow &window) {
+void PrimScene::draw (sf::RenderWindow &window) {
     window.draw(ui.getCurrentUI());
     window.draw(ui.getCurrentCode());
     window.draw(editField);

@@ -1,5 +1,3 @@
-// UPDATE HIGHLIGHTER IN COPY OPERATOR
-
 #include "../../include/components/graph.hpp"
 
 // ========== CONSTANTS INITIALIZATION ==========
@@ -108,7 +106,7 @@ void Edge::handleMouseMovement (const sf::Vector2f &mousePos) {}
 void Edge::handleTextEntered (const char &unicode) {}
     
 // ========== GRAPH IMPLEMENTATION ==========
-Graph::Graph() : targetOrigin({0, 0}), activatedNode(-1) {}
+Graph::Graph() : targetOrigin({0, 0}), activatedNode(-1), isDirected(false) {}
 
 Graph::~Graph() {
     for (UI::FloatingNode* ptr : nodes) delete ptr;
@@ -132,6 +130,7 @@ void Graph::copyFrom (const Graph &other) {
     this->highlighter = other.highlighter;
     this->targetOrigin = other.targetOrigin;
     this->activatedNode = other.activatedNode;
+    this->isDirected = other.isDirected;
 
     this->callbackAllowEdit = other.callbackAllowEdit;
     this->callbackAllowDelete = other.callbackAllowDelete;
@@ -211,6 +210,10 @@ void Graph::timePropagation (float deltaTime, float maxWidth, float maxHeight) {
     }
 }
 
+void Graph::makeDirected() {
+    isDirected = true;
+}
+
 void Graph::insertNode (int label) {
     int curr = nodes.size();
     nodes.push_back(new FloatingNode(std::to_string(label)));
@@ -226,7 +229,11 @@ void Graph::insertNode (int label) {
 }
 
 void Graph::insertEdge (int fromNode, int toNode, int weight) {
-    edges.emplace_back(fromNode, toNode, weight, nodes[fromNode], nodes[toNode], true);
+    edges.emplace_back(fromNode, toNode, weight, nodes[fromNode], nodes[toNode], isDirected);
+}
+
+void Graph::setEdgeColor (int edgeID, const sf::Color &color) {
+    edges[edgeID].setDefaultColor(color);
 }
 
 void Graph::setTargetOrigin (const sf::Vector2f &pos) {
@@ -298,8 +305,6 @@ void Graph::clearAnnotation() {
 }
 
 void Graph::markAnnotation (int nodeID) {
-    // for (FloatingNode* ptr : nodes)
-    //     ptr->setAnnotationColor(sf::Color::Green);
     nodes[nodeID]->setAnnotationColor(sf::Color::Green);
 }
 
@@ -406,11 +411,6 @@ void Graph::draw (sf::RenderTarget& target, sf::RenderStates states) const {
     for (int i = 0; i < nodes.size(); i++)
         if (!isDeleted[i]) target.draw(*nodes[i], states);
     target.draw(highlighter, states);
-    
-    // sf::CircleShape dot(4.f);
-    // dot.setFillColor(sf::Color::Red);
-    // dot.setPosition(getOrigin());
-    // target.draw(dot, states);
 }
 
 }; // namespace UI

@@ -246,6 +246,11 @@ void AnimationManager<UI::Graph, DS::DijkstraAlgorithm>::initCallbackFunctions()
             std::make_unique<GraphHighlightEdge>(edgeID)
         );
     });
+    stateLogic[0].setCallbackSetEdgeColor([&] (int edgeID, sf::Color color) {
+        this->createAnimationEvent(
+            std::make_unique<GraphSetEdgeColor>(edgeID, color)
+        );
+    });
     stateLogic[0].setCallbackApplyAnimation([&]() {
         this->nextStep();
     });

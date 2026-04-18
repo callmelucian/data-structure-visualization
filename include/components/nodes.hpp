@@ -1,7 +1,3 @@
-/**
- * BIG TODO: RE-ORGANIZE THE DRAW EDGE FUNCTION !!
- */
-
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <string>

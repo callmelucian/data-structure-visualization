@@ -5,6 +5,7 @@
 #include "../include/scenes/scene-manager.hpp"
 #include "../include/scenes/avl-tree-scene.hpp"
 #include "../include/scenes/dijkstra-scene.hpp"
+#include "../include/scenes/prim-scene.hpp"
 
 int main() {
     // anti aliasing
@@ -23,7 +24,7 @@ int main() {
     window.setFramerateLimit(60);
     SceneManager manager;
 
-    manager.changeScene(std::make_unique<DijkstraScene>(window));
+    manager.changeScene(std::make_unique<PrimScene>(window));
     manager.runMainLoop(window);
 
     return 0;

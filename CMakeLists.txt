@@ -38,6 +38,7 @@ add_executable(DataVisApp
     src/scenes/avl-tree-scene.cpp
     src/scenes/scene-manager.cpp
     src/scenes/dijkstra-scene.cpp
+    src/scenes/prim-scene.cpp
 )
 
 # 6. Link SFML to your app

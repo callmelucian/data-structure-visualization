@@ -9,6 +9,7 @@
 
 #include "../core/utility.hpp"
 #include "../core/code-snippets.hpp"
+#include "../../assets/theme.hpp"
 
 namespace DS {
 
@@ -18,6 +19,7 @@ private:
     std::vector<bool> nodeDeleted, edgeDeleted;
     std::vector<int> edgeWeight;
     int graphSize;
+    bool isDirected;
 
     // callback function
     std::function<void(int)> callbackCreateNode;
@@ -25,6 +27,7 @@ private:
     std::function<void(int)> callbackDeleteNode;
     std::function<void(int)> callbackDeleteEdge;
     std::function<void(int,int)> callbackEditEdge;
+    std::function<void(int,sf::Color)> callbackSetEdgeColor;
 
     std::function<void()> callbackClearAnnotation;
     std::function<void(int,int)> callbackEditAnnotation;
@@ -59,6 +62,10 @@ public:
 
     void setCallbackEditEdge (auto func) {
         callbackEditEdge = func;
+    }
+
+    void setCallbackSetEdgeColor (auto func) {
+        callbackSetEdgeColor = func;
     }
 
     void setCallbackClearAnnotation(auto func) {
@@ -97,6 +104,10 @@ public:
         callbackHighlightCode = func;
     }
 
+    void clearUIState();
+    
+    void makeDirected();
+
     void createNode();
 
     void createEdge (int fromNode, int toNode);
@@ -108,6 +119,8 @@ public:
     bool editEdge (int edgeID, int weight);
 
     void run (int source);
+
+    void runPrim (int source);
 };
 
 }; // namespace DS

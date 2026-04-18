@@ -30,7 +30,7 @@ struct Edge : public UI::Base {
     float thickness;
 
     Edge();
-    Edge (int fromNode, int toNode, int weight, Node* fromObserver, Node* toObserver, bool isDirected = false);
+    Edge (int fromNode, int toNode, int weight, Node* fromObserver, Node* toObserver, bool isDirected);
 
     void updateObserver (Node *newFrom, Node* newTo);
     void setDefaultColor (const sf::Color &color);
@@ -58,6 +58,7 @@ private:
     UI::HighlightCircle<FloatingNode> highlighter;
     sf::Vector2f targetOrigin;
     int activatedNode;
+    bool isDirected;
 
     std::function<void(bool)> callbackAllowEdit;
     std::function<void(bool)> callbackAllowDelete;
@@ -91,9 +92,13 @@ public:
 
     void timePropagation (float deltaTime, float maxWidth = Setting::screenWidth, float maxHeight = Setting::screenHeight);
 
+    void makeDirected();
+    
     void insertNode (int label);
 
     void insertEdge (int fromNode, int toNode, int weight);
+
+    void setEdgeColor (int edgeID, const sf::Color &color);
 
     void setAnnotation (int nodeID, int value);
 
