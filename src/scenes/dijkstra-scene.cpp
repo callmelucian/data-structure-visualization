@@ -3,7 +3,7 @@
 DijkstraScene::DijkstraScene (const sf::RenderWindow &window) :
     Scene(window), editField(150, 30), runField(150, 30),
     insertButton(100, 30), editButton(100, 30), deleteButton(100, 30), runButton(100, 30),
-    ui(UI::Graph()),
+    ui(UI::Graph()), playButton(50, 30),
     prevStepButton(50, 30), prevOperationButton(50, 30),
     nextStepButton(50, 30), nextOperationButton(50, 30) {
     
@@ -17,13 +17,15 @@ DijkstraScene::DijkstraScene (const sf::RenderWindow &window) :
     // setup buttons: previous and next states
     prevStepButton.setString("<");
     prevOperationButton.setString("<<");
+    playButton.setString("|>");
     nextStepButton.setString(">");
     nextOperationButton.setString(">>");
 
     prevOperationButton.setPosition({350, 800});
     prevStepButton.setPosition({410, 800});
-    nextStepButton.setPosition({470, 800});
-    nextOperationButton.setPosition({530, 800});
+    playButton.setPosition({470, 800});
+    nextStepButton.setPosition({530, 800});
+    nextOperationButton.setPosition({590, 800});
 
     // setup button: insert node
     insertButton.setPosition({90, 800});
@@ -65,6 +67,9 @@ DijkstraScene::DijkstraScene (const sf::RenderWindow &window) :
             editButton.disableButton();
             deleteButton.disableButton();
         }
+    });
+    ui.setCallbackPlayPause([&] (bool f) {
+        playButton.setString(f ? "||" : "|>");
     });
 
     // set callback function: editing edges' weight
@@ -136,6 +141,10 @@ DijkstraScene::DijkstraScene (const sf::RenderWindow &window) :
     nextStepButton.setCallback([&]() {
         ui.nextState();
     });
+    playButton.setCallback([&]() {
+        if (ui.checkIsPlaying()) ui.pause();
+        else ui.play();
+    });
 }
 
 void DijkstraScene::handleEvent (sf::RenderWindow &window, const std::optional<sf::Event> &event) {
@@ -147,6 +156,7 @@ void DijkstraScene::handleEvent (sf::RenderWindow &window, const std::optional<s
     editField.handleMouseEvents(window, event);
     runButton.handleMouseEvents(window, event);
     runField.handleMouseEvents(window, event);
+    playButton.handleMouseEvents(window, event);
 
     editField.handleTextEvents(window, event);
     runField.handleTextEvents(window, event);
@@ -175,4 +185,5 @@ void DijkstraScene::draw (sf::RenderWindow &window) {
     window.draw(nextOperationButton);
     window.draw(nextStepButton);
     window.draw(runButton);
+    window.draw(playButton);
 }

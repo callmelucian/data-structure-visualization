@@ -33,9 +33,11 @@ private:
 
     // iterators
     int currentEventStep, stateUIIterator, stateLogicIterator;
+    bool isPlaying;
     
     // callback functions
     std::function<void(int)> callbackEnableButtons;
+    std::function<void(bool)> callbackPlayPause;
 
     // countdown clock
     CountDownClock<Setting::animationDelay> internalClock;
@@ -47,6 +49,14 @@ public:
      */
     void setCallbackEnableButtons (auto func) {
         callbackEnableButtons = func;
+    }
+
+    /**
+     * @brief Assign a callback function that will be called
+     * whenever Animation Manager need to change the play/pause state
+     */
+    void setCallbackPlayPause (auto func) {
+        callbackPlayPause = func;
     }
 
     /**
@@ -118,6 +128,10 @@ public:
      * @brief Apply transformation on logic structure
      */
     void transformLogic (std::function<bool(TypeLogic&)> transformFunction);
+
+    void play();
+    void pause();
+    bool checkIsPlaying() const;
 
     /**
      * Initialize callback functions

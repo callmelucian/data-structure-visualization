@@ -287,11 +287,12 @@ sf::FloatRect Graph::getBoundary() const {
     return sf::FloatRect();
 }
 
-int Graph::nodeActivated() const {
+int Graph::nodeActivated() {
+    if (isDeleted[activatedNode]) activatedNode = -1;
     return activatedNode;
 }
 
-int Graph::edgeActivated() const {
+int Graph::edgeActivated() {
     for (int i = 0; i < edges.size(); i++)
         if (!edges[i].isDeleted && edges[i].isActivated) return i;
     return -1;

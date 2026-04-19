@@ -114,8 +114,8 @@ public:
 
     sf::FloatRect getBoundary() const override;
     
-    int nodeActivated() const;
-    int edgeActivated() const;
+    int nodeActivated();
+    int edgeActivated();
 
     void clearAnnotation();
     void markAnnotation (int nodeID);

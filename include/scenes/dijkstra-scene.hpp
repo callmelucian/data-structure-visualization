@@ -22,7 +22,8 @@ private:
     AnimationManager<UI::Graph, DS::DijkstraAlgorithm> ui;
     UI::TextInputField editField, runField;
     UI::Button insertButton, editButton, deleteButton, runButton;
-
+    
+    UI::Button playButton;
     UI::Button prevStepButton, prevOperationButton;
     UI::Button nextStepButton, nextOperationButton;
 

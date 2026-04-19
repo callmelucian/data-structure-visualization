@@ -3,7 +3,7 @@
 template <typename TypeUI, typename TypeLogic>
 AnimationManager<TypeUI, TypeLogic>::AnimationManager (const TypeUI &init) :
     stateUI(1, init), completeUI(1, true), stateLogic(1), stateCode(1),
-    currentEventStep(0), stateUIIterator(0), stateLogicIterator(0) {
+    currentEventStep(0), stateUIIterator(0), stateLogicIterator(0), isPlaying(false) {
 
     // set position for UI and code highlighter
     stateUI[0].setPosition({Setting::screenWidth / 2.f, Setting::screenHeight / 2.f});
@@ -28,30 +28,29 @@ template <typename TypeUI, typename TypeLogic>
 void AnimationManager<TypeUI, TypeLogic>::popAnimation() {
     if (eventIDQueue.empty()) return;
 
-    TypeUI tempUI = getCurrentUI();
-    UI::CodeHighlighter tempCode = getCurrentCode();
+    TypeUI tempUI = (isPlaying ? stateUI.back() : getCurrentUI());
+    UI::CodeHighlighter tempCode = (isPlaying ? stateCode.back() : getCurrentCode());
     bool changeTracker = false, completed = false;
 
     int currEvent = eventIDQueue.front();
     while (eventIDQueue.size() && eventIDQueue.front() == currEvent) {
-        // std::cerr << "Popping Animation: " << typeid(*animationQueue.front()).name() << std::endl;
         int animationResult = animationQueue.front()->apply(tempUI, tempCode);
-        if (animationResult == 1) // UI modified
-            internalClock.restart(), changeTracker = true;
-        else if (animationResult == 2) // animation completed
-            completed = true;
+        if (animationResult == 1) changeTracker = true; // UI modified
+        else if (animationResult == 2) completed = true; // animation completed
         animationQueue.pop();
         eventIDQueue.pop();
     }
 
     if (changeTracker) {
-        // getCurrentUI().fastForward();
-        while (stateUIIterator + 1 < stateUI.size())
+        while (!isPlaying && stateUIIterator + 1 < stateUI.size()) {
+            // assert(stateUI.size() && stateCode.size() && completeUI.size());
             stateUI.pop_back(), stateCode.pop_back(), completeUI.pop_back();
+        }
+        tempUI.calculatePositions();
         stateUI.push_back(tempUI);
         stateCode.push_back(tempCode);
         completeUI.push_back(completed);
-        stateUIIterator++;
+        // stateUIIterator++;
     }
     else {
         getCurrentUI() = tempUI;
@@ -82,20 +81,20 @@ bool AnimationManager<TypeUI, TypeLogic>::isComplete() {
 
 template <typename TypeUI, typename TypeLogic>
 bool AnimationManager<TypeUI, TypeLogic>::previousState() {
+    pause();
     if (stateUIIterator == 0) return false;
-    // getCurrentUI().fastForward();
     TypeUI tempUI = getCurrentUI();
     stateUIIterator--;
     getCurrentUI().copyPosition(tempUI);
-    callbackEnableButtons(completeUI[stateUIIterator]);
+    if (!isPlaying) callbackEnableButtons(completeUI[stateUIIterator]);
     stateLogicIterator -= completeUI[stateUIIterator];
     return true;
 }
 
 template <typename TypeUI, typename TypeLogic>
 bool AnimationManager<TypeUI, TypeLogic>::previousCompleteState() {
+    pause();
     TypeUI tempUI = getCurrentUI();
-    // getCurrentUI().fastForward();
     bool lastModify = true;
     while (lastModify = previousState() && !isComplete());
     getCurrentUI().copyPosition(tempUI);
@@ -104,17 +103,20 @@ bool AnimationManager<TypeUI, TypeLogic>::previousCompleteState() {
 
 template <typename TypeUI, typename TypeLogic>
 bool AnimationManager<TypeUI, TypeLogic>::nextState() {
+    pause();
     if (stateUIIterator + 1 == stateUI.size()) return false;
     TypeUI tempUI = getCurrentUI();
     stateUIIterator++;
     getCurrentUI().copyPosition(tempUI);
-    callbackEnableButtons(completeUI[stateUIIterator]);
+    if (!isPlaying)
+        callbackEnableButtons(completeUI[stateUIIterator]);
     stateLogicIterator += completeUI[stateUIIterator];
     return true;
 }
 
 template <typename TypeUI, typename TypeLogic>
 bool AnimationManager<TypeUI, TypeLogic>::nextCompleteState() {
+    pause();
     TypeUI tempUI = getCurrentUI();
     bool lastModify = true;
     while (lastModify = nextState() && !isComplete());
@@ -124,10 +126,16 @@ bool AnimationManager<TypeUI, TypeLogic>::nextCompleteState() {
 
 template <typename TypeUI, typename TypeLogic>
 void AnimationManager<TypeUI, TypeLogic>::timePropagation (float deltaTime) {
+    while (eventIDQueue.size()) popAnimation();
+    if (isPlaying && internalClock.isFinished()) {
+        if (stateUIIterator + 1 == stateUI.size()) pause();
+        else {
+            nextState();
+            internalClock.restart();
+            play();
+        }
+    }
     getCurrentUI().timePropagation(deltaTime);
-    if (!internalClock.isFinished()) return;
-    popAnimation();
-    getCurrentUI().calculatePositions();
 }
 
 template <typename TypeUI, typename TypeLogic>
@@ -135,7 +143,25 @@ void AnimationManager<TypeUI, TypeLogic>::transformLogic (std::function<bool(Typ
     TypeLogic newLogicVersion = getCurrentLogic();
     while (stateLogicIterator + 1 < stateLogic.size()) stateLogic.pop_back();
     if (transformFunction(newLogicVersion))
-        stateLogic.push_back(newLogicVersion), stateLogicIterator++;
+        stateLogic.push_back(newLogicVersion);
+    play();
+}
+
+template <typename TypeUI, typename TypeLogic>
+void AnimationManager<TypeUI, TypeLogic>::play() {
+    isPlaying = true;
+    callbackPlayPause(true);
+}
+
+template <typename TypeUI, typename TypeLogic>
+void AnimationManager<TypeUI, TypeLogic>::pause() {
+    isPlaying = false;
+    callbackPlayPause(false);
+}
+
+template <typename TypeUI, typename TypeLogic>
+bool AnimationManager<TypeUI, TypeLogic>::checkIsPlaying() const {
+    return isPlaying;
 }
 
 // ========== TEMPLATE-SPECIFIC FUNCTIONS: AnimationManager<UI::BinaryTree, DS::AVLTree> ==========

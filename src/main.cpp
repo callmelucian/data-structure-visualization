@@ -24,7 +24,7 @@ int main() {
     window.setFramerateLimit(60);
     SceneManager manager;
 
-    manager.changeScene(std::make_unique<PrimScene>(window));
+    manager.changeScene(std::make_unique<DijkstraScene>(window));
     manager.runMainLoop(window);
 
     return 0;
