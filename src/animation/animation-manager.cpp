@@ -78,8 +78,8 @@ bool AnimationManager<TypeUI, TypeLogic>::isComplete() {
 }
 
 template <typename TypeUI, typename TypeLogic>
-bool AnimationManager<TypeUI, TypeLogic>::previousState() {
-    pause();
+bool AnimationManager<TypeUI, TypeLogic>::previousState (bool playing) {
+    if (!playing) pause();
     if (stateUIIterator == 0) return false;
     TypeUI tempUI = getCurrentUI();
     stateUIIterator--;
@@ -90,8 +90,8 @@ bool AnimationManager<TypeUI, TypeLogic>::previousState() {
 }
 
 template <typename TypeUI, typename TypeLogic>
-bool AnimationManager<TypeUI, TypeLogic>::previousCompleteState() {
-    pause();
+bool AnimationManager<TypeUI, TypeLogic>::previousCompleteState (bool playing) {
+    if (!playing) pause();
     TypeUI tempUI = getCurrentUI();
     bool lastModify = true;
     while (lastModify = previousState() && !isComplete());
@@ -100,21 +100,20 @@ bool AnimationManager<TypeUI, TypeLogic>::previousCompleteState() {
 }
 
 template <typename TypeUI, typename TypeLogic>
-bool AnimationManager<TypeUI, TypeLogic>::nextState() {
-    pause();
+bool AnimationManager<TypeUI, TypeLogic>::nextState (bool playing) {
+    if (!playing) pause();
     if (stateUIIterator + 1 == stateUI.size()) return false;
     TypeUI tempUI = getCurrentUI();
     stateUIIterator++;
     getCurrentUI().copyPosition(tempUI);
-    if (!isPlaying)
-        callbackEnableButtons(completeUI[stateUIIterator]);
+    if (!isPlaying) callbackEnableButtons(completeUI[stateUIIterator]);
     stateLogicIterator += completeUI[stateUIIterator];
     return true;
 }
 
 template <typename TypeUI, typename TypeLogic>
-bool AnimationManager<TypeUI, TypeLogic>::nextCompleteState() {
-    pause();
+bool AnimationManager<TypeUI, TypeLogic>::nextCompleteState (bool playing) {
+    if (!playing) pause();
     TypeUI tempUI = getCurrentUI();
     bool lastModify = true;
     while (lastModify = nextState() && !isComplete());
@@ -128,9 +127,8 @@ void AnimationManager<TypeUI, TypeLogic>::timePropagation (float deltaTime) {
     if (isPlaying && internalClock.isFinished()) {
         if (stateUIIterator + 1 == stateUI.size()) pause();
         else {
-            nextState();
+            nextState(true);
             internalClock.restart();
-            play();
         }
     }
     getCurrentUI().timePropagation(deltaTime);

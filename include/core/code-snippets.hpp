@@ -5,56 +5,42 @@
 namespace CodeRepo {
 
 inline const std::vector<std::string> AVL_TREE_INSERT = {
-    "Node* insertValue (Node *ptr, int insertKey) {",
-    "   if (ptr == nullptr)",
-    "      return new Node(insertKey);",
-    "   if (insertKey == ptr->value)",
-    "      return ptr;",
-    "   if (insertKey < ptr->value)",
-    "      ptr->lpt = insertValue(ptr->lpt, insertKey);",
-    "   if (insertKey > ptr->value)",
-    "      ptr->rpt = insertValue(ptr->rpt, insertKey);",
-    "   return selfBalancing(ptr);",
-    "}"
+    "Node* insertValue (Node* ptr, int insertKey):",
+    "    if ptr == nullptr: return new Node(insertKey);",
+    "    if insertKey == ptr->value: return ptr",
+    "    if insertKey < ptr->value:",
+    "        ptr->leftST = insertValue(ptr->leftST, insertKey)",
+    "    if insertKey > ptr->value:",
+    "        ptr->rightST = insertValue(ptr->rightST, insertKey)",
+    "    return selfBalance(ptr)"
 };
 
-inline const std::vector<std::string> AVL_TREE_SELF_BALANCING = {
-    "Node* selfBalancing (Node* ptr) {",
-    "   updateHeight(ptr);",
-    "   int balanceFactor = getBalance(ptr);",
-    "   if (balanceFactor > 1) {",
-    "      if (getBalance(ptr->lpt) < 0)",
-    "         ptr->lpt = leftRotation(ptr->lpt);",
-    "      return rightRotation(ptr);",
-    "   }",
-    "   if (balanceFactor < -1) {",
-    "      if (getBalance(ptr->rpt) > 0)",
-    "         ptr->rpt = rightRotation(ptr->rpt);",
-    "      return leftRotation(ptr);",
-    "   }",
-    "   return ptr;",
-    "}"
+inline const std::vector<std::string> AVL_TREE_SELF_BALANCE = {
+    "Node* selfBalance (Node* ptr):",
+    "    if subtree is left-leaning:",
+    "        if leftST is right-leaning: leftRotate",
+    "        rightRotate",
+    "    if subtree is right-leaning:",
+    "        if rightST is left-leaning: rightRotate",
+    "        leftRotate",
+    "    return ptr"
 };
 
-inline const std::vector<std::string> AVL_TREE_LEFT_ROTATION = {
-    "Node* leftRotation (Node* ptr) {",
-    "    Node* x = ptr->rpt; // is surely a valid pointer",
-    "    Node* tmp = x->lpt; // this one could be nullptr",
-    "    x->lpt = ptr, ptr->rpt = tmp;",
-    "    updateHeight(ptr), updateHeight(x);",
-    "    return x;",
-    "}"
-};
-
-inline const std::vector<std::string> AVL_TREE_RIGHT_ROTATION = {
-    "Node* rightRotation (Node* ptr) {",
-    "    Node* x = ptr->lpt; // is surely a valid pointer",
-    "    Node* tmp = x->rpt; // this one could be nullptr",
-    "    x->rpt = ptr, ptr->lpt = tmp;",
-    "    updateHeight(ptr), updateHeight(x);",
-    "    return x;",
-    "}"
-};
+inline const std::vector<std::string> AVL_TREE_ERASE = {
+    "Node* eraseValue (Node* ptr, int eraseKey):",
+    "    if ptr == nullptr: return nullptr",
+    "    if eraseKey == ptr->value:",
+    "        if current node has one child:",
+    "            delete node and bring the other subtree up",
+    "        let tmp be smallest value among the right subtree",
+    "        swap current node with tmp",
+    "        ptr->rightST = eraseValue(ptr->rightST, tmp)",
+    "    if eraseKey < ptr->value:",
+    "        ptr->leftST = eraseValue(ptr->leftST, eraseKey)",
+    "    if eraseKey > ptr->value:",
+    "        ptr->rightST = eraseValue(ptr->rightST, eraseKey)",
+    "    return selfBalance(ptr)"
+};   
 
 inline const std::vector<std::string> DIJKSTRA_CODE = {
     "intialize all nodes with infinity distance",

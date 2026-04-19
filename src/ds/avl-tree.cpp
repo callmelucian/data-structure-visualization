@@ -59,26 +59,20 @@ AVLTree::Node* AVLTree::selfBalancing (Node *ptr) {
 
     callbackHighlightCode(0);
     callbackApplyAnimation();
-    callbackHighlightCode(1);
-    callbackApplyAnimation();
-    callbackHighlightCode(2);
-    callbackApplyAnimation();
 
     // rebalance tree: unbalanceness caused by left subtree
-    callbackHighlightCode(3);
-    callbackApplyAnimation();
     if (balanceFactor > 1) {
-        callbackHighlightCode(4);
+        callbackHighlightCode(1);
         callbackApplyAnimation();
         if (getBalance(ptr->lpt) < 0) { // turn the Left-Right case into the Left-Left case
             ptr->lpt = leftRotation(ptr->lpt);
-            callbackHighlightCode(5);
+            callbackHighlightCode(2);
             callbackAddEdge(getVisualID(ptr), getVisualID(ptr->lpt), true);
             callbackHighlightNode(getVisualID(ptr->lpt));
             callbackApplyAnimation();
         }
         // resolve the Left-Left unbalanceness
-        callbackHighlightCode(6);
+        callbackHighlightCode(3);
         callbackApplyAnimation();
 
         Node* newRoot = rightRotation(ptr);
@@ -87,20 +81,18 @@ AVLTree::Node* AVLTree::selfBalancing (Node *ptr) {
     }
 
     // rebalance tree: unbalanceness caused by right subtree
-    callbackHighlightCode(8);
-    callbackApplyAnimation();
     if (balanceFactor < -1) {
-        callbackHighlightCode(9);
+        callbackHighlightCode(4);
         callbackApplyAnimation();
         if (getBalance(ptr->rpt) > 0) { // turn the Right-Left case into the Right-Right case
             ptr->rpt = rightRotation(ptr->rpt);
-            callbackHighlightCode(10);
+            callbackHighlightCode(5);
             callbackAddEdge(getVisualID(ptr), getVisualID(ptr->rpt), false);
             callbackHighlightNode(getVisualID(ptr->lpt));
             callbackApplyAnimation();
         }
         // resolve the Right-Right unbalanceness
-        callbackHighlightCode(11);
+        callbackHighlightCode(6);
         callbackApplyAnimation();
 
         Node* newRoot = leftRotation(ptr);
@@ -108,7 +100,7 @@ AVLTree::Node* AVLTree::selfBalancing (Node *ptr) {
         return newRoot;
     }
 
-    callbackHighlightCode(13);
+    callbackHighlightCode(7);
     callbackApplyAnimation();
     return ptr;
 }
@@ -119,117 +111,152 @@ AVLTree::Node* AVLTree::insertValue (Node *ptr, int insertKey) {
     callbackHighlightNode(getVisualID(ptr));
     callbackApplyAnimation();
 
-    callbackHighlightCode(1);
-    callbackApplyAnimation();
-
     // empty node, insertion
     if (ptr == nullptr) {
-        callbackHighlightCode(2);
+        callbackHighlightCode(1);
         callbackCreateNode(insertKey, false);
+        callbackHighlightNode(nodeCounter);
         Node* newNode = new Node(insertKey, nodeCounter++);
         return newNode;
     }
-    
-    callbackHighlightCode(3);
-    callbackHighlightNode(getVisualID(ptr));
-    callbackApplyAnimation();
 
     // node already inserted, no insertion happen
     if (insertKey == ptr->value) {
-        callbackHighlightCode(4);
+        callbackHighlightCode(2);
         callbackApplyAnimation();
         return ptr->count++, ptr;
     }
     
     // go to left subtree
-    callbackHighlightCode(5);
-    callbackApplyAnimation();
     if (insertKey < ptr->value) {
-        callbackHighlightCode(6);
+        callbackHighlightCode(3);
+        callbackApplyAnimation();
+        callbackHighlightCode(4);
         callbackApplyAnimation();
         ptr->lpt = insertValue(ptr->lpt, insertKey);
         callbackAddEdge(getVisualID(ptr), getVisualID(ptr->lpt), true);
         callbackApplyAnimation();
 
-        callbackHighlightCode(6);
+        callbackHighlightCode(4);
         callbackHighlightNode(getVisualID(ptr));
         callbackApplyAnimation();
     }
 
     // go to right subtree
-    callbackHighlightCode(7);
-    callbackApplyAnimation();
     if (insertKey > ptr->value) {
-        callbackHighlightCode(8);
+        callbackHighlightCode(5);
+        callbackApplyAnimation();
+        callbackHighlightCode(6);
         callbackApplyAnimation();
         ptr->rpt = insertValue(ptr->rpt, insertKey);
         callbackAddEdge(getVisualID(ptr), getVisualID(ptr->rpt), false);
         callbackApplyAnimation();
 
-        callbackHighlightCode(8);
+        callbackHighlightCode(6);
         callbackHighlightNode(getVisualID(ptr));
         callbackApplyAnimation();
     }
 
-    callbackHighlightCode(9);
+    callbackHighlightCode(7);
     callbackApplyAnimation();
 
-    callbackLoadCode(CodeRepo::AVL_TREE_SELF_BALANCING);
+    callbackLoadCode(CodeRepo::AVL_TREE_SELF_BALANCE);
     Node* newRoot = selfBalancing(ptr);
     callbackLoadCode(CodeRepo::AVL_TREE_INSERT);
     return newRoot;
 }
 
 AVLTree::Node* AVLTree::eraseValue (Node *ptr, int deleteKey) {
-    if (ptr == nullptr) return nullptr;
-
+    callbackHighlightCode(0);
     callbackHighlightNode(getVisualID(ptr));
     callbackApplyAnimation();
 
+    if (ptr == nullptr) {
+        callbackHighlightCode(1);
+        callbackApplyAnimation();
+        return nullptr;
+    }
+    
     if (ptr->value == deleteKey) {
+        callbackHighlightCode(2);    
+        callbackApplyAnimation();
         // if either subtree is empty, simply bring the other subtree up
         if (ptr->lpt == nullptr) {
+            callbackHighlightCode(3);
+            callbackApplyAnimation();
             Node* tmp = ptr->rpt;
             callbackDeleteNode(getVisualID(ptr));
             callbackHighlightNode(-1);
+            callbackHighlightCode(4);
             delete ptr;
             return tmp;
         }
         if (ptr->rpt == nullptr) {
+            callbackHighlightCode(3);
+            callbackApplyAnimation();
             Node* tmp = ptr->lpt;
             callbackDeleteNode(getVisualID(ptr));
             callbackHighlightNode(-1);
+            callbackHighlightCode(4);
             delete ptr;
             return tmp;
         }
+
+        callbackHighlightCode(5);
+        callbackApplyAnimation();
 
         // if both subtrees aren't empty, get the inorder successor,
         // bring that node up and delete it
         Node *tmp = getSmallestKey(ptr->rpt);
         callbackHighlightNode(-1);
+        callbackHighlightCode(6);
         callbackSwapValue(getVisualID(ptr), getVisualID(tmp));
         callbackHighlightNode(getVisualID(ptr));
         callbackApplyAnimation();
         std::swap(ptr->value, tmp->value);
 
+        callbackHighlightCode(7);
+        callbackApplyAnimation();
         ptr->rpt = eraseValue(ptr->rpt, tmp->value);
         callbackAddEdge(getVisualID(ptr), getVisualID(ptr->rpt), false); // ptr->rpt could be nullptr
+        callbackApplyAnimation();
+
+        callbackHighlightCode(7);
+        callbackHighlightNode(getVisualID(ptr)); // ptr coudl be nullptr ?
+        callbackApplyAnimation();
     }
     else if (deleteKey < ptr->value) {
+        callbackHighlightCode(8);
+        callbackApplyAnimation();
+        callbackHighlightCode(9);
+        callbackApplyAnimation();
         ptr->lpt = eraseValue(ptr->lpt, deleteKey);
         callbackAddEdge(getVisualID(ptr), getVisualID(ptr->lpt), true); // ptr->lpt could be nullptr
         callbackApplyAnimation();
+        callbackHighlightCode(9);
+        callbackHighlightNode(getVisualID(ptr)); // ptr could be nullptr ?
+        callbackApplyAnimation();
     }
     else if (deleteKey > ptr->value) {
+        callbackHighlightCode(10);
+        callbackApplyAnimation();
+        callbackHighlightCode(11);
+        callbackApplyAnimation();
         ptr->rpt = eraseValue(ptr->rpt, deleteKey);
         callbackAddEdge(getVisualID(ptr), getVisualID(ptr->rpt), false); // ptr->rpt could be nullptr
         callbackApplyAnimation();
+        callbackHighlightCode(11);
+        callbackHighlightNode(getVisualID(ptr)); // ptr could be nullptr ?
+        callbackApplyAnimation();
     }
 
-    callbackHighlightNode(getVisualID(ptr)); // ptr could be nullptr
+    callbackHighlightCode(12);
     callbackApplyAnimation();
 
-    return ptr ? selfBalancing(ptr) : nullptr;
+    callbackLoadCode(CodeRepo::AVL_TREE_SELF_BALANCE);
+    Node* newRoot = ptr ? selfBalancing(ptr) : nullptr;
+    callbackLoadCode(CodeRepo::AVL_TREE_ERASE);
+    return newRoot;
 }
 
 AVLTree::Node* AVLTree::copyNodes(Node* otherNode) {
@@ -296,26 +323,35 @@ void AVLTree::checkCallbackFunctions() {
 void AVLTree::insert (int value) {
     callbackLoadCode(CodeRepo::AVL_TREE_INSERT);
     if (root == nullptr) {
-        callbackCreateNode(value, true);
+        callbackHighlightCode(0);
+        callbackApplyAnimation();
+
         callbackHighlightCode(1);
+        callbackCreateNode(value, true);
+        callbackHighlightNode(nodeCounter);
         root = new Node(value, nodeCounter++);
+        callbackApplyAnimation();
     }
     else {
         root = insertValue(root, value);
         callbackChangeRoot(getVisualID(root));
+        callbackApplyAnimation();
     }
-    callbackApplyAnimation();
+
     callbackHighlightNode(-1);
+    callbackLoadCode({});
     callbackCompleteAnimation();
     callbackApplyAnimation();
 }
 
 bool AVLTree::erase (int value) {
     if (root == nullptr) return false;
+    callbackLoadCode(CodeRepo::AVL_TREE_ERASE);
     root = eraseValue(root, value);
     callbackChangeRoot(getVisualID(root)); // root could be nullptr
     callbackApplyAnimation();
     callbackHighlightNode(-1);
+    callbackLoadCode({});
     callbackCompleteAnimation();
     callbackApplyAnimation();
     return true;

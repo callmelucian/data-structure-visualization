@@ -22,6 +22,7 @@ private:
     UI::TextInputField insertField, eraseField;
     AnimationManager<UI::BinaryTree, DS::AVLTree> treeUI;
 
+    UI::Button playButton;
     UI::Button prevStepButton, prevOperationButton;
     UI::Button nextStepButton, nextOperationButton;
 

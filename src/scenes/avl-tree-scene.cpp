@@ -3,7 +3,7 @@
 AVLTreeScene::AVLTreeScene(const sf::RenderWindow &window) :
     Scene(window), insertButton(100, 30), eraseButton(100, 30),
     insertField(150, 30), eraseField(150, 30),
-    treeUI(UI::BinaryTree()),
+    treeUI(UI::BinaryTree()), playButton(50, 30),
     prevStepButton(50, 30), prevOperationButton(50, 30),
     nextStepButton(50, 30), nextOperationButton(50, 30) {
     
@@ -13,6 +13,7 @@ AVLTreeScene::AVLTreeScene(const sf::RenderWindow &window) :
 
     prevStepButton.setString("<");
     prevOperationButton.setString("<<");
+    playButton.setString("|>");
     nextStepButton.setString(">");
     nextOperationButton.setString(">>");
 
@@ -21,22 +22,30 @@ AVLTreeScene::AVLTreeScene(const sf::RenderWindow &window) :
     insertField.setPosition({115, 850});
     eraseButton.setPosition({525, 850});
     eraseField.setPosition({400, 850});
-
-    prevOperationButton.setPosition({700, 850});
-    prevStepButton.setPosition({760, 850});
-    nextStepButton.setPosition({820, 850});
-    nextOperationButton.setPosition({880, 850});
+    
+    prevOperationButton.setPosition({65, 800});
+    prevStepButton.setPosition({125, 800});
+    playButton.setPosition({185, 800});
+    nextStepButton.setPosition({245, 800});
+    nextOperationButton.setPosition({305, 800});
 
     // set callback functions: AVL Tree UI
     treeUI.setCallbackEnableButtons([&](int f) {
         if (f) {
             insertButton.enableButton();
             eraseButton.enableButton();
+            insertField.enable();
+            eraseField.enable();
         }
         else {
             insertButton.disableButton();
             eraseButton.disableButton();
+            insertField.disable();
+            eraseField.disable();
         }
+    });
+    treeUI.setCallbackPlayPause([&] (bool f) {
+        playButton.setString(f ? "||" : "|>");
     });
 
     // set callback functions: input field and button for insertion
@@ -82,6 +91,10 @@ AVLTreeScene::AVLTreeScene(const sf::RenderWindow &window) :
     nextStepButton.setCallback([&]() {
         treeUI.nextState();
     });
+    playButton.setCallback([&]() {
+        if (treeUI.checkIsPlaying()) treeUI.pause();
+        else treeUI.play();
+    });
 }
 
 void AVLTreeScene::handleEvent(sf::RenderWindow &window, const std::optional<sf::Event> &event) {
@@ -97,6 +110,7 @@ void AVLTreeScene::handleEvent(sf::RenderWindow &window, const std::optional<sf:
     prevStepButton.handleMouseEvents(window, event);
     nextOperationButton.handleMouseEvents(window, event);
     nextStepButton.handleMouseEvents(window, event);
+    playButton.handleMouseEvents(window, event);
 }
 
 void AVLTreeScene::timePropagation(float delta) {
@@ -116,4 +130,5 @@ void AVLTreeScene::draw(sf::RenderWindow &window) {
     window.draw(prevStepButton);
     window.draw(nextOperationButton);
     window.draw(nextStepButton);
+    window.draw(playButton);
 }

@@ -102,22 +102,22 @@ public:
     /**
      * @brief go back to the previous UI state
      */
-    bool previousState();
+    bool previousState (bool playing = false);
 
     /**
      * @brief go back to the previous complete UI state
      */
-    bool previousCompleteState();
+    bool previousCompleteState (bool playing = false);
 
     /**
      * @brief pass to the next UI state
      */
-    bool nextState();
+    bool nextState (bool playing = false);
 
     /**
      * @brief pass to the next complete UI stat
      */
-    bool nextCompleteState();
+    bool nextCompleteState (bool playing = false);
 
     /**
      * @brief time propagration
