@@ -117,6 +117,9 @@ public:
     int nodeActivated();
     int edgeActivated();
 
+    void resetNodeActivation();
+    void resetEdgeActivation();
+
     void clearAnnotation();
     void markAnnotation (int nodeID);
 

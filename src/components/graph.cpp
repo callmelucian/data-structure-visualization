@@ -298,6 +298,15 @@ int Graph::edgeActivated() {
     return -1;
 }
 
+void Graph::resetNodeActivation() {
+    activatedNode = -1;
+}
+
+void Graph::resetEdgeActivation() {
+    for (Edge &curr : edges)
+        curr.isActivated = false;
+}
+
 void Graph::clearAnnotation() {
     for (FloatingNode* ptr : nodes) {
         ptr->setAnnotation("");

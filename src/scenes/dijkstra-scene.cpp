@@ -103,10 +103,12 @@ DijkstraScene::DijkstraScene (const sf::RenderWindow &window) :
     deleteButton.setCallback([&]() {
         int nodeID = ui.getCurrentUI().nodeActivated();
         int edgeID = ui.getCurrentUI().edgeActivated();
+        ui.getCurrentUI().resetNodeActivation();
+        ui.getCurrentUI().resetEdgeActivation();
         if (nodeID != -1) ui.transformLogic([&] (DS::DijkstraAlgorithm &logic) {
             ui.getCurrentUI().highlightNode(-1);
             return logic.deleteNode(nodeID), true;
-        });
+        }); 
         if (edgeID != -1) ui.transformLogic([&] (DS::DijkstraAlgorithm &logic) {
             ui.getCurrentUI().highlightEdge(-1);
             return logic.deleteEdge(edgeID), true;

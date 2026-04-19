@@ -39,7 +39,8 @@ void DijkstraAlgorithm::deleteNode (int targetNode) {
     nodeDeleted[targetNode] = true;
     for (int fromNode = 0; fromNode < graphSize; fromNode++) {
         for (auto [toNode, edgeID] : adjency[fromNode])
-            edgeDeleted[edgeID] = true;
+            if (fromNode == targetNode || toNode == targetNode)
+                edgeDeleted[edgeID] = true;
     }
     callbackDeleteNode(targetNode);
     clearUIState();

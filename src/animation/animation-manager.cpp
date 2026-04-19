@@ -42,20 +42,18 @@ void AnimationManager<TypeUI, TypeLogic>::popAnimation() {
     }
 
     if (changeTracker) {
-        while (!isPlaying && stateUIIterator + 1 < stateUI.size()) {
-            // assert(stateUI.size() && stateCode.size() && completeUI.size());
+        while (!isPlaying && stateUIIterator + 1 < stateUI.size())
             stateUI.pop_back(), stateCode.pop_back(), completeUI.pop_back();
-        }
         tempUI.calculatePositions();
         stateUI.push_back(tempUI);
         stateCode.push_back(tempCode);
         completeUI.push_back(completed);
-        // stateUIIterator++;
     }
     else {
-        getCurrentUI() = tempUI;
-        getCurrentCode() = tempCode;
-        completeUI.back() = completed;
+        (isPlaying ? stateUI.back() : getCurrentUI()) = tempUI;
+        (isPlaying ? stateCode.back() : getCurrentCode()) = tempCode;
+        if (isPlaying) completeUI.back() = completed;
+        else completeUI[stateUIIterator] = completed;
     }
 }
 
@@ -140,10 +138,11 @@ void AnimationManager<TypeUI, TypeLogic>::timePropagation (float deltaTime) {
 
 template <typename TypeUI, typename TypeLogic>
 void AnimationManager<TypeUI, TypeLogic>::transformLogic (std::function<bool(TypeLogic&)> transformFunction) {
-    TypeLogic newLogicVersion = getCurrentLogic();
-    while (stateLogicIterator + 1 < stateLogic.size()) stateLogic.pop_back();
-    if (transformFunction(newLogicVersion))
-        stateLogic.push_back(newLogicVersion);
+    TypeLogic newLogicVersion = (isPlaying ? stateLogic.back() : getCurrentLogic());
+    while (!isPlaying && stateLogicIterator + 1 < stateLogic.size()) stateLogic.pop_back();
+    while (!isPlaying && stateUIIterator + 1 < stateUI.size())
+        stateUI.pop_back(), stateCode.pop_back(), completeUI.pop_back();
+    if (transformFunction(newLogicVersion)) stateLogic.push_back(newLogicVersion);
     play();
 }
 
