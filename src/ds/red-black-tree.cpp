@@ -67,12 +67,27 @@ RedBlackTree::Node* RedBlackTree::moveRedRight (Node* ptr) {
 }
 
 RedBlackTree::Node* RedBlackTree::selfBalancing (Node* ptr) {
+    callbackHighlightCode(0);
+    callbackApplyAnimation();
+
     // case 1: right child is red, left child is black
-    if (isRed(ptr->rpt) && !isRed(ptr->lpt)) ptr = leftRotation(ptr);
+    if (isRed(ptr->rpt) && !isRed(ptr->lpt)) {
+        callbackHighlightCode(1);
+        callbackApplyAnimation();
+        ptr = leftRotation(ptr);
+    }
     // case 2: left child and left-left granchild are red
-    if (isRed(ptr->lpt) && isRed(ptr->lpt->lpt)) ptr = rightRotation(ptr);
+    if (isRed(ptr->lpt) && isRed(ptr->lpt->lpt)) {
+        callbackHighlightCode(2);
+        callbackApplyAnimation();
+        ptr = rightRotation(ptr);
+    }
     // case 3: both children are red
-    if (isRed(ptr->lpt) && isRed(ptr->rpt)) flipColors(ptr);
+    if (isRed(ptr->lpt) && isRed(ptr->rpt)) {
+        callbackHighlightCode(3);
+        flipColors(ptr);
+        callbackApplyAnimation();
+    }
     return ptr;
 }
 
@@ -104,34 +119,60 @@ void RedBlackTree::flipColors (Node* ptr) {
 }
 
 RedBlackTree::Node* RedBlackTree::insertValue (Node* ptr, int insertKey) {
-    std::cerr << "Inserting " << (ptr ? ptr->value : -1) << " " << insertKey << std::endl;
+    // insertion happen at this node
+    callbackHighlightCode(0);
+    callbackHighlightNode(getVisualID(ptr));
+    callbackApplyAnimation();
+
     if (ptr == nullptr) {
+        callbackHighlightCode(1);
         callbackCreateNode(insertKey, false);
         callbackColorNode(nodeCounter, false);
+        callbackHighlightNode(nodeCounter);
         return new Node(insertKey, nodeCounter++);
     }
     
-    if (insertKey == ptr->value) return ptr->count++, ptr;
+    if (insertKey == ptr->value) {
+        callbackHighlightCode(2);
+        callbackApplyAnimation();
+        return ptr->count++, ptr;
+    }
 
     if (insertKey < ptr->value) {
+        callbackHighlightCode(3);
+        callbackApplyAnimation();
+        callbackHighlightCode(4);
+        callbackApplyAnimation();
         ptr->lpt = insertValue(ptr->lpt, insertKey);
         callbackAddEdge(getVisualID(ptr), getVisualID(ptr->lpt), true);
         callbackApplyAnimation();
 
+        callbackHighlightCode(4);
         callbackHighlightNode(getVisualID(ptr));
         callbackApplyAnimation();
     }
 
     if (insertKey > ptr->value) {
+        callbackHighlightCode(5);
+        callbackApplyAnimation();
+        callbackHighlightCode(6);
+        callbackApplyAnimation();
         ptr->rpt = insertValue(ptr->rpt, insertKey);
         callbackAddEdge(getVisualID(ptr), getVisualID(ptr->rpt), false);
         callbackApplyAnimation();
 
+        callbackHighlightCode(6);
         callbackHighlightNode(getVisualID(ptr));
         callbackApplyAnimation();
     }
 
-    return selfBalancing(ptr);
+    callbackHighlightCode(8);
+    callbackApplyAnimation();
+
+    callbackLoadCode(CodeRepo::RB_TREE_SELF_BALANCE);
+    Node* newRoot = selfBalancing(ptr);
+    callbackLoadCode(CodeRepo::RB_TREE_INSERT);
+    return newRoot;
 }
 
 RedBlackTree::Node* RedBlackTree::eraseValue (Node* ptr, int eraseKey) {
@@ -213,26 +254,32 @@ RedBlackTree& RedBlackTree::operator=(const RedBlackTree &other) {
 }
 
 void RedBlackTree::insert (int value) {
-    std::cerr << "Tree " << (root ? "NOT " : "") << "empty" << " " << nodeCounter << std::endl;
+    callbackLoadCode(CodeRepo::RB_TREE_INSERT);
     if (root == nullptr) {
-        std::cerr << "Got here" << std::endl;
+        callbackHighlightCode(0);
+        callbackApplyAnimation();
+
+        callbackHighlightCode(1);
         callbackCreateNode(value, true);
         callbackHighlightNode(nodeCounter);
         root = new Node(value, nodeCounter++);
-        callbackColorNode(getVisualID(root), true);
         callbackApplyAnimation();
     }
     else {
         root = insertValue(root, value);
         callbackChangeRoot(getVisualID(root));
-        callbackColorNode(getVisualID(root), true);
         callbackApplyAnimation();
     }
+
     root->color = BLACK;
+    callbackHighlightCode(7);
+    callbackColorNode(getVisualID(root), true);
+    callbackApplyAnimation();
+
     callbackHighlightNode(-1);
+    callbackLoadCode({});
     callbackCompleteAnimation();
     callbackApplyAnimation();
-    std::cerr << "Tree " << (root ? "NOT " : "") << "empty" << std::endl;
 }
 
 bool RedBlackTree::erase (int value) {

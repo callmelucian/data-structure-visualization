@@ -10,6 +10,8 @@
 #include <iostream>
 #include <cassert>
 
+#include "../core/code-snippets.hpp"
+
 namespace DS {
 
 enum RBColor { RED, BLACK };

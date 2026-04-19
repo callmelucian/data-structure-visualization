@@ -15,6 +15,26 @@ inline const std::vector<std::string> AVL_TREE_INSERT = {
     "    return selfBalance(ptr)"
 };
 
+inline const std::vector<std::string> RB_TREE_INSERT = {
+    "Node* insertValue (Node* ptr, int insertKey):",
+    "    if ptr == nullptr: return new Node(insertKey, RED);",
+    "    if insertKey == ptr->value: return ptr",
+    "    if insertKey < ptr->value:",
+    "        ptr->leftST = insertValue(ptr->leftST, insertKey)",
+    "    if insertKey > ptr->value:",
+    "        ptr->rightST = insertValue(ptr->rightST, insertKey)",
+    "    if ptr is root: ptr->color = BLACK",
+    "    return selfBalance(ptr)"
+};
+
+inline const std::vector<std::string> RB_TREE_SELF_BALANCE = {
+    "Node* selfBalance (Node* ptr):",
+    "    if right child is red and left child is black: leftRotate",
+    "    if both left and left-left children are red: rightRotate",
+    "    if both left and right children are red: flipColors",
+    "    return ptr"
+};
+
 inline const std::vector<std::string> AVL_TREE_SELF_BALANCE = {
     "Node* selfBalance (Node* ptr):",
     "    if subtree is left-leaning:",
@@ -40,7 +60,9 @@ inline const std::vector<std::string> AVL_TREE_ERASE = {
     "    if eraseKey > ptr->value:",
     "        ptr->rightST = eraseValue(ptr->rightST, eraseKey)",
     "    return selfBalance(ptr)"
-};   
+};
+
+
 
 inline const std::vector<std::string> DIJKSTRA_CODE = {
     "intialize all nodes with infinity distance",
