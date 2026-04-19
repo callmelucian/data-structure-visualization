@@ -109,6 +109,9 @@ float AnimatedNode::getTargetY() const {
     return targetPosition.y;
 }
 
+void AnimatedNode::setColor (const sf::Color &color) {
+    nodeUI.setColor(color);
+}
 
 sf::Vector2f AnimatedNode::getTargetPosition() const {
     return targetPosition;

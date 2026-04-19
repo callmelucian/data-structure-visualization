@@ -6,6 +6,7 @@
 #include "../include/scenes/avl-tree-scene.hpp"
 #include "../include/scenes/dijkstra-scene.hpp"
 #include "../include/scenes/prim-scene.hpp"
+#include "../include/scenes/rb-tree-scene.hpp"
 
 int main() {
     // anti aliasing
@@ -24,7 +25,7 @@ int main() {
     window.setFramerateLimit(60);
     SceneManager manager;
 
-    manager.changeScene(std::make_unique<AVLTreeScene>(window));
+    manager.changeScene(std::make_unique<RBTreeScene>(window));
     manager.runMainLoop(window);
 
     return 0;

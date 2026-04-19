@@ -17,6 +17,7 @@
 // data structures
 #include "../ds/avl-tree.hpp"
 #include "../ds/dijkstra.hpp"
+#include "../ds/red-black-tree.hpp"
 
 template <typename TypeUI, typename TypeLogic>
 class AnimationManager {
@@ -141,3 +142,4 @@ public:
 
 template class AnimationManager<UI::BinaryTree, DS::AVLTree>;
 template class AnimationManager<UI::Graph, DS::DijkstraAlgorithm>;
+template class AnimationManager<UI::BinaryTree, DS::RedBlackTree>;

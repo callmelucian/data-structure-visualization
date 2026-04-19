@@ -39,6 +39,8 @@ public:
 
     void deleteNode(int nodeID);
 
+    void colorNode (int nodeID, const sf::Color &color);
+
     bool addEdge(int parentNode, int childNode, bool isLeft);
 
     bool setRootNode(int targetNode);

@@ -74,6 +74,8 @@ public:
 
     float getTargetY() const;
 
+    void setColor (const sf::Color &color);
+
     sf::Vector2f getTargetPosition() const;
 
     void timePropagation(float deltaTime);

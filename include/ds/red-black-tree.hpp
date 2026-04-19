@@ -7,6 +7,8 @@
 #include <functional>
 #include <vector>
 #include <string>
+#include <iostream>
+#include <cassert>
 
 namespace DS {
 
@@ -29,7 +31,7 @@ private:
     std::function<void(int, bool)> callbackCreateNode;
     std::function<void(int)> callbackDeleteNode;
     std::function<void(int, int)> callbackSwapValue;
-    std::function<void(bool)> callbackColorNode;
+    std::function<void(int, bool)> callbackColorNode;
     std::function<void(int, int, bool)> callbackAddEdge;
     std::function<void(int)> callbackChangeRoot;
     std::function<void()> callbackApplyAnimation;
@@ -39,6 +41,8 @@ private:
     std::function<void(int)> callbackHighlightCode;
     
     bool isRed (Node* ptr);
+
+    int getVisualID (Node* ptr);
 
     Node* leftRotation (Node* ptr);
 

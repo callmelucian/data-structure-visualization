@@ -28,6 +28,9 @@ namespace LightModeColors {
         sf::Color({84, 11, 14}), // darker red
         sf::Color({0, 0, 0}), // darker green
     };
+
+    inline constexpr sf::Color RBRed = sf::Color({255, 143, 163});
+    inline constexpr sf::Color RBBlack = sf::Color({185, 185, 185});
 };
 
 // return colors
@@ -62,4 +65,6 @@ namespace Theme {
     inline sf::Color getAccentSecondary (int id) { return LightModeColors::accentSecondary[id]; }
 
     inline sf::Color getTransparent() { return LightModeColors::transparentColor; }
+    inline sf::Color getRBRed() { return LightModeColors::RBRed; }
+    inline sf::Color getRBBlack() { return LightModeColors::RBBlack; }
 };

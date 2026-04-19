@@ -1,7 +1,10 @@
 #pragma once
+
 #include "../components/binary-tree.hpp"
 #include "../components/code-highlighter.hpp"
 #include "../components/graph.hpp"
+
+#include "../../assets/theme.hpp"
 
 template <typename TypeUI>
 class AnimationEvent {
@@ -68,12 +71,24 @@ public:
     int apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) override;
 };
 
+class BinaryTreeColorNode : public AnimationEvent<UI::BinaryTree> {
+private:
+    int nodeID;
+    bool color;
+public:
+    BinaryTreeColorNode (int nodeID, bool color);
+
+    int apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) override;
+};
+
 class BinaryTreeLockHighlight : public AnimationEvent<UI::BinaryTree> {
 public:
     BinaryTreeLockHighlight();
 
     int apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) override;
 };
+
+// ========== GRAPH ==========
 
 class GraphCreateNode : public AnimationEvent<UI::Graph> {
 private:

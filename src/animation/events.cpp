@@ -53,6 +53,14 @@ int BinaryTreeHighlightNode::apply (UI::BinaryTree &ui, UI::CodeHighlighter &cod
     return ui.setHighlight(targetNode);
 }
 
+// ========== BINARY TREE COLOR NODE (FOR RB-TREE) ========== //
+
+BinaryTreeColorNode::BinaryTreeColorNode (int nodeID, bool color) : nodeID(nodeID), color(color) {}
+
+int BinaryTreeColorNode::apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) {
+    return ui.colorNode(nodeID, color ? Theme::getRBBlack() : Theme::getRBRed()), true;
+}
+
 // ========== BINARY TREE LOCK HIGHLIGHT ========== //
 
 BinaryTreeLockHighlight::BinaryTreeLockHighlight() {}

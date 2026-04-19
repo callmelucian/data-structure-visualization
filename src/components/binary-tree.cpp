@@ -67,6 +67,10 @@ void BinaryTree::deleteNode(int nodeID) {
     if (highlighter.getAddress() == nodeUI[nodeID]) highlighter.free();
 }
 
+void BinaryTree::colorNode (int nodeID, const sf::Color &color) {
+    if (!isDeleted[nodeID]) nodeUI[nodeID]->setColor(color);
+}
+
 bool BinaryTree::addEdge(int parentNode, int childNode, bool isLeft) {
     int &targetMemory = (isLeft ? leftChild : rightChild)[parentNode];
     if (targetMemory == childNode) return false;

@@ -13,13 +13,22 @@ bool RedBlackTree::isRed (Node* ptr) {
     return ptr && ptr->color == RED;
 }
 
+int RedBlackTree::getVisualID (Node* ptr) {
+    return ptr ? ptr->visualID : -1;
+}
+
 RedBlackTree::Node* RedBlackTree::leftRotation (Node* ptr) {
     Node* rightChild = ptr->rpt; // is surely a valid pointer
     Node* tmp = rightChild->lpt; // this one could be a nullptr
+
     rightChild->lpt = ptr;
+    callbackAddEdge(getVisualID(rightChild), getVisualID(ptr), true);
     ptr->rpt = tmp;
+    callbackAddEdge(getVisualID(ptr), getVisualID(tmp), false); // tmp could be nullptr
     rightChild->color = ptr->color;
+    callbackColorNode(getVisualID(rightChild), ptr->color == BLACK);
     ptr->color = RED;
+    callbackColorNode(getVisualID(ptr), false);
     return rightChild;
 }
 
@@ -28,9 +37,13 @@ RedBlackTree::Node* RedBlackTree::rightRotation (Node* ptr) {
     Node* tmp = leftChild->rpt; // this one could be a nullptr
 
     leftChild->rpt = ptr;
+    callbackAddEdge(getVisualID(leftChild), getVisualID(ptr), false);
     ptr->lpt = tmp;
+    callbackAddEdge(getVisualID(ptr), getVisualID(tmp), true); // tmp could be nullptr
     leftChild->color = ptr->color;
+    callbackColorNode(getVisualID(leftChild), ptr->color == BLACK);
     ptr->color = RED;
+    callbackColorNode(getVisualID(ptr), false);
     return leftChild;
 }
 
@@ -82,17 +95,41 @@ RedBlackTree::Node* RedBlackTree::getSmallestKey (Node* ptr) {
 
 void RedBlackTree::flipColors (Node* ptr) {
     ptr->color = RED;
+    callbackColorNode(getVisualID(ptr), false);
     ptr->lpt->color = BLACK;
+    callbackColorNode(getVisualID(ptr->lpt), true);
     ptr->rpt->color = BLACK;
+    callbackColorNode(getVisualID(ptr->rpt), true);
+    callbackApplyAnimation();
 }
 
 RedBlackTree::Node* RedBlackTree::insertValue (Node* ptr, int insertKey) {
-    if (ptr == nullptr)
+    std::cerr << "Inserting " << (ptr ? ptr->value : -1) << " " << insertKey << std::endl;
+    if (ptr == nullptr) {
+        callbackCreateNode(insertKey, false);
+        callbackColorNode(nodeCounter, false);
         return new Node(insertKey, nodeCounter++);
+    }
     
     if (insertKey == ptr->value) return ptr->count++, ptr;
-    if (insertKey < ptr->value) ptr->lpt = insertValue(ptr->lpt, insertKey);
-    if (insertKey > ptr->value) ptr->rpt = insertValue(ptr->rpt, insertKey);
+
+    if (insertKey < ptr->value) {
+        ptr->lpt = insertValue(ptr->lpt, insertKey);
+        callbackAddEdge(getVisualID(ptr), getVisualID(ptr->lpt), true);
+        callbackApplyAnimation();
+
+        callbackHighlightNode(getVisualID(ptr));
+        callbackApplyAnimation();
+    }
+
+    if (insertKey > ptr->value) {
+        ptr->rpt = insertValue(ptr->rpt, insertKey);
+        callbackAddEdge(getVisualID(ptr), getVisualID(ptr->rpt), false);
+        callbackApplyAnimation();
+
+        callbackHighlightNode(getVisualID(ptr));
+        callbackApplyAnimation();
+    }
 
     return selfBalancing(ptr);
 }
@@ -126,8 +163,8 @@ RedBlackTree::Node* RedBlackTree::eraseValue (Node* ptr, int eraseKey) {
 RedBlackTree::Node* RedBlackTree::copyNodes (Node* otherNode) {
     if (otherNode == nullptr) return nullptr;
     Node* newNode = new Node(*otherNode);
-    newNode->lpt = copyNodes(newNode->lpt);
-    newNode->rpt = copyNodes(newNode->rpt); 
+    newNode->lpt = copyNodes(otherNode->lpt);
+    newNode->rpt = copyNodes(otherNode->rpt); 
     return newNode;
 }
 
@@ -176,8 +213,26 @@ RedBlackTree& RedBlackTree::operator=(const RedBlackTree &other) {
 }
 
 void RedBlackTree::insert (int value) {
-    root = insertValue(root, value);
+    std::cerr << "Tree " << (root ? "NOT " : "") << "empty" << " " << nodeCounter << std::endl;
+    if (root == nullptr) {
+        std::cerr << "Got here" << std::endl;
+        callbackCreateNode(value, true);
+        callbackHighlightNode(nodeCounter);
+        root = new Node(value, nodeCounter++);
+        callbackColorNode(getVisualID(root), true);
+        callbackApplyAnimation();
+    }
+    else {
+        root = insertValue(root, value);
+        callbackChangeRoot(getVisualID(root));
+        callbackColorNode(getVisualID(root), true);
+        callbackApplyAnimation();
+    }
     root->color = BLACK;
+    callbackHighlightNode(-1);
+    callbackCompleteAnimation();
+    callbackApplyAnimation();
+    std::cerr << "Tree " << (root ? "NOT " : "") << "empty" << std::endl;
 }
 
 bool RedBlackTree::erase (int value) {

@@ -299,3 +299,62 @@ void AnimationManager<UI::Graph, DS::DijkstraAlgorithm>::initCallbackFunctions()
         });
     });
 }
+
+// ========== TEMPLATE-SPECIFIC FUNCTIONS: AnimationManager<UI::BinaryTree, DS::RedBlackTree> ==========
+
+template<>
+void AnimationManager<UI::BinaryTree, DS::RedBlackTree>::initCallbackFunctions() {
+    stateLogic[0].setCallbackCreateNode([this] (int value, bool isRoot) {
+        this->createAnimationEvent(
+            std::make_unique<BinaryTreeCreateNode>(std::to_string(value), isRoot)
+        );
+    });
+    stateLogic[0].setCallbackAddEdge([&] (int parent, int node, bool isLeft) {
+        this->createAnimationEvent(
+            std::make_unique<BinaryTreeAddEdge>(parent, node, isLeft)
+        );
+    });
+    stateLogic[0].setCallbackChangeRoot([&] (int newRoot) {
+        this->createAnimationEvent(
+            std::make_unique<BinaryTreeChangeRoot>(newRoot)
+        );
+    });
+    stateLogic[0].setCallbackDeleteNode([&] (int visualID) {
+        this->createAnimationEvent(
+            std::make_unique<BinaryTreeDeleteNode>(visualID)
+        );
+    });
+    stateLogic[0].setCallbackSwapValue([&] (int a, int b) {
+        this->createAnimationEvent(
+            std::make_unique<BinaryTreeSwapValue>(a, b)
+        );
+    });
+    stateLogic[0].setCallbackApplyAnimation([&]() {
+        this->nextStep();
+    });
+    stateLogic[0].setCallbackHighlightNode([&] (int nodeID) {
+        this->createAnimationEvent(
+            std::make_unique<BinaryTreeHighlightNode>(nodeID)
+        );
+    });
+    stateLogic[0].setCallbackColorNode ([&] (int nodeID, bool color) {
+        this->createAnimationEvent(
+            std::make_unique<BinaryTreeColorNode>(nodeID, color)
+        );
+    });
+    stateLogic[0].setCallbackCompleteAnimation([&]() {
+        this->createAnimationEvent(
+            std::make_unique<CompleteAnimation<UI::BinaryTree>>()
+        );
+    });
+    stateLogic[0].setCallbackLoadCode([&] (const std::vector<std::string> &vec) {
+        this->createAnimationEvent(
+            std::make_unique<CodeHighlightLoadCode<UI::BinaryTree>>(vec)
+        );
+    });
+    stateLogic[0].setCallbackHighlightCode([&] (int row) {
+        this->createAnimationEvent(
+            std::make_unique<CodeHighlighting<UI::BinaryTree>>(row)
+        );
+    });
+}
