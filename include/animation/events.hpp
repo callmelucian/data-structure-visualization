@@ -3,6 +3,7 @@
 #include "../components/binary-tree.hpp"
 #include "../components/code-highlighter.hpp"
 #include "../components/graph.hpp"
+#include "../components/hash-map.hpp"
 
 #include "../../assets/theme.hpp"
 
@@ -192,6 +193,49 @@ public:
 
     int apply (UI::Graph &ui, UI::CodeHighlighter &code) override;
 };
+
+// ========== HASH MAP ==========
+class HashMapCreateNode : public AnimationEvent<UI::HashMap> {
+private:
+    int value;
+public:
+    HashMapCreateNode (int value);
+    int apply (UI::HashMap &ui, UI::CodeHighlighter &code) override;
+};
+
+class HashMapDeleteNode : public AnimationEvent<UI::HashMap> {
+private:
+    int nodeID;
+public:
+    HashMapDeleteNode (int nodeID);
+    int apply (UI::HashMap &ui, UI::CodeHighlighter &code) override;
+};
+
+class HashMapAddEdge : public AnimationEvent<UI::HashMap> {
+private:
+    int fromID, toID;
+public:
+    HashMapAddEdge (int fromID, int nodeID);
+    int apply (UI::HashMap &ui, UI::CodeHighlighter &code) override;
+};
+
+class HashMapAttachRoot : public AnimationEvent<UI::HashMap> {
+private:
+    int slot, nodeID;
+public:
+    HashMapAttachRoot (int slot, int nodeID);
+    int apply (UI::HashMap &ui, UI::CodeHighlighter &code) override;
+};
+
+class HashMapHighlightNode : public AnimationEvent<UI::HashMap> {
+private:
+    int nodeID;
+public:
+    HashMapHighlightNode (int nodeID);
+    int apply (UI::HashMap &ui, UI::CodeHighlighter &code) override;
+};
+
+// ========== COMMON ==========
 
 template <typename TypeUI>
 class CodeHighlightLoadCode : public AnimationEvent<TypeUI> {

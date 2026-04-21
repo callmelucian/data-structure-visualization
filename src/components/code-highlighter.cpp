@@ -3,11 +3,11 @@
 namespace UI {
 
 CodeHighlighter::CodeHighlighter() : highlightedRow(-1), lineSpacing(1.2f), padding(21.f), fontSize(18) {
-    background.setFillColor(sf::Color::White);
+    background.setFillColor(sf::Color({255, 255, 255, 150}));
     background.setOutlineColor(sf::Color::Black);
     background.setOutlineThickness(2.f);
 
-    highlightBar.setFillColor(sf::Color(200, 200, 200, 150)); 
+    highlightBar.setFillColor(sf::Color({200, 200, 200, 150})); 
 }
 
 void CodeHighlighter::loadCode(const std::vector<std::string>& codes) {

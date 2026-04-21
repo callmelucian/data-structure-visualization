@@ -162,6 +162,10 @@ void AnimatedNode::randomPosition() {
     nodeUI.randomPosition();
 }
 
+void AnimatedNode::copyPosition (const AnimatedNode &other) {
+    setPosition(other.getPosition());
+}
+
 void AnimatedNode::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     nodeUI.draw(target, states);
 }
@@ -245,7 +249,7 @@ void FloatingNode::handleMouseMovement (const sf::Vector2f &mousePos) {
 }
 
 // ========== HELPER FUNCTIONS ==========
-void drawEdge(sf::RenderTarget &target, sf::RenderStates state, const AnimatedNode* from, const AnimatedNode* to, float thickness) {
+void drawEdge(sf::RenderTarget &target, sf::RenderStates states, const AnimatedNode* from, const AnimatedNode* to, bool isDirected, float thickness) {
     if (from->getPosition() == to->getPosition()) return;
 
     // get centers of the endpoints
@@ -267,8 +271,23 @@ void drawEdge(sf::RenderTarget &target, sf::RenderStates state, const AnimatedNo
     line.setRotation(sf::radians(angle));
     line.setFillColor(sf::Color::Black);
 
+        // draw arrow head
+    if (isDirected) {
+        float arrowSize = thickness * 3.0f;
+        sf::ConvexShape arrowhead;
+        arrowhead.setPointCount(3);
+        arrowhead.setPoint(0, {0, 0});
+        arrowhead.setPoint(1, {-arrowSize, -arrowSize * 0.8f});
+        arrowhead.setPoint(2, {-arrowSize,  arrowSize * 0.8f});
+        
+        arrowhead.setPosition(toCenter);
+        arrowhead.setRotation(sf::radians(angle));
+        arrowhead.setFillColor(sf::Color::Black);
+        target.draw(arrowhead, states);
+    }
+
     // draw
-    target.draw(line, state);
+    target.draw(line, states);
 }
 
 // void drawEdge(sf::RenderTarget &target, sf::RenderStates state, const FloatingNode* from, const FloatingNode* to, sf::Color edgeColor, float thickness) {

@@ -97,6 +97,8 @@ public:
     void setPosition (const sf::Vector2f vec);
     void randomPosition();
 
+    void copyPosition (const AnimatedNode &other);
+
     // draw node onto the screen
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };
@@ -140,6 +142,6 @@ public:
     void handleMouseRelease(const sf::Vector2f &mousePos) override;
 };
 
-void drawEdge (sf::RenderTarget &target, sf::RenderStates state, const AnimatedNode* from, const AnimatedNode* to, float thickness = 2.f);
+void drawEdge (sf::RenderTarget &target, sf::RenderStates states, const AnimatedNode* from, const AnimatedNode* to, bool isDirected = false, float thickness = 2.f);
 
 } // namespace UI

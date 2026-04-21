@@ -158,6 +158,41 @@ int GraphHighlightEdge::apply (UI::Graph &ui, UI::CodeHighlighter &code) {
     return ui.highlightEdge(edgeID), true;
 }
 
+// ========== HASH MAP CREATE NODE ========== //
+HashMapCreateNode::HashMapCreateNode (int value) : value(value) {}
+
+int HashMapCreateNode::apply (UI::HashMap &ui, UI::CodeHighlighter &code) {
+    return ui.createNode(value), true;
+}
+
+// ========== HASH MAP DELETE NODE ========== //
+HashMapDeleteNode::HashMapDeleteNode (int nodeID) : nodeID(nodeID) {}
+
+int HashMapDeleteNode::apply (UI::HashMap &ui, UI::CodeHighlighter &code) {
+    return ui.deletedNode(nodeID), true;
+}
+
+// ========== HASH MAP ADD EDGE ========== //
+HashMapAddEdge::HashMapAddEdge (int fromID, int toID) : fromID(fromID), toID(toID) {}
+
+int HashMapAddEdge::apply (UI::HashMap &ui, UI::CodeHighlighter &code) {
+    return ui.addEdge(fromID, toID), true;
+}
+
+// ========= HASH MAP ATTACH ROOT ========== //
+HashMapAttachRoot::HashMapAttachRoot (int slot, int nodeID) : slot(slot), nodeID(nodeID) {}
+
+int HashMapAttachRoot::apply (UI::HashMap &ui, UI::CodeHighlighter &code) {
+    return ui.attachRoot(slot, nodeID), true;
+}
+
+// ========== HASH MAP HIGHLIGHT NODE ========== //
+HashMapHighlightNode::HashMapHighlightNode (int nodeID) : nodeID(nodeID) {}
+
+int HashMapHighlightNode::apply (UI::HashMap &ui, UI::CodeHighlighter &code) {
+    return ui.setHighlight(nodeID), true;
+}
+
 // ========== COMPLETE ANIMATION ========== //
 
 template <typename TypeUI>

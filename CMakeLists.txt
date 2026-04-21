@@ -20,6 +20,7 @@ add_executable(DataVisApp
     src/ds/dijkstra.cpp
     src/ds/red-black-tree.cpp
     src/ds/bellman-ford.cpp
+    src/ds/hash-map.cpp
 
     src/components/binary-tree.cpp
     src/components/button.cpp
@@ -29,6 +30,7 @@ add_executable(DataVisApp
     src/components/highlight-circle.cpp
     src/components/code-highlighter.cpp
     src/components/graph.cpp
+    src/components/hash-map.cpp
 
     src/core/utility.cpp
 

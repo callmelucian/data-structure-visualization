@@ -17,7 +17,7 @@ int RedBlackTree::getVisualID (Node* ptr) {
     return ptr ? ptr->visualID : -1;
 }
 
-RedBlackTree::Node* RedBlackTree::leftRotation (Node* ptr) {
+RedBlackTree::Node* RedBlackTree::leftRotation (Node* ptr, Node* parent, bool isLeftChild) {
     Node* rightChild = ptr->rpt; // is surely a valid pointer
     Node* tmp = rightChild->lpt; // this one could be a nullptr
 
@@ -29,10 +29,11 @@ RedBlackTree::Node* RedBlackTree::leftRotation (Node* ptr) {
     callbackColorNode(getVisualID(rightChild), ptr->color == BLACK);
     ptr->color = RED;
     callbackColorNode(getVisualID(ptr), false);
+    fixEdges(parent, rightChild, isLeftChild);
     return rightChild;
 }
 
-RedBlackTree::Node* RedBlackTree::rightRotation (Node* ptr) {
+RedBlackTree::Node* RedBlackTree::rightRotation (Node* ptr, Node* parent, bool isLeftChild) {
     Node* leftChild = ptr->lpt; // is surely a valid pointer
     Node* tmp = leftChild->rpt; // this one could be a nullptr
 
@@ -44,43 +45,43 @@ RedBlackTree::Node* RedBlackTree::rightRotation (Node* ptr) {
     callbackColorNode(getVisualID(leftChild), ptr->color == BLACK);
     ptr->color = RED;
     callbackColorNode(getVisualID(ptr), false);
+    fixEdges(parent, leftChild, isLeftChild);
     return leftChild;
 }
 
-RedBlackTree::Node* RedBlackTree::moveRedLeft (Node* ptr) {
+RedBlackTree::Node* RedBlackTree::moveRedLeft (Node* ptr, Node* parent, bool leftChild) {
     flipColors(ptr);
     if (isRed(ptr->rpt->lpt)) {
-        ptr->rpt = rightRotation(ptr->rpt);
-        ptr = leftRotation(ptr);
+        ptr->rpt = rightRotation(ptr->rpt, ptr, false);
+        ptr = leftRotation(ptr, parent, leftChild);
         flipColors(ptr);
     }
     return ptr;
 }
 
-RedBlackTree::Node* RedBlackTree::moveRedRight (Node* ptr) {
+RedBlackTree::Node* RedBlackTree::moveRedRight (Node* ptr, Node* parent, bool leftChild) {
     flipColors(ptr);
     if (isRed(ptr->lpt->lpt)) {
-        ptr = rightRotation(ptr);
+        ptr = rightRotation(ptr, parent, leftChild);
         flipColors(ptr);
     }
     return ptr;
 }
 
-RedBlackTree::Node* RedBlackTree::selfBalancing (Node* ptr) {
+RedBlackTree::Node* RedBlackTree::selfBalancing (Node* ptr, Node* parent, bool leftChild) {
+    // case 1: right child is red, left child is black
     callbackHighlightCode(0);
     callbackApplyAnimation();
-
-    // case 1: right child is red, left child is black
     if (isRed(ptr->rpt) && !isRed(ptr->lpt)) {
         callbackHighlightCode(1);
+        ptr = leftRotation(ptr, parent, leftChild);
         callbackApplyAnimation();
-        ptr = leftRotation(ptr);
     }
     // case 2: left child and left-left granchild are red
     if (isRed(ptr->lpt) && isRed(ptr->lpt->lpt)) {
         callbackHighlightCode(2);
+        ptr = rightRotation(ptr, parent, leftChild);
         callbackApplyAnimation();
-        ptr = rightRotation(ptr);
     }
     // case 3: both children are red
     if (isRed(ptr->lpt) && isRed(ptr->rpt)) {
@@ -88,19 +89,9 @@ RedBlackTree::Node* RedBlackTree::selfBalancing (Node* ptr) {
         flipColors(ptr);
         callbackApplyAnimation();
     }
+    callbackHighlightCode(4);
+    callbackApplyAnimation();
     return ptr;
-}
-
-RedBlackTree::Node* RedBlackTree::deleteMin (Node* ptr) {
-    // this subtree consists of a single node
-    if (ptr->lpt == nullptr) {
-        delete ptr;
-        return nullptr; // remember the tree is left-leaning
-    }
-
-    if (!isRed(ptr->lpt) && !isRed(ptr->lpt->lpt)) ptr = moveRedLeft(ptr);
-    ptr->lpt = deleteMin(ptr->lpt);
-    return selfBalancing(ptr);
 }
 
 RedBlackTree::Node* RedBlackTree::getSmallestKey (Node* ptr) {
@@ -115,10 +106,9 @@ void RedBlackTree::flipColors (Node* ptr) {
     callbackColorNode(getVisualID(ptr->lpt), true);
     ptr->rpt->color = BLACK;
     callbackColorNode(getVisualID(ptr->rpt), true);
-    callbackApplyAnimation();
 }
 
-RedBlackTree::Node* RedBlackTree::insertValue (Node* ptr, int insertKey) {
+RedBlackTree::Node* RedBlackTree::insertValue (Node* ptr, Node* parent, bool leftChild, int insertKey) {
     // insertion happen at this node
     callbackHighlightCode(0);
     callbackHighlightNode(getVisualID(ptr));
@@ -129,7 +119,10 @@ RedBlackTree::Node* RedBlackTree::insertValue (Node* ptr, int insertKey) {
         callbackCreateNode(insertKey, false);
         callbackColorNode(nodeCounter, false);
         callbackHighlightNode(nodeCounter);
-        return new Node(insertKey, nodeCounter++);
+        ptr = new Node(insertKey, nodeCounter++);
+        fixEdges(parent, ptr, leftChild);
+        callbackApplyAnimation();
+        return ptr;
     }
     
     if (insertKey == ptr->value) {
@@ -143,9 +136,9 @@ RedBlackTree::Node* RedBlackTree::insertValue (Node* ptr, int insertKey) {
         callbackApplyAnimation();
         callbackHighlightCode(4);
         callbackApplyAnimation();
-        ptr->lpt = insertValue(ptr->lpt, insertKey);
-        callbackAddEdge(getVisualID(ptr), getVisualID(ptr->lpt), true);
-        callbackApplyAnimation();
+        ptr->lpt = insertValue(ptr->lpt, ptr, true, insertKey);
+        // callbackAddEdge(getVisualID(ptr), getVisualID(ptr->lpt), true);
+        // callbackApplyAnimation();
 
         callbackHighlightCode(4);
         callbackHighlightNode(getVisualID(ptr));
@@ -157,9 +150,9 @@ RedBlackTree::Node* RedBlackTree::insertValue (Node* ptr, int insertKey) {
         callbackApplyAnimation();
         callbackHighlightCode(6);
         callbackApplyAnimation();
-        ptr->rpt = insertValue(ptr->rpt, insertKey);
-        callbackAddEdge(getVisualID(ptr), getVisualID(ptr->rpt), false);
-        callbackApplyAnimation();
+        ptr->rpt = insertValue(ptr->rpt, ptr, false, insertKey);
+        // callbackAddEdge(getVisualID(ptr), getVisualID(ptr->rpt), false);
+        // callbackApplyAnimation();
 
         callbackHighlightCode(6);
         callbackHighlightNode(getVisualID(ptr));
@@ -170,35 +163,107 @@ RedBlackTree::Node* RedBlackTree::insertValue (Node* ptr, int insertKey) {
     callbackApplyAnimation();
 
     callbackLoadCode(CodeRepo::RB_TREE_SELF_BALANCE);
-    Node* newRoot = selfBalancing(ptr);
+    Node* newRoot = selfBalancing(ptr, parent, leftChild);
     callbackLoadCode(CodeRepo::RB_TREE_INSERT);
     return newRoot;
 }
 
-RedBlackTree::Node* RedBlackTree::eraseValue (Node* ptr, int eraseKey) {
+void RedBlackTree::fixEdges (Node* parent, Node *ptr, bool leftChild) {
+    if (!parent) callbackChangeRoot(getVisualID(ptr));
+    else callbackAddEdge(getVisualID(parent), getVisualID(ptr), leftChild);
+}
+
+RedBlackTree::Node* RedBlackTree::eraseValue (Node* ptr, Node* parent, bool leftChild, int eraseKey) {
+    callbackHighlightCode(0);
+    callbackHighlightNode(getVisualID(ptr));
+    callbackApplyAnimation();
+
+    if (ptr == nullptr) {
+        callbackHighlightCode(1);
+        callbackApplyAnimation();
+        return nullptr;
+    }
+
     if (eraseKey < ptr->value) { // erase on left subtree
-        if (!isRed(ptr->lpt) && !isRed(ptr->lpt->lpt)) ptr = moveRedLeft(ptr);
-        ptr->lpt = eraseValue(ptr->lpt, eraseKey);
+        callbackHighlightCode(2);
+        callbackApplyAnimation();
+
+        if (!isRed(ptr->lpt) && !isRed(ptr->lpt->lpt)) {
+            callbackHighlightCode(3);
+            callbackApplyAnimation();
+
+            callbackHighlightCode(4);
+            ptr = moveRedLeft(ptr, parent, leftChild);
+            callbackApplyAnimation();
+        }
+
+        callbackHighlightCode(5);
+        callbackApplyAnimation();
+        ptr->lpt = eraseValue(ptr->lpt, ptr, true, eraseKey);
+        callbackHighlightCode(5);
+        callbackHighlightNode(getVisualID(ptr));
+        callbackApplyAnimation();
     }
-    if (eraseKey > ptr->value) { // erase on right subtree
-        if (isRed(ptr->lpt)) ptr = rightRotation(ptr);
-        if (!isRed(ptr->rpt) && !isRed(ptr->rpt->lpt)) ptr = moveRedRight(ptr);
-        ptr->rpt = eraseValue(ptr->rpt, eraseKey);
-    }
-    if (eraseKey == ptr->value) { // erase this node
-        if (isRed(ptr->lpt)) ptr = rightRotation(ptr); // this node is temporary right-leaning
-        if (ptr->rpt == nullptr) {
+
+    else { // erase on current node or right subtree
+        callbackHighlightCode(6);
+        callbackApplyAnimation();
+
+        if (isRed(ptr->lpt)) {
+            callbackHighlightCode(7);
+            ptr = rightRotation(ptr, parent, leftChild);
+            callbackApplyAnimation();
+        }
+
+        if (eraseKey == ptr->value && ptr->rpt == nullptr) {
+            callbackHighlightCode(8);
+            callbackApplyAnimation();
+
+            callbackDeleteNode(getVisualID(ptr));
+            callbackHighlightCode(9);
             delete ptr;
+            fixEdges(parent, nullptr, leftChild);
+            callbackApplyAnimation();
             return nullptr;
         }
-        if (!isRed(ptr->rpt) && !isRed(ptr->rpt->lpt))
-            ptr = moveRedRight(ptr);
-        
-        Node* tmp = getSmallestKey(ptr->rpt);
-        std::swap(ptr->value, tmp->value);
-        ptr->rpt = deleteMin(ptr->rpt);
+
+        if (!isRed(ptr->rpt) && !isRed(ptr->rpt->lpt)) {
+            callbackHighlightCode(10);
+            callbackApplyAnimation();
+
+            callbackHighlightCode(11);
+            ptr = moveRedRight(ptr, parent, leftChild);
+            callbackApplyAnimation();
+        }
+
+        if (eraseKey == ptr->value) {
+            callbackHighlightCode(12);
+            callbackApplyAnimation();
+            Node* tmp = getSmallestKey(ptr->rpt);
+
+            callbackHighlightCode(13);
+            callbackSwapValue(getVisualID(ptr), getVisualID(tmp));
+            callbackColorNode(getVisualID(ptr), ptr->color == BLACK);
+            callbackColorNode(getVisualID(tmp), tmp->color == BLACK);
+            std::swap(ptr->value, tmp->value);
+            callbackApplyAnimation();
+        }
+        callbackHighlightCode(14);
+        callbackApplyAnimation();
+        ptr->rpt = eraseValue(ptr->rpt, ptr, false, eraseKey);
+
+        callbackHighlightCode(14);
+        callbackHighlightNode(getVisualID(ptr));
+        callbackApplyAnimation();
     }
-    return selfBalancing(ptr);
+
+    callbackHighlightCode(16);
+    callbackApplyAnimation();
+
+    callbackLoadCode(CodeRepo::RB_TREE_SELF_BALANCE);
+    Node* newRoot = selfBalancing(ptr, parent, leftChild);
+    callbackLoadCode(CodeRepo::RB_TREE_ERASE_VALUE);
+    return newRoot;
 }
 
 RedBlackTree::Node* RedBlackTree::copyNodes (Node* otherNode) {
@@ -261,12 +326,13 @@ void RedBlackTree::insert (int value) {
 
         callbackHighlightCode(1);
         callbackCreateNode(value, true);
+        callbackColorNode(nodeCounter, false);
         callbackHighlightNode(nodeCounter);
         root = new Node(value, nodeCounter++);
         callbackApplyAnimation();
     }
     else {
-        root = insertValue(root, value);
+        root = insertValue(root, nullptr, false, value);
         callbackChangeRoot(getVisualID(root));
         callbackApplyAnimation();
     }
@@ -284,8 +350,21 @@ void RedBlackTree::insert (int value) {
 
 bool RedBlackTree::erase (int value) {
     if (root == nullptr) return false;
-    root = eraseValue(root, value);
-    if (root != nullptr) root->color = BLACK;
+    callbackLoadCode(CodeRepo::RB_TREE_ERASE_VALUE);
+    root = eraseValue(root, nullptr, false, value);
+    callbackChangeRoot(getVisualID(root));
+    callbackApplyAnimation();
+    if (root != nullptr) {
+        root->color = BLACK;
+        callbackLoadCode(CodeRepo::RB_TREE_ERASE_VALUE);
+        callbackHighlightCode(15);
+        callbackColorNode(getVisualID(root), true);
+        callbackApplyAnimation();
+    }
+    callbackHighlightNode(-1);
+    callbackLoadCode({});
+    callbackCompleteAnimation();
+    callbackApplyAnimation();
     return true;
 }
 

@@ -358,3 +358,52 @@ void AnimationManager<UI::BinaryTree, DS::RedBlackTree>::initCallbackFunctions()
         );
     });
 }
+
+// ========== TEMPLATE-SPECIFIC FUNCTIONS: AnimationManager<UI::BinaryTree, DS::RedBlackTree> ==========
+
+template<>
+void AnimationManager<UI::HashMap, DS::HashMap>::initCallbackFunctions() {
+        stateLogic[0].setCallbackCreateNode([&] (int value) {
+        this->createAnimationEvent(
+            std::make_unique<HashMapCreateNode>(value)
+        );
+    });
+    stateLogic[0].setCallbackDeleteNode([&] (int nodeID) {
+        this->createAnimationEvent(
+            std::make_unique<HashMapDeleteNode>(nodeID)
+        );
+    });
+    stateLogic[0].setCallbackAddEdge([&] (int fromNode, int toNode, int weight) {
+        this->createAnimationEvent(
+            std::make_unique<HashMapAddEdge>(fromNode, toNode, weight)
+        );
+    });
+    stateLogic[0].setCallbackAttachRoot([&] (int slot, int nodeID) {
+        this->createAnimationEvent(
+            std::make_unique<HashMapAttachRoot>(slot, nodeID)
+        );
+    });
+    stateLogic[0].setCallbackHighlightNode([&] (int nodeID) {
+        this->createAnimationEvent(
+            std::make_unique<HashMapHighlightNode>(nodeID)
+        );
+    });
+    stateLogic[0].setCallbackApplyAnimation([&]() {
+        this->nextStep();
+    });
+    stateLogic[0].setCallbackCompleteAnimation([&]() {
+        this->createAnimationEvent(
+            std::make_unique<CompleteAnimation<UI::HashMap>>()
+        );
+    });
+    stateLogic[0].setCallbackLoadCode([&] (const std::vector<std::string> &vec) {
+        this->createAnimationEvent(
+            std::make_unique<CodeHighlightLoadCode<UI::HashMap>>(vec)
+        );
+    });
+    stateLogic[0].setCallbackHighlightCode([&] (int row) {
+        this->createAnimationEvent(
+            std::make_unique<CodeHighlighting<UI::HashMap>>(row)
+        );
+    });
+}

@@ -46,31 +46,31 @@ private:
 
     int getVisualID (Node* ptr);
 
-    Node* leftRotation (Node* ptr);
+    Node* leftRotation (Node* ptr, Node* parent, bool isLeftChild);
 
-    Node* rightRotation (Node* ptr);
+    Node* rightRotation (Node* ptr, Node* parent, bool isLeftChild);
 
     /**
      * @brief Borrow from right sibling to make ptr or its child red (?)
      */
-    Node* moveRedLeft (Node* ptr);
+    Node* moveRedLeft (Node* ptr, Node* parent, bool leftChild);
 
     /**
      * @brief Borrow from left sibling to make ptr or its child red (?)
      */
-    Node* moveRedRight (Node* ptr);
+    Node* moveRedRight (Node* ptr, Node* parent, bool leftChild);
 
-    Node* selfBalancing (Node* ptr);
-
-    Node* deleteMin (Node* ptr);
+    Node* selfBalancing (Node* ptr, Node* parent, bool leftChild);
 
     Node* getSmallestKey (Node* ptr);
 
     void flipColors (Node* ptr);
 
-    Node* insertValue (Node* ptr, int insertKey);
+    void fixEdges (Node* parent, Node* ptr, bool leftChild);
 
-    Node* eraseValue (Node* ptr, int eraseKey);
+    Node* insertValue (Node* ptr, Node* parent, bool leftChild, int insertKey);
+
+    Node* eraseValue (Node* ptr, Node* parent, bool leftChild, int eraseKey);
 
     Node* copyNodes (Node* otherNode);
 

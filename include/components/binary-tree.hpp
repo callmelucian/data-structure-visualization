@@ -1,7 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <vector>
-#include <set>
 #include <random>
 #include <functional>
 #include <string>

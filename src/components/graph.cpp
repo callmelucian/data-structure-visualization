@@ -1,4 +1,4 @@
-#include "../../include/components/graph.hpp"
+    #include "../../include/components/graph.hpp"
 
 // ========== CONSTANTS INITIALIZATION ==========
 const float REPULSIVE_CONSTANT = 100'000.f;

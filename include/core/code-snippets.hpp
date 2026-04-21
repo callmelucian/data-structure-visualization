@@ -4,6 +4,29 @@
 
 namespace CodeRepo {
 
+inline const std::vector<std::string> HASH_MAP_INSERT = {
+    "void insertValue (int value):",
+    "    if root[value % 17] is empty: create new node",
+    "    else:",
+    "        ptr = rootNode[value % 17]",
+    "        while ptr->pNext != nullptr:",
+    "            ptr = ptr->pNext",
+    "    ptr->pNext = new node"
+};
+
+inline const std::vector<std::string> HASH_MAP_ERASE = {
+    "void eraseValue (int value):",
+    "    if root[value % 17] is empty: return",
+    "    if root[value % 17]->value == value:",
+    "        delete head and make new head",
+    "    else:",
+    "        Node* ptr = rootNode[eraseKey % 17]",
+    "        while ptr->pNext != nullptr and ptr->pNext->value != value:",
+    "            ptr = ptr->pNext",
+    "        if ptr->pNext != nulltr:",
+    "            delete ptr->pNext and make new link"
+};
+
 inline const std::vector<std::string> AVL_TREE_INSERT = {
     "Node* insertValue (Node* ptr, int insertKey):",
     "    if ptr == nullptr: return new Node(insertKey);",
@@ -35,14 +58,34 @@ inline const std::vector<std::string> RB_TREE_SELF_BALANCE = {
     "    return ptr"
 };
 
+inline const std::vector<std::string> RB_TREE_ERASE_VALUE = {
+    "Node* eraseValue (Node* ptr, int eraseKey):",
+    "    if ptr == nullptr: return nullptr",
+    "    if eraseKey < ptr->value:",
+    "        if both left and left-left children are black/empty:",
+    "            ptr = moveRedLeft(ptr)",
+    "        ptr->leftST = eraseValue(ptr->leftST, eraseKey)",
+    "    if eraseKey >= ptr->value:",
+    "        if left child is red: rightRotate current subtree",
+    "        if eraseKey == ptr->value and current subtree contains 1 node:",
+    "            delete current node and return nullptr",
+    "        if both right and right-left children are black/empty:",
+    "            ptr = moveRedRight(ptr)",
+    "        if eraseKey == ptr->value:",
+    "            swap current node with the smallest value among rightST",
+    "        ptr->rightST = eraseValue(ptr->rightST, eraseKey)",
+    "    if ptr is root: ptr->color = BLACK",
+    "    return selfBalance(ptr)"
+};
+
 inline const std::vector<std::string> AVL_TREE_SELF_BALANCE = {
     "Node* selfBalance (Node* ptr):",
     "    if subtree is left-leaning:",
-    "        if leftST is right-leaning: leftRotate",
-    "        rightRotate",
+    "        if leftST is right-leaning: leftRotate leftST",
+    "        rightRotate current subtree",
     "    if subtree is right-leaning:",
-    "        if rightST is left-leaning: rightRotate",
-    "        leftRotate",
+    "        if rightST is left-leaning: rightRotate rightST",
+    "        leftRotate current subtree",
     "    return ptr"
 };
 
