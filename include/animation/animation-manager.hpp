@@ -14,12 +14,14 @@
 #include "../components/code-highlighter.hpp"
 #include "../components/graph.hpp"
 #include "../components/hash-map.hpp"
+#include "../components/linked-list.hpp"
 
 // data structures
 #include "../ds/avl-tree.hpp"
 #include "../ds/dijkstra.hpp"
 #include "../ds/red-black-tree.hpp"
 #include "../ds/hash-map.hpp"
+#include "../ds/linked-list.hpp"
 
 template <typename TypeUI, typename TypeLogic>
 class AnimationManager {
@@ -146,3 +148,4 @@ template class AnimationManager<UI::BinaryTree, DS::AVLTree>;
 template class AnimationManager<UI::Graph, DS::DijkstraAlgorithm>;
 template class AnimationManager<UI::BinaryTree, DS::RedBlackTree>;
 template class AnimationManager<UI::HashMap, DS::HashMap>;
+template class AnimationManager<UI::LinkedList, DS::LinkedList>;

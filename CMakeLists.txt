@@ -21,6 +21,7 @@ add_executable(DataVisApp
     src/ds/red-black-tree.cpp
     src/ds/bellman-ford.cpp
     src/ds/hash-map.cpp
+    src/ds/linked-list.cpp
 
     src/components/binary-tree.cpp
     src/components/button.cpp
@@ -31,6 +32,7 @@ add_executable(DataVisApp
     src/components/code-highlighter.cpp
     src/components/graph.cpp
     src/components/hash-map.cpp
+    src/components/linked-list.cpp
 
     src/core/utility.cpp
 
@@ -43,6 +45,7 @@ add_executable(DataVisApp
     src/scenes/prim-scene.cpp
     src/scenes/rb-tree-scene.cpp
     src/scenes/hash-map-scene.cpp
+    src/scenes/linked-list-scene.cpp
 )
 
 # 6. Link SFML to your app

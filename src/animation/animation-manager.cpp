@@ -359,7 +359,7 @@ void AnimationManager<UI::BinaryTree, DS::RedBlackTree>::initCallbackFunctions()
     });
 }
 
-// ========== TEMPLATE-SPECIFIC FUNCTIONS: AnimationManager<UI::BinaryTree, DS::RedBlackTree> ==========
+// ========== TEMPLATE-SPECIFIC FUNCTIONS: AnimationManager<UI::HashMap, DS::HashMap> ==========
 
 template<>
 void AnimationManager<UI::HashMap, DS::HashMap>::initCallbackFunctions() {
@@ -404,6 +404,50 @@ void AnimationManager<UI::HashMap, DS::HashMap>::initCallbackFunctions() {
     stateLogic[0].setCallbackHighlightCode([&] (int row) {
         this->createAnimationEvent(
             std::make_unique<CodeHighlighting<UI::HashMap>>(row)
+        );
+    });
+}
+
+// ========== TEMPLATE-SPECIFIC FUNCTIONS: AnimationManager<UI::LinkedList, DS::LinkedList> ==========
+
+template<>
+void AnimationManager<UI::LinkedList, DS::LinkedList>::initCallbackFunctions() {
+        stateLogic[0].setCallbackCreateNode([&] (int value, bool isRoot) {
+        this->createAnimationEvent(
+            std::make_unique<LinkedListCreateNode>(value, isRoot)
+        );
+    });
+    stateLogic[0].setCallbackDeleteNode([&] (int nodeID) {
+        this->createAnimationEvent(
+            std::make_unique<LinkedListDeleteNode>(nodeID)
+        );
+    });
+    stateLogic[0].setCallbackAddEdge([&] (int fromNode, int toNode) {
+        this->createAnimationEvent(
+            std::make_unique<LinkedListAddEdge>(fromNode, toNode)
+        );
+    });
+    stateLogic[0].setCallbackHighlightNode([&] (int nodeID) {
+        this->createAnimationEvent(
+            std::make_unique<LinkedListHighlightNode>(nodeID)
+        );
+    });
+    stateLogic[0].setCallbackApplyAnimation([&]() {
+        this->nextStep();
+    });
+    stateLogic[0].setCallbackCompleteAnimation([&]() {
+        this->createAnimationEvent(
+            std::make_unique<CompleteAnimation<UI::LinkedList>>()
+        );
+    });
+    stateLogic[0].setCallbackLoadCode([&] (const std::vector<std::string> &vec) {
+        this->createAnimationEvent(
+            std::make_unique<CodeHighlightLoadCode<UI::LinkedList>>(vec)
+        );
+    });
+    stateLogic[0].setCallbackHighlightCode([&] (int row) {
+        this->createAnimationEvent(
+            std::make_unique<CodeHighlighting<UI::LinkedList>>(row)
         );
     });
 }

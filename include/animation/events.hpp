@@ -4,6 +4,7 @@
 #include "../components/code-highlighter.hpp"
 #include "../components/graph.hpp"
 #include "../components/hash-map.hpp"
+#include "../components/linked-list.hpp"
 
 #include "../../assets/theme.hpp"
 
@@ -235,6 +236,40 @@ public:
     int apply (UI::HashMap &ui, UI::CodeHighlighter &code) override;
 };
 
+// ========== LINKED-LIST ==========
+class LinkedListCreateNode : public AnimationEvent<UI::LinkedList> {
+private:
+    int value;
+    bool isHead;
+public:
+    LinkedListCreateNode (int value, bool isHead);
+    int apply (UI::LinkedList &ui, UI::CodeHighlighter &code) override;
+};
+
+class LinkedListDeleteNode : public AnimationEvent<UI::LinkedList> {
+private:
+    int nodeID;
+public:
+    LinkedListDeleteNode (int nodeID);
+    int apply (UI::LinkedList &ui, UI::CodeHighlighter &code) override;
+};
+
+class LinkedListAddEdge : public AnimationEvent<UI::LinkedList> {
+private:
+    int fromID, toID;
+public:
+    LinkedListAddEdge (int fromID, int toID);
+    int apply (UI::LinkedList &ui, UI::CodeHighlighter &code) override;
+};
+
+class LinkedListHighlightNode : public AnimationEvent<UI::LinkedList> {
+private:
+    int nodeID;
+public:
+    LinkedListHighlightNode (int nodeID);
+    int apply (UI::LinkedList &ui, UI::CodeHighlighter &code) override;
+};
+
 // ========== COMMON ==========
 
 template <typename TypeUI>
@@ -261,9 +296,8 @@ public:
 template <typename TypeUI>
 class CompleteAnimation: public AnimationEvent<TypeUI> {
 public:
-CompleteAnimation();
-
-int apply (TypeUI &ui, UI::CodeHighlighter &code) override;
+    CompleteAnimation();
+    int apply (TypeUI &ui, UI::CodeHighlighter &code) override;
 };
 
 // ========== TEMPLATE CLASSES ==========
@@ -271,11 +305,14 @@ int apply (TypeUI &ui, UI::CodeHighlighter &code) override;
 template class CodeHighlightLoadCode<UI::BinaryTree>;
 template class CodeHighlightLoadCode<UI::Graph>;
 template class CodeHighlightLoadCode<UI::HashMap>;
+template class CodeHighlightLoadCode<UI::LinkedList>;
 
 template class CodeHighlighting<UI::BinaryTree>;
 template class CodeHighlighting<UI::Graph>;
 template class CodeHighlighting<UI::HashMap>;
+template class CodeHighlighting<UI::LinkedList>;
 
 template class CompleteAnimation<UI::BinaryTree>;
 template class CompleteAnimation<UI::Graph>;
 template class CompleteAnimation<UI::HashMap>;
+template class CompleteAnimation<UI::LinkedList>;
