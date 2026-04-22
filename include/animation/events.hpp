@@ -270,9 +270,12 @@ int apply (TypeUI &ui, UI::CodeHighlighter &code) override;
 
 template class CodeHighlightLoadCode<UI::BinaryTree>;
 template class CodeHighlightLoadCode<UI::Graph>;
+template class CodeHighlightLoadCode<UI::HashMap>;
 
 template class CodeHighlighting<UI::BinaryTree>;
 template class CodeHighlighting<UI::Graph>;
+template class CodeHighlighting<UI::HashMap>;
 
 template class CompleteAnimation<UI::BinaryTree>;
 template class CompleteAnimation<UI::Graph>;
+template class CompleteAnimation<UI::HashMap>;

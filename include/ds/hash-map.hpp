@@ -2,6 +2,7 @@
 #include <vector>
 #include <functional>
 #include <string>
+#include <iostream>
 
 #include "../core/code-snippets.hpp"
 

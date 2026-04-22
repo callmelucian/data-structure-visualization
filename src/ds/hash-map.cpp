@@ -32,7 +32,8 @@ void HashMap::copyFrom (const HashMap &other) {
     this->callbackHighlightCode = other.callbackHighlightCode;
 
     rootNode.resize(other.rootNode.size());
-    for (Node* &ptr : rootNode) ptr = copyLinkedList(ptr); 
+    for (int i = 0; i < rootNode.size(); i++)
+        rootNode[i] = copyLinkedList(other.rootNode[i]);
 }
 
 HashMap::Node* HashMap::copyLinkedList (Node* ptr) {
@@ -60,7 +61,8 @@ void HashMap::insert (int value) {
     if (rootNode[value % 17] == nullptr) {
         callbackHighlightCode(1);
         callbackCreateNode(value);
-        callbackHighlightCode(nodeCounter);
+        callbackHighlightNode(nodeCounter);
+        callbackAttachRoot(value % 17, nodeCounter);
         callbackApplyAnimation();
         rootNode[value % 17] = new Node(value, nodeCounter++);
     }
@@ -86,6 +88,7 @@ void HashMap::insert (int value) {
 
         callbackHighlightCode(6);
         callbackCreateNode(value);
+        callbackHighlightNode(nodeCounter);
         callbackAddEdge(getVisualID(ptr), nodeCounter);
         callbackApplyAnimation();
         ptr->pNext = new Node(value, nodeCounter++);
@@ -106,10 +109,9 @@ void HashMap::erase (int eraseKey) {
     if (rootNode[eraseKey % 17] == nullptr) {
         callbackHighlightCode(1);
         callbackApplyAnimation();
-        return;
     }
 
-    if (rootNode[eraseKey % 17]->value == eraseKey) {
+    else if (rootNode[eraseKey % 17]->value == eraseKey) {
         callbackHighlightCode(2);
         Node* tmp = rootNode[eraseKey % 17];
         callbackHighlightNode(getVisualID(tmp));

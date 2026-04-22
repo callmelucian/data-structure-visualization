@@ -255,11 +255,12 @@ void drawEdge(sf::RenderTarget &target, sf::RenderStates states, const AnimatedN
     // get centers of the endpoints
     sf::Vector2f fromCenter = from->getPosition();
     sf::Vector2f toCenter = to->getPosition();
-    sf::Vector2f shift = (toCenter - fromCenter) * from->getRadius() / distance(fromCenter, toCenter);
+    sf::Vector2f shiftFrom = (toCenter - fromCenter) * from->getRadius() / distance(fromCenter, toCenter);
+    sf::Vector2f shiftTo = (fromCenter - toCenter) * to->getRadius() / distance(fromCenter, toCenter);
 
     // pre calculations
-    sf::Vector2f start = fromCenter + shift;
-    sf::Vector2f end = toCenter - shift;
+    sf::Vector2f start = fromCenter + shiftFrom;
+    sf::Vector2f end = toCenter + shiftTo;
     sf::Vector2f delta = end - start;
     float dist = distance(start, end);
     float angle = std::atan2(delta.y, delta.x);
@@ -280,7 +281,7 @@ void drawEdge(sf::RenderTarget &target, sf::RenderStates states, const AnimatedN
         arrowhead.setPoint(1, {-arrowSize, -arrowSize * 0.8f});
         arrowhead.setPoint(2, {-arrowSize,  arrowSize * 0.8f});
         
-        arrowhead.setPosition(toCenter);
+        arrowhead.setPosition(end);
         arrowhead.setRotation(sf::radians(angle));
         arrowhead.setFillColor(sf::Color::Black);
         target.draw(arrowhead, states);

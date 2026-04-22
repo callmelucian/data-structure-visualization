@@ -1,16 +1,17 @@
 #include "../../include/components/hash-map.hpp"
 
 namespace HashConstant {
-    const float idealDeltaWidth = 100.f;
-    const float idealDeltaHeight = 200.f;
+    const float idealDeltaWidth = 80.f;
+    const float idealDeltaHeight = 100.f;
     const int hashConstant = 17;
 };
 
 namespace UI {
 
 HashMap::HashMap() : rootNode(HashConstant::hashConstant), rootLink(HashConstant::hashConstant, -1) {
-    for (AnimatedNode* ptr : rootNode)
-        ptr = new AnimatedNode("", 15.0F);
+    for (int i = 0; i < HashConstant::hashConstant; i++)
+        rootNode[i] = new AnimatedNode(std::to_string(i), 15.0F);
+    calculatePositions();
 }
 
 HashMap::HashMap (const HashMap &other) : UI::Base(other) {
@@ -35,14 +36,14 @@ void HashMap::copyFrom (const HashMap &other) {
     this->rootLink = other.rootLink;
     this->nodeLink = other.nodeLink;
     this->isDeleted = other.isDeleted;
-    this->targetOrigin = targetOrigin;
+    this->targetOrigin = other.targetOrigin;
     this->highlighter = other.highlighter;
 
     rootNode.reserve(other.rootNode.size());
     nodeUI.reserve(other.nodeUI.size());
 
     for (int i = 0; i < other.rootNode.size(); i++) {
-        if (other.rootNode[i]) rootNode.emplace_back(*other.rootNode[i]);
+        if (other.rootNode[i]) rootNode.push_back(new AnimatedNode(*other.rootNode[i]));
         else rootNode.push_back(nullptr);
     }
     for (int i = 0; i < other.nodeUI.size(); i++) {
@@ -57,7 +58,7 @@ void HashMap::copyFrom (const HashMap &other) {
 }
 
 void HashMap::createNode (int value) {
-    nodeUI.emplace_back(std::to_string(value));
+    nodeUI.push_back(new AnimatedNode(std::to_string(value)));
     nodeLink.push_back(-1);
     isDeleted.push_back(false);
 }
@@ -106,7 +107,7 @@ void HashMap::calculatePositions (float maxWidth, float maxHeight) {
     // set position
     for (int slot = 0; slot < HashConstant::hashConstant; slot++) {
         rootNode[slot]->setTargetPosition(slot * deltaWidth, 0);
-        for (int curNode = rootLink[slot], counter = 0; curNode != -1; curNode = nodeLink[curNode], counter++)
+        for (int curNode = rootLink[slot], counter = 1; curNode != -1; curNode = nodeLink[curNode], counter++)
             nodeUI[curNode]->setTargetPosition(slot * deltaWidth, counter * deltaHeight);
     }
 
@@ -134,6 +135,7 @@ void HashMap::setTargetOrigin (float x, float y) {
 }
 
 void HashMap::timePropagation (float deltaTime) {
+    // std::cerr << getOrigin() << " " << targetOrigin << std::endl;
     for (AnimatedNode* ptr : rootNode) ptr->timePropagation(deltaTime);
     for (AnimatedNode* ptr : nodeUI) ptr->timePropagation(deltaTime);
     highlighter.timePropagation(deltaTime);
@@ -183,6 +185,13 @@ void HashMap::draw (sf::RenderTarget &target, sf::RenderStates states) const {
         target.draw(*ptr, states);
     for (int nodeID = 0; nodeID < nodeUI.size(); nodeID++)
         if (!isDeleted[nodeID]) target.draw(*nodeUI[nodeID], states);
+
+
+    sf::CircleShape debugDot(2.f);
+    debugDot.setFillColor(sf::Color::Red);
+    debugDot.setOrigin({2.f, 2.f}); 
+    debugDot.setPosition(getOrigin());
+    target.draw(debugDot, states);
     
     // draw highlighting circle
     target.draw(highlighter, states);

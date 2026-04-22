@@ -373,9 +373,9 @@ void AnimationManager<UI::HashMap, DS::HashMap>::initCallbackFunctions() {
             std::make_unique<HashMapDeleteNode>(nodeID)
         );
     });
-    stateLogic[0].setCallbackAddEdge([&] (int fromNode, int toNode, int weight) {
+    stateLogic[0].setCallbackAddEdge([&] (int fromNode, int toNode) {
         this->createAnimationEvent(
-            std::make_unique<HashMapAddEdge>(fromNode, toNode, weight)
+            std::make_unique<HashMapAddEdge>(fromNode, toNode)
         );
     });
     stateLogic[0].setCallbackAttachRoot([&] (int slot, int nodeID) {

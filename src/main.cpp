@@ -7,6 +7,7 @@
 #include "../include/scenes/dijkstra-scene.hpp"
 #include "../include/scenes/prim-scene.hpp"
 #include "../include/scenes/rb-tree-scene.hpp"
+#include "../include/scenes/hash-map-scene.hpp"
 
 int main() {
     // anti aliasing
@@ -25,7 +26,7 @@ int main() {
     window.setFramerateLimit(60);
     SceneManager manager;
 
-    manager.changeScene(std::make_unique<RBTreeScene>(window));
+    manager.changeScene(std::make_unique<HashMapScene>(window));
     manager.runMainLoop(window);
 
     return 0;
