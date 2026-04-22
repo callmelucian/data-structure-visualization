@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <functional>
+#include <utility>
 
 // ui components
 #include "ui-base.hpp"
@@ -17,7 +18,6 @@
 namespace LinkedListConstant {
     extern const float idealDeltaWidth;
     extern const float idealDeltaHeight;
-    extern const int hashConstant;
 };
 
 namespace UI {
@@ -25,9 +25,10 @@ namespace UI {
 class LinkedList : public UI::Base {
 private:
     std::vector<AnimatedNode*> nodeUI;
-    UI::HighlightCircle<AnimatedNode> highlighter;
     std::vector<int> nodeLink;
+    std::vector<bool> isDeleted;
     sf::Vector2f targetOrigin;
+    UI::HighlightCircle<AnimatedNode> highlighter;
     int headNode;
 
 public:
@@ -42,12 +43,15 @@ public:
     void addEdge (int fromNode, int toNode);
     void setHead (int nodeID);
     void calculatePositions (float maxWidth = Setting::focusX, float maxHeight = Setting::focusY);
-    void calculateOrigin();
+    void updateOrigin();
     void setTargetOrigin (float x, float y);
     void setHighlight (int nodeID);
     void copyPosition (const LinkedList &other);
+    void copyFrom (const LinkedList &other);
+    void timePropagation (float deltaTime);
     
     // overrides
+    void draw (sf::RenderTarget &target, sf::RenderStates states) const override;
     void handleMousePress(const sf::Vector2f &mousePos) override;
     void handleMouseMovement(const sf::Vector2f &mousePos) override;
     void handleMouseRelease(const sf::Vector2f &mousePos) override;

@@ -21,9 +21,10 @@ private:
     int nodeCounter;
 
     std::function<void(int,bool)> callbackCreateNode;
-    std::function<void(int)> callbackDeletedNode;
+    std::function<void(int)> callbackDeleteNode;
     std::function<void(int,int)> callbackAddEdge;
-    std::function<void(int)> callbackHiglightNode;
+    std::function<void(int)> callbackHighlightNode;
+    std::function<void(int)> callbackSetHead;
     std::function<void()> callbackApplyAnimation;
     std::function<void()> callbackCompleteAnimation;
     std::function<void(const std::vector<std::string>&)> callbackLoadCode;
@@ -38,6 +39,7 @@ public:
     LinkedList();
     LinkedList (const LinkedList &other);
     ~LinkedList();
+    LinkedList& operator= (const LinkedList &other);
 
     void setCallbackCreateNode(auto func) {
         callbackCreateNode = std::move(func);
@@ -53,6 +55,10 @@ public:
 
     void setCallbackHighlightNode(auto func) {
         callbackHighlightNode = std::move(func);
+    }
+
+    void setCallbackSetHead (auto func) {
+        callbackSetHead = std::move(func);
     }
 
     void setCallbackApplyAnimation(auto func) {
@@ -72,7 +78,7 @@ public:
     }
 
     void appendElement (int insertKey);
-    int erase (int eraseKey);
+    void erase (int eraseKey);
     void insert (int targetKey, int insertKey);
     int find (int targetKey);
 };

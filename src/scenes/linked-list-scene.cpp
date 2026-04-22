@@ -56,7 +56,7 @@ LinkedListScene::LinkedListScene(const sf::RenderWindow &window) :
             return;
         }
         treeUI.transformLogic([&](DS::LinkedList &llist) {
-            return llist.append(value), true;
+            return llist.appendElement(value), true;
         });
     });
     insertButton.setCallback([&]() {

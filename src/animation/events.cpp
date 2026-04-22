@@ -193,6 +193,36 @@ int HashMapHighlightNode::apply (UI::HashMap &ui, UI::CodeHighlighter &code) {
     return ui.setHighlight(nodeID), true;
 }
 
+// ========== LINKED LIST CREATE NODE ========== //
+LinkedListCreateNode::LinkedListCreateNode (const std::string &s, bool isHead) : value(s), isHead(isHead) {}
+int LinkedListCreateNode::apply (UI::LinkedList &ui, UI::CodeHighlighter &code) {
+    return ui.createNode(value, isHead), true;
+}
+
+// ========== LINKED LIST DELETE NODE ========== //
+LinkedListDeleteNode::LinkedListDeleteNode (int nodeID) : nodeID(nodeID) {}
+int LinkedListDeleteNode::apply (UI::LinkedList &ui, UI::CodeHighlighter &code) {
+    return ui.deleteNode(nodeID), true;
+}
+
+// ========== LINKED LIST ADD EDGE ========== //
+LinkedListAddEdge::LinkedListAddEdge (int fromID, int toID) : fromID(fromID), toID(toID) {}
+int LinkedListAddEdge::apply (UI::LinkedList &ui, UI::CodeHighlighter &code) {
+    return ui.addEdge(fromID, toID), true;
+}
+
+// ========== LINKED LIST HIGHLIGHT NODE ========== //
+LinkedListHighlightNode::LinkedListHighlightNode (int nodeID) : nodeID(nodeID) {}
+int LinkedListHighlightNode::apply (UI::LinkedList &ui, UI::CodeHighlighter &code) {
+    return ui.setHighlight(nodeID), true;
+}
+
+// ========== LINKED LIST HIGHLIGHT NODE ========== //
+LinkedListSetHead::LinkedListSetHead (int nodeID) : nodeID(nodeID) {}
+int LinkedListSetHead::apply (UI::LinkedList &ui, UI::CodeHighlighter &code) {
+    return ui.setHead(nodeID), true;
+}
+
 // ========== COMPLETE ANIMATION ========== //
 
 template <typename TypeUI>

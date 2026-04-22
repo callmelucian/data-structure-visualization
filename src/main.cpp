@@ -8,6 +8,7 @@
 #include "../include/scenes/prim-scene.hpp"
 #include "../include/scenes/rb-tree-scene.hpp"
 #include "../include/scenes/hash-map-scene.hpp"
+#include "../include/scenes/linked-list-scene.hpp"
 
 int main() {
     // anti aliasing
@@ -26,7 +27,7 @@ int main() {
     window.setFramerateLimit(60);
     SceneManager manager;
 
-    manager.changeScene(std::make_unique<HashMapScene>(window));
+    manager.changeScene(std::make_unique<LinkedListScene>(window));
     manager.runMainLoop(window);
 
     return 0;

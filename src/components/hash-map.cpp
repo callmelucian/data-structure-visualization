@@ -185,13 +185,6 @@ void HashMap::draw (sf::RenderTarget &target, sf::RenderStates states) const {
         target.draw(*ptr, states);
     for (int nodeID = 0; nodeID < nodeUI.size(); nodeID++)
         if (!isDeleted[nodeID]) target.draw(*nodeUI[nodeID], states);
-
-
-    sf::CircleShape debugDot(2.f);
-    debugDot.setFillColor(sf::Color::Red);
-    debugDot.setOrigin({2.f, 2.f}); 
-    debugDot.setPosition(getOrigin());
-    target.draw(debugDot, states);
     
     // draw highlighting circle
     target.draw(highlighter, states);

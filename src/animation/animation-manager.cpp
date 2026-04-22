@@ -414,7 +414,7 @@ template<>
 void AnimationManager<UI::LinkedList, DS::LinkedList>::initCallbackFunctions() {
         stateLogic[0].setCallbackCreateNode([&] (int value, bool isRoot) {
         this->createAnimationEvent(
-            std::make_unique<LinkedListCreateNode>(value, isRoot)
+            std::make_unique<LinkedListCreateNode>(std::to_string(value), isRoot)
         );
     });
     stateLogic[0].setCallbackDeleteNode([&] (int nodeID) {
@@ -430,6 +430,11 @@ void AnimationManager<UI::LinkedList, DS::LinkedList>::initCallbackFunctions() {
     stateLogic[0].setCallbackHighlightNode([&] (int nodeID) {
         this->createAnimationEvent(
             std::make_unique<LinkedListHighlightNode>(nodeID)
+        );
+    });
+    stateLogic[0].setCallbackSetHead([&] (int nodeID) {
+        this->createAnimationEvent(
+            std::make_unique<LinkedListSetHead>(nodeID)
         );
     });
     stateLogic[0].setCallbackApplyAnimation([&]() {

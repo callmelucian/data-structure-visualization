@@ -239,10 +239,10 @@ public:
 // ========== LINKED-LIST ==========
 class LinkedListCreateNode : public AnimationEvent<UI::LinkedList> {
 private:
-    int value;
+    std::string value;
     bool isHead;
 public:
-    LinkedListCreateNode (int value, bool isHead);
+    LinkedListCreateNode (const std::string &s, bool isHead);
     int apply (UI::LinkedList &ui, UI::CodeHighlighter &code) override;
 };
 
@@ -267,6 +267,14 @@ private:
     int nodeID;
 public:
     LinkedListHighlightNode (int nodeID);
+    int apply (UI::LinkedList &ui, UI::CodeHighlighter &code) override;
+};
+
+class LinkedListSetHead : public AnimationEvent<UI::LinkedList> {
+private:
+    int nodeID;
+public:
+    LinkedListSetHead (int nodeID);
     int apply (UI::LinkedList &ui, UI::CodeHighlighter &code) override;
 };
 

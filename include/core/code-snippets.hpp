@@ -14,6 +14,16 @@ inline const std::vector<std::string> HASH_MAP_INSERT = {
     "    ptr->pNext = new node"
 };
 
+inline const std::vector<std::string> LINKED_LIST_INSERT = {
+    "void insertValue (int value):",
+    "    if empty: head = new node",
+    "    else:",
+    "        ptr = head",
+    "        while ptr->pNext != nullptr:",
+    "            ptr = ptr->pNext",
+    "    ptr->pNext = new node"
+};
+
 inline const std::vector<std::string> HASH_MAP_ERASE = {
     "void eraseValue (int value):",
     "    if root[value % 17] is empty: return",
@@ -25,6 +35,18 @@ inline const std::vector<std::string> HASH_MAP_ERASE = {
     "            ptr = ptr->pNext",
     "        if ptr->pNext != nulltr:",
     "            delete ptr->pNext and make new link"
+};
+
+inline const std::vector<std::string> LINKED_LIST_ERASE = {
+    "void eraseValue (int value):",
+    "    if empty: return",
+    "    if head->value == value: delete head",
+    "    else:",
+    "        ptr = head",
+    "        while ptr->pNext != nullptr and ptr->pNext->value != value:",
+    "            ptr = ptr->pNext",
+    "        if ptr->pNext != nulltr:",
+    "            delete ptr->pNext"
 };
 
 inline const std::vector<std::string> AVL_TREE_INSERT = {
