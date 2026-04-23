@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <windows.h>
 #include <fstream>
 #include <cmath>
 #include <functional>
@@ -34,21 +35,7 @@ extern std::mt19937 rng;
 float randFloat(float L, float R);
 int randInt(int L, int R);
 
-// template <float DurationSeconds>
-// class CountDownClock {
-// public:
-//     CountDownClock();
-
-//     sf::Time getRemainingTime() const;
-//     bool isFinished() const;
-//     void restart();
-
-// private:
-//     sf::Clock m_clock;
-//     sf::Time m_startTime;
-// };
-
-// template class CountDownClock<Setting::animationDelay>;
+std::string openFileDialog();
 
 class CountDownClock {
 private:

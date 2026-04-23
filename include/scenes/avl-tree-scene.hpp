@@ -23,7 +23,7 @@ class AVLTreeScene : public Scene {
 private:
     UI::Button backButton, settingButton;
 
-    UI::Button insertButton, eraseButton;
+    UI::Button insertButton, eraseButton, fileButton;
     UI::TextInputField insertField, eraseField;
     AnimationManager<UI::BinaryTree, DS::AVLTree> treeUI;
 

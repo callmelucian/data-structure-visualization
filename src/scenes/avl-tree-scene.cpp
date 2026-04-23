@@ -2,7 +2,7 @@
 
 AVLTreeScene::AVLTreeScene (const sf::RenderWindow &window, SceneManager &manager) :
     Scene(window, manager), backButton(150, 30), settingButton(150, 30),
-    insertButton(100, 30), eraseButton(100, 30),
+    insertButton(100, 30), eraseButton(100, 30), fileButton(100, 30),
     insertField(150, 30), eraseField(150, 30),
     treeUI(UI::BinaryTree()), playButton(50, 30),
     prevStepButton(50, 30), prevOperationButton(50, 30),
@@ -29,6 +29,8 @@ AVLTreeScene::AVLTreeScene (const sf::RenderWindow &window, SceneManager &manage
     insertButton.setCharacterSize(20);
     eraseButton.setString("ERASE");
     eraseButton.setCharacterSize(20);
+    fileButton.setString("FILE");
+    fileButton.setCharacterSize(20);
 
     prevStepButton.setString("<");
     prevStepButton.setCharacterSize(25);
@@ -46,6 +48,7 @@ AVLTreeScene::AVLTreeScene (const sf::RenderWindow &window, SceneManager &manage
     insertField.setPosition({115, 850});
     eraseButton.setPosition({525, 850});
     eraseField.setPosition({400, 850});
+    fileButton.setPosition({660, 850});
     
     prevOperationButton.setPosition({65, 800});
     prevStepButton.setPosition({125, 800});
@@ -103,6 +106,10 @@ AVLTreeScene::AVLTreeScene (const sf::RenderWindow &window, SceneManager &manage
         eraseField.releaseText();
     });
 
+    fileButton.setCallback([&]() {
+        std::cerr << "Read file " << openFileDialog() << std::endl;
+    });
+
     // set callback functions: previous/next buttons
     prevOperationButton.setCallback([&]() {
         treeUI.previousCompleteState();
@@ -135,6 +142,7 @@ void AVLTreeScene::handleEvent(sf::RenderWindow &window, const std::optional<sf:
     eraseField.handleTextEvents(window, event);
     eraseButton.handleMouseEvents(window, event);
 
+    fileButton.handleMouseEvents(window, event);
     prevOperationButton.handleMouseEvents(window, event);
     prevStepButton.handleMouseEvents(window, event);
     nextOperationButton.handleMouseEvents(window, event);
@@ -162,4 +170,5 @@ void AVLTreeScene::draw(sf::RenderWindow &window) {
     window.draw(nextOperationButton);
     window.draw(nextStepButton);
     window.draw(playButton);
+    window.draw(fileButton);
 }

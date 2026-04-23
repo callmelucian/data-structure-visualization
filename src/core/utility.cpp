@@ -61,8 +61,29 @@ int randInt (int L, int R) {
     return std::uniform_int_distribution<int>(L, R)(rng);
 }
 
-// ========== COUNTDOWN CLOCK ==========
+std::string openFileDialog() {
+    OPENFILENAMEA ofn;       // Common dialog box structure
+    char szFile[260] = { 0 }; // Buffer for file name
 
+    ZeroMemory(&ofn, sizeof(ofn));
+    ofn.lStructSize = sizeof(ofn);
+    ofn.hwndOwner = NULL;
+    ofn.lpstrFile = szFile;
+    ofn.nMaxFile = sizeof(szFile);
+    ofn.lpstrFilter = "Text Files\0*.txt\0All Files\0*.*\0";
+    ofn.nFilterIndex = 1;
+    ofn.lpstrFileTitle = NULL;
+    ofn.nMaxFileTitle = 0;
+    ofn.lpstrInitialDir = NULL;
+    ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+
+    if (GetOpenFileNameA(&ofn) == TRUE) {
+        return std::string(szFile);
+    }
+    return "";
+}
+
+// ========== COUNTDOWN CLOCK ==========
 CountDownClock::CountDownClock() : duration(0.0f), startTime(sf::Time::Zero) {
     internalClock.restart();
 }
