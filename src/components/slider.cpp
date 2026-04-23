@@ -22,14 +22,14 @@ Slider::Slider(float width, float height) :
     hovered.setFillColor(hoveredColor);
 
     // setup filled bar
-    filled.setSize({0.f, height});
+    filled.setSize({width / 2.f, height});
     filled.setFillColor(Theme::getPressedButton());
 
     // setup annotation
     annotation.setFillColor(Theme::getPrimary());
     annotation.setAutoCharacterSize(width, height);
     annotation.setPosition({width / 2.f, height / 2.f});
-    setString("0%");
+    setString("50%");
     
     // center origin
     setOrigin({width / 2.f, height / 2.f});

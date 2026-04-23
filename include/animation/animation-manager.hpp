@@ -45,7 +45,7 @@ private:
     std::function<void(bool)> callbackPlayPause;
 
     // countdown clock
-    CountDownClock<Setting::animationDelay> internalClock;
+    CountDownClock clock;
 
 public:
     /**

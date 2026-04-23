@@ -13,7 +13,7 @@ SettingScene::SettingScene (const sf::RenderWindow &window, SceneManager &manage
         Setting::screenHeight / 2.f
     });
     slider.setChangeValueFunction([&] (float value) {
-        std::cerr << "Slider value: " << value << std::endl;
+        Setting::animationCoefficient = std::max(1.f, value * 100.f);
     });
     slider.setDisplayValueFunction(floatToPercentage);
 }

@@ -28,7 +28,7 @@ void HighlightCircle<NodeType>::timePropagation (float deltaTime) {
         if (magnitude(displacement) < HIGHLIGHT_SMALL_DISTANCE)
             setPosition(nodeObserver->getPosition());
         else {
-            sf::Vector2f dVelo = displacement * Setting::animationFactor * deltaTime * 5.f;
+            sf::Vector2f dVelo = displacement * Setting::animationFactor() * deltaTime * 5.f;
             setPosition(getPosition() + dVelo);
         }
     }

@@ -204,7 +204,7 @@ void Graph::timePropagation (float deltaTime, float maxWidth, float maxHeight) {
         sf::Vector2f displacement = targetOrigin - getOrigin();
         if (magnitude(displacement) < eps) setOrigin(targetOrigin);
         else {
-            sf::Vector2f newPosition = getOrigin() + displacement * Setting::animationFactor * deltaTime;
+            sf::Vector2f newPosition = getOrigin() + displacement * Setting::animationFactor() * deltaTime;
             setOrigin(newPosition);
         }
     }

@@ -123,12 +123,13 @@ bool AnimationManager<TypeUI, TypeLogic>::nextCompleteState (bool playing) {
 
 template <typename TypeUI, typename TypeLogic>
 void AnimationManager<TypeUI, TypeLogic>::timePropagation (float deltaTime) {
+    clock.changeDuration(Setting::animationDelay());
     while (eventIDQueue.size()) popAnimation();
-    if (isPlaying && internalClock.isFinished()) {
+    if (isPlaying && clock.isFinished()) {
         if (stateUIIterator + 1 == stateUI.size()) pause();
         else {
             nextState(true);
-            internalClock.restart();
+            clock.restart();
         }
     }
     getCurrentUI().timePropagation(deltaTime);

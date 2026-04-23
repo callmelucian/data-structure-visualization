@@ -121,7 +121,7 @@ void AnimatedNode::timePropagation(float deltaTime) {
     sf::Vector2f displacement = targetPosition - nodeUI.getPosition();
     if (magnitude(displacement) < eps) nodeUI.setPosition(targetPosition);
     else {
-        sf::Vector2f newPosition = nodeUI.getPosition() + displacement * Setting::animationFactor * deltaTime;
+        sf::Vector2f newPosition = nodeUI.getPosition() + displacement * Setting::animationFactor() * deltaTime;
         nodeUI.setPosition(newPosition);
     }
 }

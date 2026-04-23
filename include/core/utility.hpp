@@ -5,6 +5,7 @@
 #include <functional>
 #include <string>
 #include <random>
+#include <algorithm>
 
 #include "global-setting.hpp"
 
@@ -33,18 +34,32 @@ extern std::mt19937 rng;
 float randFloat(float L, float R);
 int randInt(int L, int R);
 
-template <float DurationSeconds>
+// template <float DurationSeconds>
+// class CountDownClock {
+// public:
+//     CountDownClock();
+
+//     sf::Time getRemainingTime() const;
+//     bool isFinished() const;
+//     void restart();
+
+// private:
+//     sf::Clock m_clock;
+//     sf::Time m_startTime;
+// };
+
+// template class CountDownClock<Setting::animationDelay>;
+
 class CountDownClock {
-public:
-    CountDownClock();
+private:
+    sf::Clock internalClock;
+    sf::Time startTime;
+    float duration;
 
     sf::Time getRemainingTime() const;
+public:
+    CountDownClock();
     bool isFinished() const;
     void restart();
-
-private:
-    sf::Clock m_clock;
-    sf::Time m_startTime;
+    void changeDuration (float newDuration);
 };
-
-template class CountDownClock<Setting::animationDelay>;

@@ -63,27 +63,30 @@ int randInt (int L, int R) {
 
 // ========== COUNTDOWN CLOCK ==========
 
-template <float DurationSeconds>
-CountDownClock<DurationSeconds>::CountDownClock() 
-    : m_startTime(sf::seconds(-DurationSeconds)) {}
-
-template <float DurationSeconds>
-sf::Time CountDownClock<DurationSeconds>::getRemainingTime() const {
-    sf::Time elapsed = m_clock.getElapsedTime() - m_startTime;
-    sf::Time total = sf::seconds(DurationSeconds);
-
-    if (elapsed >= total) {
-        return sf::Time::Zero;
-    }
-    return total - elapsed;
+CountDownClock::CountDownClock() : duration(0.0f), startTime(sf::Time::Zero) {
+    internalClock.restart();
 }
 
-template <float DurationSeconds>
-bool CountDownClock<DurationSeconds>::isFinished() const {
-    return (m_clock.getElapsedTime() - m_startTime).asSeconds() >= DurationSeconds;
+sf::Time CountDownClock::getRemainingTime() const {
+    sf::Time totalElapsed = internalClock.getElapsedTime() + startTime;
+    sf::Time totalLimit = sf::seconds(duration);
+    if (totalElapsed >= totalLimit) return sf::Time::Zero;
+    return totalLimit - totalElapsed;
 }
 
-template <float DurationSeconds>
-void CountDownClock<DurationSeconds>::restart() {
-    m_startTime = m_clock.getElapsedTime();
+bool CountDownClock::isFinished() const {
+    return getRemainingTime() <= sf::Time::Zero;
+}
+
+void CountDownClock::restart() {
+    internalClock.restart();
+    startTime = sf::Time::Zero;
+}
+
+void CountDownClock::changeDuration(float newDuration) {
+    float remainingSeconds = getRemainingTime().asSeconds();
+    if (remainingSeconds > newDuration) remainingSeconds = newDuration;
+    duration = newDuration;
+    internalClock.restart();
+    startTime = sf::seconds(duration - remainingSeconds);
 }

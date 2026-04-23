@@ -35,6 +35,7 @@ add_executable(DataVisApp
     src/components/linked-list.cpp
 
     src/core/utility.cpp
+    src/core/global-setting.cpp
 
     src/animation/animation-manager.cpp
     src/animation/events.cpp
