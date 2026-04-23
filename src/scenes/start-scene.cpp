@@ -23,7 +23,7 @@ StartScene::StartScene (const sf::RenderWindow &window, SceneManager &manager) :
     toLinkedList.setPosition({Setting::screenWidth / 2.f, Setting::screenHeight / 2.f + 50});
     toLinkedList.setCallback([&]() { manager.changeScene(4); });
 
-    toPrim.setString("AVL TREE");
+    toPrim.setString("MST (PRIM)");
     toPrim.setCharacterSize(30);
     toPrim.setPosition({Setting::screenWidth / 2.f, Setting::screenHeight / 2.f + 150});
     toPrim.setCallback([&]() { manager.changeScene(5); });

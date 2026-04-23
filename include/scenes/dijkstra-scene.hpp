@@ -19,6 +19,8 @@
 
 class DijkstraScene : public Scene {
 private:
+    UI::Button backButton, settingButton;
+    
     AnimationManager<UI::Graph, DS::DijkstraAlgorithm> ui;
     UI::TextInputField editField, runField;
     UI::Button insertButton, editButton, deleteButton, runButton;

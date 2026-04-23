@@ -19,15 +19,18 @@
 
 class PrimScene : public Scene {
 private:
+    UI::Button backButton, settingButton;
+    
     AnimationManager<UI::Graph, DS::DijkstraAlgorithm> ui;
     UI::TextInputField editField, runField;
     UI::Button insertButton, editButton, deleteButton, runButton;
-
+    
+    UI::Button playButton;
     UI::Button prevStepButton, prevOperationButton;
     UI::Button nextStepButton, nextOperationButton;
 
 public:
-    PrimScene(const sf::RenderWindow &window, SceneManager &manager);
+    PrimScene (const sf::RenderWindow &window, SceneManager &manager);
 
     void handleEvent(sf::RenderWindow &window, const std::optional<sf::Event> &event) override;
     void timePropagation(float delta) override;

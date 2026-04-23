@@ -1,21 +1,45 @@
 #include "../../include/scenes/rb-tree-scene.hpp"
 
 RBTreeScene::RBTreeScene(const sf::RenderWindow &window, SceneManager &manager) :
-    Scene(window, manager), insertButton(100, 30), eraseButton(100, 30),
+    Scene(window, manager), backButton(100, 30), settingButton(100, 30),
+    insertButton(100, 30), eraseButton(100, 30),
     insertField(150, 30), eraseField(150, 30),
     treeUI(UI::BinaryTree()), playButton(50, 30),
     prevStepButton(50, 30), prevOperationButton(50, 30),
     nextStepButton(50, 30), nextOperationButton(50, 30) {
     
+    // intialize back button
+    backButton.setString("BACK");
+    backButton.setCharacterSize(20);
+    backButton.setPosition({100, 40});
+    backButton.setCallback([&]() {
+        manager.changeScene(0);
+    });
+
+    // intialize setting button
+    settingButton.setString("SETTING");
+    settingButton.setCharacterSize(20);
+    settingButton.setPosition({Setting::screenWidth - 100, 40});
+    settingButton.setCallback([&]() {
+        manager.changeScene(7);
+    });
+    
     // initialize buttons
-    insertButton.setString("Insert");
-    eraseButton.setString("Erase");
+    insertButton.setString("INSERT");
+    insertButton.setCharacterSize(20);
+    eraseButton.setString("ERASE (Beta)");
+    // eraseButton.setCharacterSize(20);
 
     prevStepButton.setString("<");
+    prevStepButton.setCharacterSize(25);
     prevOperationButton.setString("<<");
+    prevOperationButton.setCharacterSize(25);
     playButton.setString("|>");
+    playButton.setCharacterSize(25);
     nextStepButton.setString(">");
+    nextStepButton.setCharacterSize(25);
     nextOperationButton.setString(">>");
+    nextOperationButton.setCharacterSize(25);
 
     // set positions for objects
     insertButton.setPosition({240, 850});
@@ -46,6 +70,7 @@ RBTreeScene::RBTreeScene(const sf::RenderWindow &window, SceneManager &manager) 
     });
     treeUI.setCallbackPlayPause([&] (bool f) {
         playButton.setString(f ? "||" : "|>");
+        playButton.setCharacterSize(25);
     });
 
     // set callback functions: input field and button for insertion
@@ -111,6 +136,9 @@ void RBTreeScene::handleEvent(sf::RenderWindow &window, const std::optional<sf::
     nextOperationButton.handleMouseEvents(window, event);
     nextStepButton.handleMouseEvents(window, event);
     playButton.handleMouseEvents(window, event);
+
+    backButton.handleMouseEvents(window, event);
+    settingButton.handleMouseEvents(window, event);
 }
 
 void RBTreeScene::timePropagation(float delta) {
@@ -122,6 +150,8 @@ void RBTreeScene::timePropagation(float delta) {
 void RBTreeScene::draw(sf::RenderWindow &window) {
     window.draw(treeUI.getCurrentUI());
     window.draw(treeUI.getCurrentCode());
+    window.draw(backButton);
+    window.draw(settingButton);
     window.draw(insertField);
     window.draw(insertButton);
     window.draw(eraseField);

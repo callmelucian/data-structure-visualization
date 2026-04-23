@@ -18,6 +18,7 @@
 
 class RBTreeScene : public Scene {
 private:
+    UI::Button backButton, settingButton;
     UI::Button insertButton, eraseButton;
     UI::TextInputField insertField, eraseField;
     AnimationManager<UI::BinaryTree, DS::RedBlackTree> treeUI;

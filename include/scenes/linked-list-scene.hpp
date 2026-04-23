@@ -18,6 +18,7 @@
 
 class LinkedListScene : public Scene {
 private:
+    UI::Button backButton, settingButton;
     UI::Button insertButton, eraseButton;
     UI::TextInputField insertField, eraseField;
     AnimationManager<UI::LinkedList, DS::LinkedList> treeUI;

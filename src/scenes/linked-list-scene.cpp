@@ -1,21 +1,45 @@
 #include "../../include/scenes/linked-list-scene.hpp"
 
 LinkedListScene::LinkedListScene(const sf::RenderWindow &window, SceneManager &manager) :
-    Scene(window, manager), insertButton(100, 30), eraseButton(100, 30),
+    Scene(window, manager), backButton(100, 30), settingButton(100, 30),
+    insertButton(100, 30), eraseButton(100, 30),
     insertField(150, 30), eraseField(150, 30),
     treeUI(UI::LinkedList()), playButton(50, 30),
     prevStepButton(50, 30), prevOperationButton(50, 30),
     nextStepButton(50, 30), nextOperationButton(50, 30) {
     
+    // intialize back button
+    backButton.setString("BACK");
+    backButton.setCharacterSize(20);
+    backButton.setPosition({100, 40});
+    backButton.setCallback([&]() {
+        manager.changeScene(0);
+    });
+
+    // intialize setting button
+    settingButton.setString("SETTING");
+    settingButton.setCharacterSize(20);
+    settingButton.setPosition({Setting::screenWidth - 100, 40});
+    settingButton.setCallback([&]() {
+        manager.changeScene(7);
+    });
+    
     // initialize buttons
-    insertButton.setString("Insert");
-    eraseButton.setString("Erase");
+    insertButton.setString("INSERT");
+    insertButton.setCharacterSize(20);
+    eraseButton.setString("ERASE");
+    eraseButton.setCharacterSize(20);
 
     prevStepButton.setString("<");
+    prevStepButton.setCharacterSize(25);
     prevOperationButton.setString("<<");
+    prevOperationButton.setCharacterSize(25);
     playButton.setString("|>");
+    playButton.setCharacterSize(25);
     nextStepButton.setString(">");
+    nextStepButton.setCharacterSize(25);
     nextOperationButton.setString(">>");
+    nextOperationButton.setCharacterSize(25);
 
     // set positions for objects
     insertButton.setPosition({240, 850});
@@ -28,6 +52,7 @@ LinkedListScene::LinkedListScene(const sf::RenderWindow &window, SceneManager &m
     playButton.setPosition({185, 800});
     nextStepButton.setPosition({245, 800});
     nextOperationButton.setPosition({305, 800});
+
 
     // set callback functions: AVL Tree UI
     treeUI.setCallbackEnableButtons([&](int f) {
@@ -46,6 +71,7 @@ LinkedListScene::LinkedListScene(const sf::RenderWindow &window, SceneManager &m
     });
     treeUI.setCallbackPlayPause([&] (bool f) {
         playButton.setString(f ? "||" : "|>");
+        playButton.setCharacterSize(25);
     });
 
     // set callback functions: input field and button for insertion
@@ -111,6 +137,9 @@ void LinkedListScene::handleEvent(sf::RenderWindow &window, const std::optional<
     nextOperationButton.handleMouseEvents(window, event);
     nextStepButton.handleMouseEvents(window, event);
     playButton.handleMouseEvents(window, event);
+
+    backButton.handleMouseEvents(window, event);
+    settingButton.handleMouseEvents(window, event);
 }
 
 void LinkedListScene::timePropagation(float delta) {
@@ -122,6 +151,8 @@ void LinkedListScene::timePropagation(float delta) {
 void LinkedListScene::draw(sf::RenderWindow &window) {
     window.draw(treeUI.getCurrentUI());
     window.draw(treeUI.getCurrentCode());
+    window.draw(backButton);
+    window.draw(settingButton);
     window.draw(insertField);
     window.draw(insertButton);
     window.draw(eraseField);

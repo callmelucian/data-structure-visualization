@@ -1,43 +1,71 @@
 #include "../../include/scenes/prim-scene.hpp"
 
 PrimScene::PrimScene (const sf::RenderWindow &window, SceneManager &manager) :
-    Scene(window, manager), editField(150, 30), runField(150, 30),
-    insertButton(100, 30), editButton(100, 30), deleteButton(100, 30), runButton(100, 30),
-    ui(UI::Graph()),
+    Scene(window, manager), backButton(150, 30), settingButton(150, 30),
+    editField(150, 30), runField(150, 30),
+    insertButton(150, 30), editButton(150, 30), deleteButton(100, 30), runButton(150, 30),
+    ui(UI::Graph()), playButton(50, 30),
     prevStepButton(50, 30), prevOperationButton(50, 30),
     nextStepButton(50, 30), nextOperationButton(50, 30) {
     
+    // intialize back button
+    backButton.setString("BACK");
+    backButton.setCharacterSize(20);
+    backButton.setPosition({100, 40});
+    backButton.setCallback([&]() {
+        manager.changeScene(0);
+    });
+
+    // intialize setting button
+    settingButton.setString("SETTING");
+    settingButton.setCharacterSize(20);
+    settingButton.setPosition({Setting::screenWidth - 100, 40});
+    settingButton.setCallback([&]() {
+        manager.changeScene(7);
+    });
+
     // setup button: editing edges' weight
     editField.setPosition({115, 850});
-    editButton.setPosition({240, 850});
-    editButton.setString("Edit weight");
+    editButton.setPosition({265, 850});
+    editButton.setString("EDIT WEIGHT");
+    editButton.setCharacterSize(20);
     editButton.disableButton();
     editField.disable();
 
     // setup buttons: previous and next states
     prevStepButton.setString("<");
+    prevStepButton.setCharacterSize(25);
     prevOperationButton.setString("<<");
+    prevOperationButton.setCharacterSize(25);
+    playButton.setString("|>");
+    playButton.setCharacterSize(25);
     nextStepButton.setString(">");
+    nextStepButton.setCharacterSize(25);
     nextOperationButton.setString(">>");
+    nextOperationButton.setCharacterSize(25);
 
-    prevOperationButton.setPosition({350, 800});
-    prevStepButton.setPosition({410, 800});
-    nextStepButton.setPosition({470, 800});
-    nextOperationButton.setPosition({530, 800});
+    prevOperationButton.setPosition({65, 800});
+    prevStepButton.setPosition({125, 800});
+    playButton.setPosition({185, 800});
+    nextStepButton.setPosition({245, 800});
+    nextOperationButton.setPosition({305, 800});
 
     // setup button: insert node
-    insertButton.setPosition({90, 800});
-    insertButton.setString("Add node");
+    insertButton.setPosition({785, 850});
+    insertButton.setString("ADD NODE");
+    insertButton.setCharacterSize(20);
 
     // setup button: delete nodes/edges
-    deleteButton.setPosition({225, 800});
-    deleteButton.setString("Delete");
+    deleteButton.setPosition({945, 850});
+    deleteButton.setString("DELETE");
+    deleteButton.setCharacterSize(20);
     deleteButton.disableButton();
 
     // run button: run Dijkstra
-    runField.setPosition({400, 850});
-    runButton.setPosition({525, 850});
-    runButton.setString("Run from");
+    runField.setPosition({450, 850});
+    runButton.setPosition({600, 850});
+    runButton.setString("RUN FROM");
+    runButton.setCharacterSize(20);
 
     // set callback functions for button-UI communications
     ui.getCurrentUI().setCallbackAllowEdit([&] (bool f) {
@@ -61,6 +89,10 @@ PrimScene::PrimScene (const sf::RenderWindow &window, SceneManager &manager) :
             editButton.disableButton();
             deleteButton.disableButton();
         }
+    });
+    ui.setCallbackPlayPause([&] (bool f) {
+        playButton.setString(f ? "||" : "|>");
+        playButton.setCharacterSize(25);
     });
 
     // set callback function: editing edges' weight
@@ -94,10 +126,12 @@ PrimScene::PrimScene (const sf::RenderWindow &window, SceneManager &manager) :
     deleteButton.setCallback([&]() {
         int nodeID = ui.getCurrentUI().nodeActivated();
         int edgeID = ui.getCurrentUI().edgeActivated();
+        ui.getCurrentUI().resetNodeActivation();
+        ui.getCurrentUI().resetEdgeActivation();
         if (nodeID != -1) ui.transformLogic([&] (DS::DijkstraAlgorithm &logic) {
             ui.getCurrentUI().highlightNode(-1);
             return logic.deleteNode(nodeID), true;
-        });
+        }); 
         if (edgeID != -1) ui.transformLogic([&] (DS::DijkstraAlgorithm &logic) {
             ui.getCurrentUI().highlightEdge(-1);
             return logic.deleteEdge(edgeID), true;
@@ -132,9 +166,16 @@ PrimScene::PrimScene (const sf::RenderWindow &window, SceneManager &manager) :
     nextStepButton.setCallback([&]() {
         ui.nextState();
     });
+    playButton.setCallback([&]() {
+        if (ui.checkIsPlaying()) ui.pause();
+        else ui.play();
+    });
 }
 
 void PrimScene::handleEvent (sf::RenderWindow &window, const std::optional<sf::Event> &event) {
+    backButton.handleMouseEvents(window, event);
+    settingButton.handleMouseEvents(window, event);
+
     ui.getCurrentUI().handleMouseEvents(window, event);
     editField.handleMouseEvents(window, event);
     insertButton.handleMouseEvents(window, event);
@@ -143,6 +184,7 @@ void PrimScene::handleEvent (sf::RenderWindow &window, const std::optional<sf::E
     editField.handleMouseEvents(window, event);
     runButton.handleMouseEvents(window, event);
     runField.handleMouseEvents(window, event);
+    playButton.handleMouseEvents(window, event);
 
     editField.handleTextEvents(window, event);
     runField.handleTextEvents(window, event);
@@ -161,6 +203,8 @@ void PrimScene::timePropagation (float delta) {
 void PrimScene::draw (sf::RenderWindow &window) {
     window.draw(ui.getCurrentUI());
     window.draw(ui.getCurrentCode());
+    window.draw(backButton);
+    window.draw(settingButton);
     window.draw(editField);
     window.draw(runField);
     window.draw(insertButton);
@@ -171,4 +215,5 @@ void PrimScene::draw (sf::RenderWindow &window) {
     window.draw(nextOperationButton);
     window.draw(nextStepButton);
     window.draw(runButton);
+    window.draw(playButton);
 }

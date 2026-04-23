@@ -18,6 +18,7 @@
 
 class HashMapScene : public Scene {
 private:
+    UI::Button backButton, settingButton;
     UI::Button insertButton, eraseButton;
     UI::TextInputField insertField, eraseField;
     AnimationManager<UI::HashMap, DS::HashMap> treeUI;
