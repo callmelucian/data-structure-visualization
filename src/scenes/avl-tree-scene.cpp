@@ -125,6 +125,7 @@ AVLTreeScene::AVLTreeScene (const sf::RenderWindow &window, SceneManager &manage
 void AVLTreeScene::handleEvent(sf::RenderWindow &window, const std::optional<sf::Event> &event) {
     backButton.handleMouseEvents(window, event);
     settingButton.handleMouseEvents(window, event);
+    treeUI.getCurrentCode().handleMouseEvents(window, event);
 
     insertField.handleMouseEvents(window, event);
     insertField.handleTextEvents(window, event);

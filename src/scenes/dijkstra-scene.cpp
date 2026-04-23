@@ -180,6 +180,7 @@ void DijkstraScene::handleEvent (sf::RenderWindow &window, const std::optional<s
     backButton.handleMouseEvents(window, event);
     settingButton.handleMouseEvents(window, event);
 
+    ui.getCurrentCode().handleMouseEvents(window, event);
     ui.getCurrentUI().handleMouseEvents(window, event);
     editField.handleMouseEvents(window, event);
     insertButton.handleMouseEvents(window, event);

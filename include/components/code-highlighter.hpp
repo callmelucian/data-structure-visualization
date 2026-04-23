@@ -12,11 +12,14 @@ namespace UI {
 class CodeHighlighter : public UI::Base {
 private:
     std::vector<UI::Text> textLines;
-    sf::RectangleShape background, highlightBar;
+    sf::RectangleShape background, highlightBar, titleBar;
+    UI::Text titleText;
 
     int highlightedRow;
-    float lineSpacing, padding;
+    float lineSpacing, padding, titleBarHeight;
     unsigned int fontSize;
+    bool followMouse;
+    sf::Vector2f grabOffset;
 
     void updateBounds();
 public:
@@ -24,6 +27,7 @@ public:
 
     void loadCode(const std::vector<std::string>& codes);
     void highlightCode(int row);
+    void copyPosition (const CodeHighlighter &other);
 
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 

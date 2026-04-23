@@ -126,6 +126,7 @@ void HashMapScene::handleEvent(sf::RenderWindow &window, const std::optional<sf:
     insertField.handleMouseEvents(window, event);
     insertField.handleTextEvents(window, event);
     insertButton.handleMouseEvents(window, event);
+    treeUI.getCurrentCode().handleMouseEvents(window, event);
 
     eraseField.handleMouseEvents(window, event);
     eraseField.handleTextEvents(window, event);

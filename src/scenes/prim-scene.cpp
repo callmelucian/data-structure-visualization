@@ -175,6 +175,7 @@ PrimScene::PrimScene (const sf::RenderWindow &window, SceneManager &manager) :
 void PrimScene::handleEvent (sf::RenderWindow &window, const std::optional<sf::Event> &event) {
     backButton.handleMouseEvents(window, event);
     settingButton.handleMouseEvents(window, event);
+    ui.getCurrentCode().handleMouseEvents(window, event);
 
     ui.getCurrentUI().handleMouseEvents(window, event);
     editField.handleMouseEvents(window, event);

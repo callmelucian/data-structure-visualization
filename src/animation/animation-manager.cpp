@@ -82,8 +82,10 @@ bool AnimationManager<TypeUI, TypeLogic>::previousState (bool playing) {
     if (!playing) pause();
     if (stateUIIterator == 0) return false;
     TypeUI tempUI = getCurrentUI();
+    UI::CodeHighlighter tempCode = getCurrentCode();
     stateUIIterator--;
     getCurrentUI().copyPosition(tempUI);
+    getCurrentCode().copyPosition(tempCode);
     if (!isPlaying) callbackEnableButtons(completeUI[stateUIIterator]);
     stateLogicIterator -= completeUI[stateUIIterator];
     return true;
@@ -93,9 +95,11 @@ template <typename TypeUI, typename TypeLogic>
 bool AnimationManager<TypeUI, TypeLogic>::previousCompleteState (bool playing) {
     if (!playing) pause();
     TypeUI tempUI = getCurrentUI();
+    UI::CodeHighlighter tempCode = getCurrentCode();
     bool lastModify = true;
     while (lastModify = previousState() && !isComplete());
     getCurrentUI().copyPosition(tempUI);
+    getCurrentCode().copyPosition(tempCode);
     return lastModify;
 }
 
@@ -104,8 +108,10 @@ bool AnimationManager<TypeUI, TypeLogic>::nextState (bool playing) {
     if (!playing) pause();
     if (stateUIIterator + 1 == stateUI.size()) return false;
     TypeUI tempUI = getCurrentUI();
+    UI::CodeHighlighter tempCode = getCurrentCode();
     stateUIIterator++;
     getCurrentUI().copyPosition(tempUI);
+    getCurrentCode().copyPosition(tempCode);
     if (!isPlaying) callbackEnableButtons(completeUI[stateUIIterator]);
     stateLogicIterator += completeUI[stateUIIterator];
     return true;
@@ -115,9 +121,11 @@ template <typename TypeUI, typename TypeLogic>
 bool AnimationManager<TypeUI, TypeLogic>::nextCompleteState (bool playing) {
     if (!playing) pause();
     TypeUI tempUI = getCurrentUI();
+    UI::CodeHighlighter tempCode = getCurrentCode();
     bool lastModify = true;
     while (lastModify = nextState() && !isComplete());
     getCurrentUI().copyPosition(tempUI);
+    getCurrentCode().copyPosition(tempCode);
     return lastModify;
 }
 
