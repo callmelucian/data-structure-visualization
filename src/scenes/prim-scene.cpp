@@ -1,7 +1,7 @@
 #include "../../include/scenes/prim-scene.hpp"
 
-PrimScene::PrimScene (const sf::RenderWindow &window) :
-    Scene(window), editField(150, 30), runField(150, 30),
+PrimScene::PrimScene (const sf::RenderWindow &window, SceneManager &manager) :
+    Scene(window, manager), editField(150, 30), runField(150, 30),
     insertButton(100, 30), editButton(100, 30), deleteButton(100, 30), runButton(100, 30),
     ui(UI::Graph()),
     prevStepButton(50, 30), prevOperationButton(50, 30),

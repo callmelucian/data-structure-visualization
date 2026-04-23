@@ -2,6 +2,8 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 #include <optional>
+#include <vector>
+
 #include "../assets/theme.hpp"
 
 /**
@@ -9,15 +11,17 @@
  * whenever we're implementing a new scene,
  * simply inherit from this class Scene and re-implement the functions
  */
+class SceneManager;
+
 class Scene {
 private:
     sf::Color backgroundColor;
+    SceneManager &manager;
+    // float boundL, boundR, boundT, boundB;
     
 public:
-    float boundL, boundR, boundT, boundB;
-
     // constructor
-    Scene(const sf::RenderWindow &window, const sf::Color &init = Theme::getBackground());
+    Scene (const sf::RenderWindow &window, SceneManager &manager, const sf::Color &init = Theme::getBackground());
 
     // get background color
     sf::Color getBackground();
@@ -37,13 +41,24 @@ public:
 
 class SceneManager {
 private:
-    std::unique_ptr<Scene> currentScene;
+    // std::unique_ptr<Scene> currentScene, nextScene;
+    // bool sceneChanged;
+    std::vector<std::unique_ptr<Scene>> scenes;
+    int previousScene, currentScene, nextScene;
+    bool sceneChanged;
+
 public:
     // constructor
     SceneManager();
 
     // change new scene
-    void changeScene(std::unique_ptr<Scene> newScene);
+    void changeScene (int sceneID, bool reset = false);
+
+    void toPreviousScene (bool reset = false);
+
+    void addNewScene (std::unique_ptr<Scene> newScene);
+
+    void resetScene (int sceneID);
 
     // run main loop
     void runMainLoop(sf::RenderWindow &window);

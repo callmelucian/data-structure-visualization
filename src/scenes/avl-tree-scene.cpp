@@ -1,11 +1,26 @@
 #include "../../include/scenes/avl-tree-scene.hpp"
 
-AVLTreeScene::AVLTreeScene(const sf::RenderWindow &window) :
-    Scene(window), insertButton(100, 30), eraseButton(100, 30),
+AVLTreeScene::AVLTreeScene (const sf::RenderWindow &window, SceneManager &manager) :
+    Scene(window, manager), backButton(150, 30), settingButton(150, 30),
+    insertButton(100, 30), eraseButton(100, 30),
     insertField(150, 30), eraseField(150, 30),
     treeUI(UI::BinaryTree()), playButton(50, 30),
     prevStepButton(50, 30), prevOperationButton(50, 30),
     nextStepButton(50, 30), nextOperationButton(50, 30) {
+    
+    // intialize back button
+    backButton.setString("Back");
+    backButton.setPosition({95, 35});
+    backButton.setCallback([&]() {
+        manager.changeScene(0);
+    });
+
+    // intialize setting button
+    settingButton.setString("Setting");
+    settingButton.setPosition({Setting::screenWidth - 95, 35});
+    settingButton.setCallback([&]() {
+        manager.changeScene(7);
+    });
     
     // initialize buttons
     insertButton.setString("Insert");
@@ -98,6 +113,9 @@ AVLTreeScene::AVLTreeScene(const sf::RenderWindow &window) :
 }
 
 void AVLTreeScene::handleEvent(sf::RenderWindow &window, const std::optional<sf::Event> &event) {
+    backButton.handleMouseEvents(window, event);
+    settingButton.handleMouseEvents(window, event);
+
     insertField.handleMouseEvents(window, event);
     insertField.handleTextEvents(window, event);
     insertButton.handleMouseEvents(window, event);
@@ -122,6 +140,8 @@ void AVLTreeScene::timePropagation(float delta) {
 void AVLTreeScene::draw(sf::RenderWindow &window) {
     window.draw(treeUI.getCurrentUI());
     window.draw(treeUI.getCurrentCode());
+    window.draw(backButton);
+    window.draw(settingButton);
     window.draw(insertField);
     window.draw(insertButton);
     window.draw(eraseField);

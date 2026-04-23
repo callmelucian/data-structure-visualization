@@ -1,7 +1,7 @@
 #include "../../include/scenes/rb-tree-scene.hpp"
 
-RBTreeScene::RBTreeScene(const sf::RenderWindow &window) :
-    Scene(window), insertButton(100, 30), eraseButton(100, 30),
+RBTreeScene::RBTreeScene(const sf::RenderWindow &window, SceneManager &manager) :
+    Scene(window, manager), insertButton(100, 30), eraseButton(100, 30),
     insertField(150, 30), eraseField(150, 30),
     treeUI(UI::BinaryTree()), playButton(50, 30),
     prevStepButton(50, 30), prevOperationButton(50, 30),

@@ -27,7 +27,7 @@ private:
     UI::Button nextStepButton, nextOperationButton;
 
 public:
-    RBTreeScene(const sf::RenderWindow &window);
+    RBTreeScene(const sf::RenderWindow &window, SceneManager &manager);
     
     void handleEvent(sf::RenderWindow &window, const std::optional<sf::Event> &event) override;
     void timePropagation(float delta) override;

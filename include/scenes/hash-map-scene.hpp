@@ -27,7 +27,7 @@ private:
     UI::Button nextStepButton, nextOperationButton;
 
 public:
-    HashMapScene(const sf::RenderWindow &window);
+    HashMapScene(const sf::RenderWindow &window, SceneManager &manager);
     
     void handleEvent(sf::RenderWindow &window, const std::optional<sf::Event> &event) override;
     void timePropagation(float delta) override;

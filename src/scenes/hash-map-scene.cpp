@@ -1,7 +1,7 @@
 #include "../../include/scenes/hash-map-scene.hpp"
 
-HashMapScene::HashMapScene(const sf::RenderWindow &window) :
-    Scene(window), insertButton(100, 30), eraseButton(100, 30),
+HashMapScene::HashMapScene(const sf::RenderWindow &window, SceneManager &manager) :
+    Scene(window, manager), insertButton(100, 30), eraseButton(100, 30),
     insertField(150, 30), eraseField(150, 30),
     treeUI(UI::HashMap()), playButton(50, 30),
     prevStepButton(50, 30), prevOperationButton(50, 30),

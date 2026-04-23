@@ -1,9 +1,12 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <memory>
 
 // utilities
 #include "scene-manager.hpp"
+#include "start-scene.hpp"
+#include "setting-scene.hpp"
 #include "../core/utility.hpp"
 #include "../ds/avl-tree.hpp"
 #include "../animation/animation-manager.hpp"
@@ -18,6 +21,8 @@
 
 class AVLTreeScene : public Scene {
 private:
+    UI::Button backButton, settingButton;
+
     UI::Button insertButton, eraseButton;
     UI::TextInputField insertField, eraseField;
     AnimationManager<UI::BinaryTree, DS::AVLTree> treeUI;
@@ -27,7 +32,7 @@ private:
     UI::Button nextStepButton, nextOperationButton;
 
 public:
-    AVLTreeScene(const sf::RenderWindow &window);
+    AVLTreeScene (const sf::RenderWindow &window, SceneManager &manager);
     
     void handleEvent(sf::RenderWindow &window, const std::optional<sf::Event> &event) override;
     void timePropagation(float delta) override;

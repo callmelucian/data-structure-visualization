@@ -9,6 +9,7 @@
 #include "../include/scenes/rb-tree-scene.hpp"
 #include "../include/scenes/hash-map-scene.hpp"
 #include "../include/scenes/linked-list-scene.hpp"
+#include "../include/scenes/start-scene.hpp"
 
 int main() {
     // anti aliasing
@@ -25,9 +26,35 @@ int main() {
     );
     window.setPosition({50, 50});
     window.setFramerateLimit(60);
-    SceneManager manager;
 
-    manager.changeScene(std::make_unique<LinkedListScene>(window));
+    // initialize scene manager
+    SceneManager manager;
+    manager.addNewScene(
+        std::make_unique<StartScene>(window, manager)
+    );
+    manager.addNewScene(
+        std::make_unique<AVLTreeScene>(window, manager)
+    );
+    manager.addNewScene(
+        std::make_unique<DijkstraScene>(window, manager)
+    );
+    manager.addNewScene(
+        std::make_unique<HashMapScene>(window, manager)
+    );
+    manager.addNewScene(
+        std::make_unique<LinkedListScene>(window, manager)
+    );
+    manager.addNewScene(
+        std::make_unique<PrimScene>(window, manager)
+    );
+    manager.addNewScene(
+        std::make_unique<RBTreeScene>(window, manager)
+    );
+    manager.addNewScene(
+        std::make_unique<SettingScene>(window, manager)
+    );
+
+    // manager.changeScene(std::make_unique<StartScene>(window, manager));
     manager.runMainLoop(window);
 
     return 0;

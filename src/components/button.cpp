@@ -40,6 +40,7 @@ void Button::setOutlineColor(const sf::Color &color) {
 
 void Button::setCharacterSize(unsigned int fontSize) {
     label.setCharacterSize(fontSize);
+    label.centerOrigin();
 }
 
 int Button::getCharacterSize() const {

@@ -1,7 +1,7 @@
 #include "../../include/scenes/dijkstra-scene.hpp"
 
-DijkstraScene::DijkstraScene (const sf::RenderWindow &window) :
-    Scene(window), editField(150, 30), runField(150, 30),
+DijkstraScene::DijkstraScene (const sf::RenderWindow &window, SceneManager &manager) :
+    Scene(window, manager), editField(150, 30), runField(150, 30),
     insertButton(100, 30), editButton(100, 30), deleteButton(100, 30), runButton(100, 30),
     ui(UI::Graph()), playButton(50, 30),
     prevStepButton(50, 30), prevOperationButton(50, 30),
