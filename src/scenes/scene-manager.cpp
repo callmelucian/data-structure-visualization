@@ -1,28 +1,108 @@
 #include "../../include/scenes/scene-manager.hpp"
 
-// Scene Implementation
-Scene::Scene (const sf::RenderWindow &window, SceneManager &manager, const sf::Color &init) : backgroundColor(init), manager(manager) {
-    // sf::View view = window.getView();
-    // sf::Vector2f size = view.getSize();
-    // sf::Vector2f center = view.getCenter();
+const float BUTTON_PADDING = 10.f;
+const float BUTTON_WIDTH = 170.f;
+const float BUTTON_HEIGHT = 40.f;
+const float BUTTON_RADIUS = 10.f;
+const float BUTTON_MARGIN = 30.f;
+const int BUTTON_FONT_SIZE = 19;
 
-    // sf::Vector2f lo = center - size / 2.f, hi = center + size / 2.f;
-    // boundL = lo.x; boundR = hi.x;
-    // boundT = lo.y; boundB = hi.y;
+float calculateContainerWidth (int buttonCount) {
+    return BUTTON_WIDTH * buttonCount + BUTTON_PADDING * (buttonCount - 1) + BUTTON_MARGIN * 2;
+}
+
+// Scene Implementation
+Scene::Scene (SceneManager &manager, int buttonCount) :
+    backgroundColor(Theme::getBackground()), manager(manager),
+    container(calculateContainerWidth(buttonCount), 180.f, 20.f),
+    previousScene(70.f, 70.f, 35.f),
+    setting(70.f, 70.f, 35.f),
+    playButton(75.f, 75.f, 75.f / 2.f),
+    prevStepButton(50.f, 50.f, 25.f),
+    prevOperationButton(50.f, 50.f, 25.f),
+    nextStepButton(50.f, 50.f, 25.f),
+    nextOperationButton(50.f, 50.f, 25.f),
+    featureButtons(buttonCount, UI::Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_RADIUS)) {
+    
+    // ESC button
+    previousScene.setPosition({50 + 35, 50 + 35});
+    previousScene.setIcon(Theme::leftIcon, 22.f);
+    previousScene.setCallback([&]() {
+        manager.toPreviousScene();
+    });
+    
+    // setting button
+    setting.setPosition({Setting::screenWidth - 50 - 35, 50 + 35});
+    setting.setIcon(Theme::settingIcon, 25.f);
+    setting.setCallback([&]() {
+        manager.changeScene(7);
+    });
+
+    // container
+    container.setFillColor(Theme::getLightBackground());
+    container.setPosition({900, 760});
+    container.centerOrigin();
+    
+    // buttons
+    playButton.setIcon(Theme::playIcon);
+    prevStepButton.setIcon(Theme::leftLeftIcon);
+    prevOperationButton.setIcon(Theme::previousIcon);
+    nextStepButton.setIcon(Theme::rightRightIcon);
+    nextOperationButton.setIcon(Theme::nextIcon);
+
+    playButton.setPosition({Setting::screenWidth / 2.f, 730.f});
+    prevStepButton.setPosition({Setting::screenWidth / 2.f - 75.f, 730.f});
+    prevOperationButton.setPosition({Setting::screenWidth / 2.f - 150.f, 730.f});
+    nextStepButton.setPosition({Setting::screenWidth / 2.f + 75.f, 730.f});
+    nextOperationButton.setPosition({Setting::screenWidth / 2.f + 150.f, 730.f});
+
+    changePlayButton = [&] (bool f) {
+        playButton.setIcon(f ? Theme::pauseIcon : Theme::playIcon);
+    };
+
+    // feature buttons
+    sf::Vector2f position = {Setting::screenWidth / 2.f - container.getSize().x / 2.f, 805};
+    position.x += BUTTON_WIDTH / 2.f + BUTTON_MARGIN;
+    for (int i = 0; i < buttonCount; i++) {
+        featureButtons[i].setPosition(position);
+        position.x += BUTTON_WIDTH + BUTTON_PADDING;
+    }
 }
 
 sf::Color Scene::getBackground() { 
-    return backgroundColor; 
+    return backgroundColor;
+}
+
+void Scene::setBackground (const sf::Color &color) {
+    backgroundColor = color;
+}
+
+void Scene::handleButtons (sf::RenderWindow &window, const std::optional<sf::Event> &event) {
+    previousScene.handleMouseEvents(window, event);
+    setting.handleMouseEvents(window, event);
+    playButton.handleMouseEvents(window, event);
+    prevStepButton.handleMouseEvents(window, event);
+    prevOperationButton.handleMouseEvents(window, event);
+    nextStepButton.handleMouseEvents(window, event);
+    nextOperationButton.handleMouseEvents(window, event);
+    for (UI::Button &button : featureButtons)
+        button.handleMouseEvents(window, event);
+}
+
+void Scene::drawButtons (sf::RenderWindow &window) {
+    window.draw(previousScene);
+    window.draw(setting);
+    window.draw(container);
+    window.draw(playButton);
+    window.draw(prevStepButton);
+    window.draw(prevOperationButton);
+    window.draw(nextStepButton);
+    window.draw(nextOperationButton);
+    for (UI::Button &button : featureButtons) window.draw(button);
 }
 
 // SceneManager Implementation
-SceneManager::SceneManager() : previousScene(0), currentScene(0), nextScene(0), sceneChanged(false) {}
-
-// void SceneManager::changeScene(std::unique_ptr<Scene> newScene) {
-//     // currentScene = std::move(newScene);
-//     nextScene = std::move(newScene);
-//     sceneChanged = true;
-// }
+SceneManager::SceneManager() : sceneID(1), nextScene(0), sceneChanged(false), popScene(false) {}
 
 void SceneManager::changeScene (int sceneID, bool reset) {
     nextScene = sceneID, sceneChanged = true;
@@ -30,8 +110,9 @@ void SceneManager::changeScene (int sceneID, bool reset) {
 }
 
 void SceneManager::toPreviousScene (bool reset) {
-    nextScene = previousScene, sceneChanged = true;
-    if (reset) resetScene(previousScene);
+    if (sceneID.size() < 2) return;
+    popScene = true;
+    if (reset) resetScene(sceneID[(int)sceneID.size() - 2]);
 }
 
 void SceneManager::addNewScene (std::unique_ptr<Scene> newScene) {
@@ -46,27 +127,29 @@ void SceneManager::runMainLoop(sf::RenderWindow &window) {
     sf::Clock clock;
     while (window.isOpen()) {
         if (sceneChanged)
-            previousScene = currentScene, currentScene = nextScene, sceneChanged = false;
+            sceneID.push_back(nextScene), sceneChanged = false;
+        if (popScene)
+            sceneID.pop_back(), popScene = false;
 
         // event listener loop
         while (const std::optional<sf::Event> event = window.pollEvent()) {
             if (event->is<sf::Event::Closed>()) {
                 window.close();
             }
-            if (scenes[currentScene]) {
-                scenes[currentScene]->handleEvent(window, event);
+            if (scenes[sceneID.back()]) {
+                scenes[sceneID.back()]->handleEvent(window, event);
             }
         }
 
-        if (scenes[currentScene]) {
-            window.clear(scenes[currentScene]->getBackground());
+        if (scenes[sceneID.back()]) {
+            window.clear(scenes[sceneID.back()]->getBackground());
 
             // time propagation on current scene
             sf::Time elapsed = clock.restart();
-            scenes[currentScene]->timePropagation(elapsed.asSeconds());
+            scenes[sceneID.back()]->timePropagation(elapsed.asSeconds());
             
             // draw everything from the scene onto the screen
-            scenes[currentScene]->draw(window);
+            scenes[sceneID.back()]->draw(window);
         }
 
         window.display();

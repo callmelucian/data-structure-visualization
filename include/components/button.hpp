@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <functional>
 #include <string>
+#include <optional>
 
 #include "../assets/theme.hpp"
 #include "ui-base.hpp"
@@ -10,14 +11,21 @@ namespace UI {
 
 class Button : public UI::Base {
 private:
-    sf::RectangleShape rectangle;
+    UI::RoundedRectangle container;
     UI::Text label;
     std::function<void()> onClick;
     bool activation, clickable;
+    std::optional<sf::Sprite> icon;
 
 public:
     // constructor
-    Button(float width, float height);
+    Button(float width, float height, float radius = 0.f);
+
+    void setIcon (const sf::Texture &texture, float padding = 20.f);
+
+    void setIcon (const sf::Texture &texture, float width, float height);
+
+    void centerIcon();
 
     // set label string
     void setString(const std::string &msg);

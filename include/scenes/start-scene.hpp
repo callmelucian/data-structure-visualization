@@ -20,7 +20,7 @@ private:
     UI::Button toAVL, toDijkstra, toHashMap, toLinkedList, toPrim, toRBTree;
 
 public:
-    StartScene(const sf::RenderWindow &window, SceneManager &manager);
+    StartScene (SceneManager &manager);
     
     void handleEvent(sf::RenderWindow &window, const std::optional<sf::Event> &event) override;
     void timePropagation(float delta) override;

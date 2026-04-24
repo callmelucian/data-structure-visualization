@@ -33,6 +33,20 @@ namespace LightModeColors {
     inline constexpr sf::Color RBBlack = sf::Color({185, 185, 185});
 };
 
+inline int themeIterator = 0;
+
+inline const std::vector<sf::Color> backgroundColors = {
+    sf::Color({214, 209, 203})
+};
+
+inline const std::vector<sf::Color> lightBackgroundColors = {
+    sf::Color({244, 241, 236})
+};
+
+inline const std::vector<std::vector<sf::Color>> textColors = {
+    {sf::Color::Black, sf::Color({180, 180, 180})}
+};
+
 // return colors
 namespace Theme {
     inline sf::Font cmuSerif("assets/font-cmu/cmunbx.ttf");
@@ -42,13 +56,56 @@ namespace Theme {
     inline sf::Font notoCondensed("assets/font-noto-mono/NotoSansMono_ExtraCondensed-Regular.ttf");
     inline sf::Font notoRegular("assets/font-noto-mono/NotoSansMono-Regular.ttf");
 
+    // Google Sans Code family
+    inline sf::Font googleSansRegular("assets/font-google-sans-code/GoogleSansCode-Regular.ttf");
+    inline sf::Font googleSansItalic("assets/font-google-sans-code/GoogleSansCode-Italic.ttf");
+    inline sf::Font googleSansBold("assets/font-google-sans-code/GoogleSansCode-Bold.ttf");
+    inline sf::Font googleSansBoldItalic("assets/font-google-sans-code/GoogleSansCode-BoldItalic.ttf");
+    inline sf::Font googleSansExBold("assets/font-google-sans-code/GoogleSansCode-ExtraBold.ttf");
+    inline sf::Font googleSansExBoldItalic("assets/font-google-sans-code/GoogleSansCode-ExtraBoldItalic.ttf");
+
     // IBM Plex Mono family
     inline sf::Font ibmRegular("assets/font-ibm-plex/IBMPlexMono-Regular.ttf");
     inline sf::Font ibmItalic("assets/font-ibm-plex/IBMPlexMono-Italic.ttf");
     inline sf::Font ibmBold("assets/font-ibm-plex/IBMPlexMono-Bold.ttf");
     inline sf::Font ibmBoldItalic("assets/font-ibm-plex/IBMPlexMono-BoldItalic.ttf");
 
-    inline sf::Color getBackground() { return LightModeColors::background; }
+    // Icons
+    inline sf::Texture leftIcon;
+    inline sf::Texture leftLeftIcon;
+    inline sf::Texture nextIcon;
+    inline sf::Texture pauseIcon;
+    inline sf::Texture playIcon;
+    inline sf::Texture previousIcon;
+    inline sf::Texture rightRightIcon;
+    inline sf::Texture settingIcon;
+
+    inline bool loadIcons() {
+        bool ok = true;
+        ok &= leftIcon.loadFromFile("assets/icons/left-icon.png");
+        leftIcon.setSmooth(true);
+        ok &= leftLeftIcon.loadFromFile("assets/icons/left-left-icon.png");
+        leftLeftIcon.setSmooth(true);
+        ok &= nextIcon.loadFromFile("assets/icons/next-icon.png");
+        nextIcon.setSmooth(true);
+        ok &= pauseIcon.loadFromFile("assets/icons/pause-icon.png");
+        pauseIcon.setSmooth(true);
+        ok &= playIcon.loadFromFile("assets/icons/play-icon.png");
+        playIcon.setSmooth(true);
+        ok &= previousIcon.loadFromFile("assets/icons/previous-icon.png");
+        previousIcon.setSmooth(true);
+        ok &= rightRightIcon.loadFromFile("assets/icons/right-right-icon.png");
+        rightRightIcon.setSmooth(true);
+        ok &= settingIcon.loadFromFile("assets/icons/setting-icon.png");
+        settingIcon.setSmooth(true);
+        return ok;
+    }
+
+    inline sf::Color getLightBackground() { return lightBackgroundColors[themeIterator]; }
+    inline sf::Color getBackground() { return backgroundColors[themeIterator]; }
+    inline sf::Color getTextPrimary() { return textColors[themeIterator][0]; }
+    inline sf::Color getTextSecondary() { return textColors[themeIterator][1]; }
+
     inline sf::Color getPrimary() { return LightModeColors::primary; }
     inline sf::Color getSecondary() { return LightModeColors::secondary; }
     

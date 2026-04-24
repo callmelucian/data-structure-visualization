@@ -3,28 +3,47 @@
 #include <memory>
 #include <optional>
 #include <vector>
+#include <functional>
 
 #include "../assets/theme.hpp"
+#include "../components/button.hpp"
+#include "../core/global-setting.hpp"
+#include "../animation/animation-manager.hpp"
 
-/**
- * This is the global class for all scenes
- * whenever we're implementing a new scene,
- * simply inherit from this class Scene and re-implement the functions
- */
+extern const float BUTTON_PADDING;
+extern const float BUTTON_WIDTH;
+extern const float BUTTON_HEIGHT;
+extern const float BUTTON_RADIUS;
+extern const float BUTTON_MARGIN;
+extern const int BUTTON_FONT_SIZE;
+
+float calculateContainerWidth (int buttonCount);
+
 class SceneManager;
 
 class Scene {
 private:
     sf::Color backgroundColor;
+    UI::RoundedRectangle container;
     SceneManager &manager;
-    // float boundL, boundR, boundT, boundB;
-    
+
+protected:
+    UI::Button previousScene, setting;
+    UI::Button playButton;
+    UI::Button prevStepButton, prevOperationButton;
+    UI::Button nextStepButton, nextOperationButton;
+    std::function<void(bool)> changePlayButton;
+    std::vector<UI::Button> featureButtons;
 public:
     // constructor
-    Scene (const sf::RenderWindow &window, SceneManager &manager, const sf::Color &init = Theme::getBackground());
+    Scene (SceneManager &manager, int buttonCount = 5);
 
     // get background color
     sf::Color getBackground();
+    void setBackground (const sf::Color &color);
+
+    void handleButtons (sf::RenderWindow &window, const std::optional<sf::Event> &event);
+    void drawButtons (sf::RenderWindow &window);
 
     // virtual destructor
     virtual ~Scene() {}
@@ -44,8 +63,9 @@ private:
     // std::unique_ptr<Scene> currentScene, nextScene;
     // bool sceneChanged;
     std::vector<std::unique_ptr<Scene>> scenes;
-    int previousScene, currentScene, nextScene;
-    bool sceneChanged;
+    std::vector<int> sceneID;
+    int nextScene;
+    bool sceneChanged, popScene;
 
 public:
     // constructor

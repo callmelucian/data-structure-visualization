@@ -1,112 +1,74 @@
 #include "../../include/scenes/avl-tree-scene.hpp"
 
-AVLTreeScene::AVLTreeScene (const sf::RenderWindow &window, SceneManager &manager) :
-    Scene(window, manager), backButton(150, 30), settingButton(150, 30),
-    insertButton(100, 30), eraseButton(100, 30), fileButton(100, 30),
-    insertField(150, 30), eraseField(150, 30),
-    treeUI(UI::BinaryTree()), playButton(50, 30),
-    prevStepButton(50, 30), prevOperationButton(50, 30),
-    nextStepButton(50, 30), nextOperationButton(50, 30) {
-    
-    // intialize back button
-    backButton.setString("BACK");
-    backButton.setCharacterSize(20);
-    backButton.setPosition({100, 40});
-    backButton.setCallback([&]() {
-        manager.changeScene(0);
-    });
-
-    // intialize setting button
-    settingButton.setString("SETTING");
-    settingButton.setCharacterSize(20);
-    settingButton.setPosition({Setting::screenWidth - 100, 40});
-    settingButton.setCallback([&]() {
-        manager.changeScene(7);
-    });
+AVLTreeScene::AVLTreeScene (SceneManager &manager) :
+    Scene(manager, 3), insertField(1000, 50), eraseField(1000, 50), treeUI(UI::BinaryTree()) {
     
     // initialize buttons
-    insertButton.setString("INSERT");
-    insertButton.setCharacterSize(20);
-    eraseButton.setString("ERASE");
-    eraseButton.setCharacterSize(20);
-    fileButton.setString("FILE");
-    fileButton.setCharacterSize(20);
+    featureButtons[0].setString("INSERT");
+    featureButtons[0].setCharacterSize(20);
+    featureButtons[1].setString("ERASE");
+    featureButtons[1].setCharacterSize(20);
+    featureButtons[2].setString("FILE");
+    featureButtons[2].setCharacterSize(20);
 
-    prevStepButton.setString("<");
-    prevStepButton.setCharacterSize(25);
-    prevOperationButton.setString("<<");
-    prevOperationButton.setCharacterSize(25);
-    playButton.setString("|>");
-    playButton.setCharacterSize(25);
-    nextStepButton.setString(">");
-    nextStepButton.setCharacterSize(25);
-    nextOperationButton.setString(">>");
-    nextOperationButton.setCharacterSize(25);
-
-    // set positions for objects
-    insertButton.setPosition({240, 850});
-    insertField.setPosition({115, 850});
-    eraseButton.setPosition({525, 850});
-    eraseField.setPosition({400, 850});
-    fileButton.setPosition({660, 850});
+    // intialize fields
+    insertField.setPosition({Setting::screenWidth / 2.f, 85});
+    insertField.setLabel("Insert/Init");
+    insertField.disable();
+    eraseField.setPosition({Setting::screenWidth / 2.f, 85});
+    eraseField.setLabel("Erase");
+    eraseField.disable();
     
-    prevOperationButton.setPosition({65, 800});
-    prevStepButton.setPosition({125, 800});
-    playButton.setPosition({185, 800});
-    nextStepButton.setPosition({245, 800});
-    nextOperationButton.setPosition({305, 800});
-
     // set callback functions: AVL Tree UI
     treeUI.setCallbackEnableButtons([&](int f) {
         if (f) {
-            insertButton.enableButton();
-            eraseButton.enableButton();
-            insertField.enable();
-            eraseField.enable();
+            featureButtons[0].enableButton();
+            featureButtons[1].enableButton();
         }
         else {
-            insertButton.disableButton();
-            eraseButton.disableButton();
+            featureButtons[0].disableButton();
+            featureButtons[1].disableButton();
             insertField.disable();
             eraseField.disable();
         }
     });
-    treeUI.setCallbackPlayPause([&] (bool f) {
-        playButton.setString(f ? "||" : "|>");
-        playButton.setCharacterSize(25);
-    });
+    treeUI.setCallbackPlayPause(changePlayButton);
 
     // set callback functions: input field and button for insertion
     insertField.setCallbackFunction([&](const std::string &msg) {
-        int value = convert(msg);
-        if (value == -1) {
-            std::cerr << "Input field contains non-numerical value!" << std::endl;
-            return;
+        std::vector<int> numbers = stringToNumbers(msg);
+        if (numbers.empty()) return;
+        bool skip = (numbers.size() >= 2);
+        for (int value : numbers) {
+            treeUI.transformLogic([&](DS::AVLTree &avl) {
+                return avl.insert(value), true;
+            });
+            if (skip) treeUI.nextCompleteState();
         }
-        treeUI.transformLogic([&](DS::AVLTree &avl) {
-            return avl.insert(value), true;
-        });
     });
-    insertButton.setCallback([&]() {
-        insertField.releaseText();
+    featureButtons[0].setCallback([&]() {
+        if (insertField.isEnabled()) insertField.disable();
+        else insertField.enable();
     });
 
     // set callback functions: input field and button for deletion
     eraseField.setCallbackFunction([&](const std::string &msg) {
-        int value = convert(msg);
-        if (value == -1) {
-            std::cerr << "Input field contains non-numerical value!" << std::endl;
-            return;
+        std::vector<int> numbers = stringToNumbers(msg);
+        if (numbers.empty()) return;
+        bool skip = numbers.size() >= 2;
+        for (int value : numbers) {
+            treeUI.transformLogic([&](DS::AVLTree &avl) {
+                return avl.erase(value);
+            });
+            if (skip) treeUI.nextCompleteState();
         }
-        treeUI.transformLogic([&](DS::AVLTree &avl) {
-            return avl.erase(value);
-        });
     });
-    eraseButton.setCallback([&]() {
-        eraseField.releaseText();
+    featureButtons[1].setCallback([&]() {
+        if (eraseField.isEnabled()) eraseField.disable();
+        else eraseField.disable();
     });
 
-    fileButton.setCallback([&]() {
+    featureButtons[2].setCallback([&]() {
         std::cerr << "Read file " << openFileDialog() << std::endl;
     });
 
@@ -130,24 +92,12 @@ AVLTreeScene::AVLTreeScene (const sf::RenderWindow &window, SceneManager &manage
 }
 
 void AVLTreeScene::handleEvent(sf::RenderWindow &window, const std::optional<sf::Event> &event) {
-    backButton.handleMouseEvents(window, event);
-    settingButton.handleMouseEvents(window, event);
     treeUI.getCurrentCode().handleMouseEvents(window, event);
-
     insertField.handleMouseEvents(window, event);
     insertField.handleTextEvents(window, event);
-    insertButton.handleMouseEvents(window, event);
-
     eraseField.handleMouseEvents(window, event);
     eraseField.handleTextEvents(window, event);
-    eraseButton.handleMouseEvents(window, event);
-
-    fileButton.handleMouseEvents(window, event);
-    prevOperationButton.handleMouseEvents(window, event);
-    prevStepButton.handleMouseEvents(window, event);
-    nextOperationButton.handleMouseEvents(window, event);
-    nextStepButton.handleMouseEvents(window, event);
-    playButton.handleMouseEvents(window, event);
+    handleButtons(window, event);
 }
 
 void AVLTreeScene::timePropagation(float delta) {
@@ -159,16 +109,7 @@ void AVLTreeScene::timePropagation(float delta) {
 void AVLTreeScene::draw(sf::RenderWindow &window) {
     window.draw(treeUI.getCurrentUI());
     window.draw(treeUI.getCurrentCode());
-    window.draw(backButton);
-    window.draw(settingButton);
     window.draw(insertField);
-    window.draw(insertButton);
     window.draw(eraseField);
-    window.draw(eraseButton);
-    window.draw(prevOperationButton);
-    window.draw(prevStepButton);
-    window.draw(nextOperationButton);
-    window.draw(nextStepButton);
-    window.draw(playButton);
-    window.draw(fileButton);
+    drawButtons(window);
 }

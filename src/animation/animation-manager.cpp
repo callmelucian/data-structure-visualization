@@ -151,6 +151,7 @@ void AnimationManager<TypeUI, TypeLogic>::transformLogic (std::function<bool(Typ
         stateUI.pop_back(), stateCode.pop_back(), completeUI.pop_back();
     if (transformFunction(newLogicVersion)) stateLogic.push_back(newLogicVersion);
     play();
+    while (eventIDQueue.size()) popAnimation();
 }
 
 template <typename TypeUI, typename TypeLogic>

@@ -4,34 +4,46 @@ const float BLINK_INTERVAL = 0.3f;
 
 namespace UI {
 
-TextInputField::TextInputField(float width, float height) 
-    : label(Theme::notoRegular), focus(false), showCursor(false), isEnabled(true) {
+TextInputField::TextInputField (float width, float height, float radius) :
+    content(Theme::googleSansRegular),
+    fieldLabel(Theme::googleSansBoldItalic),
+    container(width, height, radius),
+    focus(false), showCursor(false), enableFlag(true) {
     
     // setup rectangle
-    rectangle.setSize({width, height});
-    rectangle.setOrigin({width / 2.f, height / 2.f});
-    rectangle.setFillColor(Theme::getButton());
-    rectangle.setOutlineThickness(2);
-    rectangle.setOutlineColor(sf::Color::Black);
+    container.setOrigin({width / 2.f, height / 2.f});
+    container.setFillColor(Theme::getButton());
+    container.setOutlineThickness(2);
+    container.setOutlineColor(Theme::getTextPrimary());
 
     // setup cursor
     cursor.setSize({2.f, height * 0.8f});
     cursor.setOrigin({1.f, height * 0.4f});
     cursor.setFillColor(sf::Color({80, 80, 80}));
-    cursor.setPosition({label.getWidth() / 2.f, 0});
+    cursor.setPosition({content.getWidth() / 2.f, 0});
 
-    // setup label
-    label.setFillColor(sf::Color::Black);
-    label.centerOrigin();
+    // setup content & label
+    content.setFillColor(Theme::getTextPrimary());
+    content.centerOrigin();
+    content.setCharacterSize(20);
+    fieldLabel.setFillColor(Theme::getTextPrimary());
+    fieldLabel.centerOrigin();
+    fieldLabel.setPosition({0.f, -(height / 2.f + 10.f)});
+    fieldLabel.setCharacterSize(13);
 }
 
-void TextInputField::setString(const std::string &msg) {
-    label.setString(msg);
-    label.setAutoCharacterSize(
-        rectangle.getSize().x, rectangle.getSize().y, 0.75
-    );
-    label.centerOrigin();
-    cursor.setPosition({label.getWidth() / 2.f, 0});
+void TextInputField::setString (const std::string &msg) {
+    content.setString(msg);
+    // content.setAutoCharacterSize(
+    //     container.getSize().x, container.getSize().y, 0.75
+    // );
+    content.centerOrigin();
+    cursor.setPosition({content.getWidth() / 2.f, 0});
+}
+
+void TextInputField::setLabel (const std::string &msg) {
+    fieldLabel.setString(msg);
+    fieldLabel.centerOrigin();
 }
 
 std::string TextInputField::releaseText() {
@@ -42,16 +54,17 @@ std::string TextInputField::releaseText() {
 }
 
 void TextInputField::setScale(float scaleConstant) {
-    rectangle.setScale({scaleConstant, scaleConstant});
-    label.setScale({scaleConstant, scaleConstant});
+    container.setScale({scaleConstant, scaleConstant});
+    content.setScale({scaleConstant, scaleConstant});
+    fieldLabel.setScale({scaleConstant, scaleConstant});
 }
 
 void TextInputField::handleMousePress(const sf::Vector2f &mousePos) {
-    if (!isEnabled) return;
+    if (!enableFlag) return;
     bool contained = containPosition(mousePos);
     if (isFocused() && contained) blinkClock.restart();
     if (!contained) showCursor = false;
-    rectangle.setFillColor(
+    container.setFillColor(
         contained ? Theme::getPressedButton() : Theme::getButton()
     );
     focus = contained;
@@ -60,8 +73,8 @@ void TextInputField::handleMousePress(const sf::Vector2f &mousePos) {
 void TextInputField::handleMouseRelease(const sf::Vector2f &mousePos) {}
 
 void TextInputField::handleMouseMovement(const sf::Vector2f &mousePos) {
-    if (focus || !isEnabled) return;
-    rectangle.setFillColor(
+    if (focus || !enableFlag) return;
+    container.setFillColor(
         containPosition(mousePos) ? Theme::getHoveredButton() : Theme::getButton()
     );
 }
@@ -70,13 +83,17 @@ bool TextInputField::isFocused() const {
     return focus; 
 }
 
+bool TextInputField::isEnabled() const {
+    return enableFlag;
+}
+
 void TextInputField::handleTextEntered(const char &unicode) {
-    if (!isFocused() || !isEnabled) return;
+    if (!isFocused() || !enableFlag) return;
     if (unicode == 8) { // handle backspace
         if (currentMessage.size())
             currentMessage.erase(currentMessage.size() - 1);
     }
-    else if (unicode >= 32 && unicode < 128)
+    else if ((unicode >= 32 && unicode < 128) || unicode == ' ')
         currentMessage += unicode;
     else if (unicode == 10 || unicode == 13)
         releaseText();
@@ -84,13 +101,15 @@ void TextInputField::handleTextEntered(const char &unicode) {
 }
 
 sf::FloatRect TextInputField::getBoundary() const {
-    return rectangle.getGlobalBounds();
+    return container.getGlobalBounds();
 }
 
 void TextInputField::draw(sf::RenderTarget &target, sf::RenderStates states) const {
+    if (!enableFlag) return;
     states.transform *= getTransform();
-    target.draw(rectangle, states);
-    target.draw(label, states);
+    target.draw(container, states);
+    target.draw(fieldLabel, states);
+    target.draw(content, states);
     if (showCursor) target.draw(cursor, states);
 }
 
@@ -103,14 +122,12 @@ void TextInputField::timePropagation() {
 }
 
 void TextInputField::enable() {
-    isEnabled = true;
-    rectangle.setFillColor(Theme::getButton());
+    enableFlag = true;
 }
 
 void TextInputField::disable() {
-    isEnabled = false, focus = false, showCursor = false;
+    enableFlag = false, focus = false, showCursor = false;
     currentMessage = "";
-    rectangle.setFillColor(Theme::getIdleButton());
 }
 
 }; // namespace UI

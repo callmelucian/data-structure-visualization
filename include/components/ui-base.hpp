@@ -1,89 +1,68 @@
+// https://gemini.google.com/share/dc25c97c303f
+
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <cmath>
 
 namespace UI {
-    class Base : public sf::Drawable, public sf::Transformable {
-    public:
-        bool containPosition (const sf::Vector2f &position) const {
-            sf::Vector2f localPos = this->getInverseTransform().transformPoint(position);
-            return getBoundary().contains(localPos);
-        }
 
-        // return the rectangular boundary of the UI Base
-        virtual sf::FloatRect getBoundary() const = 0;
+class Base : public sf::Drawable, public sf::Transformable {
+public:
+    bool containPosition(const sf::Vector2f &position) const;
 
-        // helper functions to handle mouse events
-        virtual void handleMousePress (const sf::Vector2f &mousePos) = 0;
-        virtual void handleMouseRelease (const sf::Vector2f &mousePos)  = 0;
-        virtual void handleMouseMovement (const sf::Vector2f &mousePos) = 0;
+    // return the rectangular boundary of the UI Base
+    virtual sf::FloatRect getBoundary() const = 0;
 
-        // helper functions to handle text events
-        virtual void handleTextEntered (const char &unicode) = 0;
+    // helper functions to handle mouse events
+    virtual void handleMousePress(const sf::Vector2f &mousePos) = 0;
+    virtual void handleMouseRelease(const sf::Vector2f &mousePos) = 0;
+    virtual void handleMouseMovement(const sf::Vector2f &mousePos) = 0;
 
-        // handle mouse events
-        void handleMouseEvents (sf::RenderWindow &window, const std::optional<sf::Event> &event) {
-            // event: mouse moved
-            if (const auto *mouseMovement = event->getIf<sf::Event::MouseMoved>()) {
-                sf::Vector2f mousePos = window.mapPixelToCoords(mouseMovement->position);
-                handleMouseMovement(mousePos);
-            }
-            // event: left-mouse pressed
-            if (const auto *mousePressed = event->getIf<sf::Event::MouseButtonPressed>()) {
-                if (mousePressed->button == sf::Mouse::Button::Left) {
-                    sf::Vector2f mousePos = window.mapPixelToCoords(mousePressed->position);
-                    handleMousePress(mousePos);
-                }
-            }
-            // event: left-mouse released 
-            if (const auto *mouseReleased = event->getIf<sf::Event::MouseButtonReleased>()) {
-                if (mouseReleased->button == sf::Mouse::Button::Left) {
-                    sf::Vector2f mousePos = window.mapPixelToCoords(mouseReleased->position);
-                    handleMouseRelease(mousePos);
-                }
-            }
-        }
+    // helper functions to handle text events
+    virtual void handleTextEntered(const char &unicode) = 0;
 
-        // handle text events
-        void handleTextEvents (sf::RenderWindow &window, const std::optional<sf::Event> &event) {
-            if (const auto *textEntered = event->getIf<sf::Event::TextEntered>()) {
-                handleTextEntered(textEntered->unicode);
-            }
-        }
-    };
+    // handle mouse events
+    void handleMouseEvents(sf::RenderWindow &window, const std::optional<sf::Event> &event);
 
-    class Text : public sf::Text {
-    public:
-        // using sf::Text's constructor
-        using sf::Text::Text;
-
-        // set the origin to the center the bounding box of the text
-        void centerOrigin() {
-            auto localRectangle = getLocalBounds();
-            setOrigin({
-                localRectangle.position.x + localRectangle.size.x / 2.f,
-                localRectangle.position.y + localRectangle.size.y / 2.f
-            });
-        }
-
-        float getWidth() const {
-            auto localRectangle = getLocalBounds();
-            return localRectangle.size.x;
-        }
-
-        // automatically find the bestt font size to fill the container
-        void setAutoCharacterSize (float boxW, float boxH, float textFill = 0.8f) {
-            setCharacterSize(100); // set a reference size
-            auto localRectangle = getLocalBounds();
-
-            float targetW = boxW * textFill;
-            float scaleW = targetW / localRectangle.size.x;
-            float targetH = boxH * textFill;
-            float scaleH = targetH / localRectangle.size.y;
-
-            float scale = std::min(scaleW, scaleH);
-            float fontSize = std::max(1.f, 100.f * scale);
-            setCharacterSize(static_cast<unsigned int>(fontSize));
-        }
-    };
+    // handle text events
+    void handleTextEvents(sf::RenderWindow &window, const std::optional<sf::Event> &event);
 };
+
+class Text : public sf::Text {
+public:
+    // using sf::Text's constructor
+    using sf::Text::Text;
+
+    // set the origin to the center the bounding box of the text
+    void centerOrigin();
+
+    float getWidth() const;
+
+    // automatically find the best font size to fill the container
+    void setAutoCharacterSize(float boxW, float boxH, float textFill = 0.8f);
+};
+
+class RoundedRectangle : public sf::Shape {
+private:
+    sf::Vector2f sizeVector;
+    float radius;
+    unsigned int cornerPointCount;
+
+public:
+    // constructor
+    RoundedRectangle(float width, float height, float radius, unsigned int cornerPointCount = 20);
+
+    // update the size and radius
+    void setProperties(float width, float height, float radius);
+
+    sf::Vector2f getSize() const;
+
+    void centerOrigin();
+
+    // required overrides for sf::Shape
+    virtual std::size_t getPointCount() const override;
+    virtual sf::Vector2f getPoint(std::size_t index) const override;
+};
+
+}; // namespace UI

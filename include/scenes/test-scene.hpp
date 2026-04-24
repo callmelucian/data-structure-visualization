@@ -19,13 +19,11 @@
 #include "../components/input-field.hpp"
 #include "../components/slider.hpp"
 
-class AVLTreeScene : public Scene {
+class TestScene : public Scene {
 private:
-    UI::TextInputField insertField, eraseField;
-    AnimationManager<UI::BinaryTree, DS::AVLTree> treeUI;
 
 public:
-    AVLTreeScene (SceneManager &manager);
+    TestScene (SceneManager &manager);
     
     void handleEvent(sf::RenderWindow &window, const std::optional<sf::Event> &event) override;
     void timePropagation(float delta) override;

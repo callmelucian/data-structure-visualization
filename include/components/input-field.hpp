@@ -13,22 +13,25 @@ namespace UI {
 class TextInputField : public UI::Base {
 private:
     std::string currentMessage;
-    UI::Text label;
-    sf::RectangleShape rectangle, cursor;
-    bool focus, showCursor, isEnabled;
+    UI::Text content, fieldLabel;
+    UI::RoundedRectangle container;
+    sf::RectangleShape cursor;
+    bool focus, showCursor, enableFlag;
     sf::Clock blinkClock;
     std::function<void(const std::string&)> callbackFunction;
 
 public:
-    TextInputField(float width, float height);
+    TextInputField(float width, float height, float radius = 10.f);
 
     // set callback function for input field
     void setCallbackFunction(auto func) {
         callbackFunction = func;
     }
 
-    // set label string
+    // set content string
     void setString(const std::string &msg);
+    // set label string
+    void setLabel (const std::string &msg);
 
     // release text
     std::string releaseText();
@@ -45,6 +48,7 @@ public:
     void handleMouseMovement(const sf::Vector2f &mousePos) override;
 
     bool isFocused() const;
+    bool isEnabled() const;
 
     void handleTextEntered(const char &unicode) override;
 

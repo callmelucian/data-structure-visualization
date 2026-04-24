@@ -7,8 +7,11 @@
 #include <string>
 #include <random>
 #include <algorithm>
+#include <vector>
 
 #include "global-setting.hpp"
+
+extern const int INPUT_NUMBER_LIMIT;
 
 // Function Declarations
 float magnitude(const sf::Vector2f &v);
@@ -17,6 +20,8 @@ float distance(const sf::Vector2f &a, const sf::Vector2f &b);
 float squaredDistance (const sf::Vector2f &a, const sf::Vector2f &b);
 float cube(float a);
 int convert (const std::string &s);
+
+std::vector<int> stringToNumbers (const std::string &s);
 
 /**
  * @brief Return a unit vector pointing from a to b

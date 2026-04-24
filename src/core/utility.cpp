@@ -1,5 +1,7 @@
 #include "../../include/core/utility.hpp"
 
+const int INPUT_NUMBER_LIMIT = 1e8;
+
 float magnitude(const sf::Vector2f &v) { 
     return std::sqrt(v.x * v.x + v.y * v.y); 
 }
@@ -39,6 +41,29 @@ int convert (const std::string &s) {
         ans = ans * 10 + c - '0';
     }
     return ans;
+}
+
+std::vector<int> stringToNumbers(const std::string &s) {
+    std::vector<int> result;
+    int curValue = 0;
+    bool sgn = false, filled = false;
+
+    for (char c : s) {
+        if (c == ' ') {
+            if (filled) result.push_back(sgn ? -curValue : curValue);
+            curValue = 0, sgn = filled = false;
+        }
+        else if (c == '-') {
+            if (!filled) sgn = true;
+            else return {};
+            filled = true;
+        }
+        else if ('0' <= c && c <= '9')
+            curValue = curValue * 10 + (c - '0'), filled = true;
+        else return {};
+    }
+    if (filled) result.push_back(curValue);
+    return result;
 }
 
 std::ostream& operator<<(std::ostream &oup, const sf::Vector2f &v) {
