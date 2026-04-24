@@ -12,14 +12,14 @@ namespace UI {
 Edge::Edge() :
     fromID(0), toID(0), weight(0),
     isDeleted(false), isActivated(false), isHovered(false), isHighlighted(false), isDirected(false),
-    defaultColor(sf::Color::Black),
+    defaultColor(Theme::getTextSecondary()),
     fromObserver(nullptr), toObserver(nullptr),
     thickness(0.f) {}
 
 Edge::Edge (int fromNode, int toNode, int weight, Node* fromObserver, Node* toObserver, bool isDirected) :
     fromID(fromNode), toID(toNode), weight(weight),
     isDeleted(false), isActivated(false), isHovered(false), isHighlighted(false), isDirected(isDirected),
-    defaultColor(sf::Color::Black),
+    defaultColor(Theme::getTextSecondary()),
     fromObserver(fromObserver), toObserver(toObserver),
     thickness(2.f) {}
 
@@ -42,7 +42,7 @@ sf::Vector2f Edge::getToPosition() const {
 
 sf::Color Edge::getColor() const {
     if (isActivated || isHighlighted) return Theme::getAccentMain(0);
-    if (isHovered) return Theme::getEdgeHovered();
+    if (isHovered) return Theme::getTextPrimary();
     return defaultColor;
 }
 

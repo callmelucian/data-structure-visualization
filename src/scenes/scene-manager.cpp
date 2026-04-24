@@ -7,6 +7,10 @@ const float BUTTON_RADIUS = 10.f;
 const float BUTTON_MARGIN = 30.f;
 const int BUTTON_FONT_SIZE = 19;
 
+const float LARGE_RADIUS = 70.f;
+const float MEDIUM_RADIUS = 60.f;
+const float SMALL_RADIUS = 50.f;
+
 float calculateContainerWidth (int buttonCount) {
     return BUTTON_WIDTH * buttonCount + BUTTON_PADDING * (buttonCount - 1) + BUTTON_MARGIN * 2;
 }
@@ -14,34 +18,29 @@ float calculateContainerWidth (int buttonCount) {
 // Scene Implementation
 Scene::Scene (SceneManager &manager, int buttonCount) :
     backgroundColor(Theme::getBackground()), manager(manager),
-    container(calculateContainerWidth(buttonCount), 180.f, 20.f),
-    previousScene(70.f, 70.f, 35.f),
-    setting(70.f, 70.f, 35.f),
-    playButton(75.f, 75.f, 75.f / 2.f),
-    prevStepButton(50.f, 50.f, 25.f),
-    prevOperationButton(50.f, 50.f, 25.f),
-    nextStepButton(50.f, 50.f, 25.f),
-    nextOperationButton(50.f, 50.f, 25.f),
+    container(calculateContainerWidth(buttonCount), LARGE_RADIUS + BUTTON_HEIGHT + 2 * BUTTON_MARGIN + 5.f, 20.f),
+    previousScene(MEDIUM_RADIUS, MEDIUM_RADIUS, MEDIUM_RADIUS / 2.f),
+    setting(MEDIUM_RADIUS, MEDIUM_RADIUS, MEDIUM_RADIUS / 2.f),
+    playButton(LARGE_RADIUS, LARGE_RADIUS, LARGE_RADIUS / 2.f),
+    prevStepButton(SMALL_RADIUS, SMALL_RADIUS, SMALL_RADIUS / 2.f),
+    prevOperationButton(SMALL_RADIUS, SMALL_RADIUS, SMALL_RADIUS / 2.f),
+    nextStepButton(SMALL_RADIUS, SMALL_RADIUS, SMALL_RADIUS / 2.f),
+    nextOperationButton(SMALL_RADIUS, SMALL_RADIUS, SMALL_RADIUS / 2.f),
     featureButtons(buttonCount, UI::Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_RADIUS)) {
     
     // ESC button
-    previousScene.setPosition({50 + 35, 50 + 35});
+    previousScene.setPosition({40 + MEDIUM_RADIUS / 2.f, 40 + MEDIUM_RADIUS / 2.f});
     previousScene.setIcon(Theme::leftIcon, 22.f);
     previousScene.setCallback([&]() {
         manager.toPreviousScene();
     });
     
     // setting button
-    setting.setPosition({Setting::screenWidth - 50 - 35, 50 + 35});
+    setting.setPosition({Setting::screenWidth - 40 - MEDIUM_RADIUS / 2.f, 40 + MEDIUM_RADIUS / 2.f});
     setting.setIcon(Theme::settingIcon, 25.f);
     setting.setCallback([&]() {
         manager.changeScene(7);
     });
-
-    // container
-    container.setFillColor(Theme::getLightBackground());
-    container.setPosition({900, 760});
-    container.centerOrigin();
     
     // buttons
     playButton.setIcon(Theme::playIcon);
@@ -50,23 +49,30 @@ Scene::Scene (SceneManager &manager, int buttonCount) :
     nextStepButton.setIcon(Theme::rightRightIcon);
     nextOperationButton.setIcon(Theme::nextIcon);
 
-    playButton.setPosition({Setting::screenWidth / 2.f, 730.f});
-    prevStepButton.setPosition({Setting::screenWidth / 2.f - 75.f, 730.f});
-    prevOperationButton.setPosition({Setting::screenWidth / 2.f - 150.f, 730.f});
-    nextStepButton.setPosition({Setting::screenWidth / 2.f + 75.f, 730.f});
-    nextOperationButton.setPosition({Setting::screenWidth / 2.f + 150.f, 730.f});
+    playButton.setPosition({Setting::screenWidth / 2.f, 740.f});
+    prevStepButton.setPosition({Setting::screenWidth / 2.f - LARGE_RADIUS / 2.f - BUTTON_PADDING - SMALL_RADIUS / 2.f, 740.f});
+    prevOperationButton.setPosition({Setting::screenWidth / 2.f - LARGE_RADIUS / 2.f - 2 * BUTTON_PADDING - 3.f * SMALL_RADIUS / 2.f, 740.f});
+    nextStepButton.setPosition({Setting::screenWidth / 2.f + LARGE_RADIUS / 2.f + BUTTON_PADDING + SMALL_RADIUS / 2.f, 740.f});
+    nextOperationButton.setPosition({Setting::screenWidth / 2.f + LARGE_RADIUS / 2.f + 2 * BUTTON_PADDING + 3.f * SMALL_RADIUS / 2.f, 740.f});
 
     changePlayButton = [&] (bool f) {
         playButton.setIcon(f ? Theme::pauseIcon : Theme::playIcon);
     };
 
     // feature buttons
-    sf::Vector2f position = {Setting::screenWidth / 2.f - container.getSize().x / 2.f, 805};
+    sf::Vector2f position = {Setting::screenWidth / 2.f - container.getSize().x / 2.f, 810};
     position.x += BUTTON_WIDTH / 2.f + BUTTON_MARGIN;
     for (int i = 0; i < buttonCount; i++) {
         featureButtons[i].setPosition(position);
         position.x += BUTTON_WIDTH + BUTTON_PADDING;
     }
+
+    // container
+    float containerY = (playButton.getPosition().y - LARGE_RADIUS / 2.f - BUTTON_MARGIN
+                        + featureButtons[0].getPosition().y + BUTTON_HEIGHT / 2.f + BUTTON_MARGIN) / 2.f;
+    container.setFillColor(Theme::getLightBackground());
+    container.setPosition({Setting::screenWidth / 2.f, containerY});
+    container.centerOrigin();
 }
 
 sf::Color Scene::getBackground() { 

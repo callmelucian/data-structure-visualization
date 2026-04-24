@@ -259,6 +259,48 @@ AVLTree::Node* AVLTree::eraseValue (Node *ptr, int deleteKey) {
     return newRoot;
 }
 
+bool AVLTree::searchValue (Node* ptr, int searchKey) {
+    callbackHighlightCode(0);
+    callbackHighlightNode(getVisualID(ptr));
+    callbackApplyAnimation();
+
+    if (ptr == nullptr) {
+        callbackHighlightCode(1);
+        callbackApplyAnimation();
+        return false;
+    }
+
+    if (searchKey == ptr->value) {
+        callbackHighlightCode(2);
+        callbackColorNode(getVisualID(ptr), true);
+        callbackApplyAnimation();
+
+        callbackColorNode(getVisualID(ptr), false);
+        callbackApplyAnimation();
+        return true;
+    }
+
+    if (searchKey < ptr->value) {
+        callbackHighlightCode(3);
+        callbackApplyAnimation();
+        
+        callbackHighlightCode(4);
+        callbackApplyAnimation();
+        return searchValue(ptr->lpt, searchKey);
+    }
+
+    if (searchKey > ptr->value) {
+        callbackHighlightCode(5);
+        callbackApplyAnimation();
+        
+        callbackHighlightCode(6);
+        callbackApplyAnimation();
+        return searchValue(ptr->rpt, searchKey);
+    }
+
+    return false;
+}
+
 AVLTree::Node* AVLTree::copyNodes(Node* otherNode) {
     if (otherNode == nullptr) return nullptr;
     Node* newNode = new Node(otherNode->value, otherNode->visualID);
@@ -287,6 +329,7 @@ void AVLTree::copyFrom (const AVLTree &other) {
     this->callbackChangeRoot = other.callbackChangeRoot;
     this->callbackApplyAnimation = other.callbackApplyAnimation;
     this->callbackHighlightNode = other.callbackHighlightNode;
+    this->callbackColorNode = other.callbackColorNode;
     this->callbackCompleteAnimation = other.callbackCompleteAnimation;
     this->callbackLoadCode = other.callbackLoadCode;
     this->callbackHighlightCode = other.callbackHighlightCode;
@@ -350,6 +393,18 @@ bool AVLTree::erase (int value) {
     root = eraseValue(root, value);
     callbackChangeRoot(getVisualID(root)); // root could be nullptr
     callbackApplyAnimation();
+    callbackHighlightNode(-1);
+    callbackLoadCode({});
+    callbackCompleteAnimation();
+    callbackApplyAnimation();
+    return true;
+}
+
+bool AVLTree::search (int value) {
+    if (root == nullptr) return false;
+    callbackLoadCode(CodeRepo::AVL_TREE_SEARCH);
+    searchValue(root, value);
+    
     callbackHighlightNode(-1);
     callbackLoadCode({});
     callbackCompleteAnimation();

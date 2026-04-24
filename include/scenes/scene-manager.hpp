@@ -17,6 +17,10 @@ extern const float BUTTON_RADIUS;
 extern const float BUTTON_MARGIN;
 extern const int BUTTON_FONT_SIZE;
 
+extern const float LARGE_RADIUS;
+extern const float MEDIUM_RADIUS;
+extern const float SMALL_RADIUS;
+
 float calculateContainerWidth (int buttonCount);
 
 class SceneManager;

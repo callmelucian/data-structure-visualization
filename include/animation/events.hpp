@@ -75,10 +75,9 @@ public:
 
 class BinaryTreeColorNode : public AnimationEvent<UI::BinaryTree> {
 private:
-    int nodeID;
-    bool color;
+    int nodeID, color;
 public:
-    BinaryTreeColorNode (int nodeID, bool color);
+    BinaryTreeColorNode (int nodeID, int color);
 
     int apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) override;
 };

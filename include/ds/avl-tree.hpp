@@ -2,6 +2,7 @@
 #include <functional>
 #include <algorithm>
 #include <iostream>
+#include <cassert>
 
 #include "../core/code-snippets.hpp"
 
@@ -26,6 +27,7 @@ private:
     std::function<void(int)> callbackChangeRoot;
     std::function<void()> callbackApplyAnimation;
     std::function<void(int)> callbackHighlightNode;
+    std::function<void(int,bool)> callbackColorNode;
     std::function<void()> callbackCompleteAnimation;
     std::function<void(const std::vector<std::string>&)> callbackLoadCode;
     std::function<void(int)> callbackHighlightCode;
@@ -84,6 +86,8 @@ private:
      * and return the new root in O(height)
      */
     Node* eraseValue(Node *ptr, int deleteKey);
+
+    bool searchValue (Node* ptr, int searchKey);
 
     /**
      * @brief Helper function to perform deep-copy on this AVL Tree
@@ -166,6 +170,10 @@ public:
         callbackHighlightNode = func;
     }
 
+    void setCallbackColorNode (auto func) {
+        callbackColorNode = func;
+    }
+
     /**
      * @brief Assign a callback function that will be called
      * whenever AVL Tree finishes a chain of animations
@@ -202,5 +210,7 @@ public:
      * and return a boolean flag to tell whether the node is actually deleted
      */
     bool erase(int value);
+
+    bool search (int value);
 };
 };

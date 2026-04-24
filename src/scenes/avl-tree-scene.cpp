@@ -1,15 +1,19 @@
 #include "../../include/scenes/avl-tree-scene.hpp"
 
 AVLTreeScene::AVLTreeScene (SceneManager &manager) :
-    Scene(manager, 3), insertField(1000, 50), eraseField(1000, 50), treeUI(UI::BinaryTree()) {
+    Scene(manager, 4),
+    insertField(1000, 50), eraseField(1000, 50), searchField(1000, 50),
+    treeUI(UI::BinaryTree()) {
     
     // initialize buttons
     featureButtons[0].setString("INSERT");
     featureButtons[0].setCharacterSize(20);
     featureButtons[1].setString("ERASE");
     featureButtons[1].setCharacterSize(20);
-    featureButtons[2].setString("FILE");
+    featureButtons[2].setString("SEARCH");
     featureButtons[2].setCharacterSize(20);
+    featureButtons[3].setString("FILE");
+    featureButtons[3].setCharacterSize(20);
 
     // intialize fields
     insertField.setPosition({Setting::screenWidth / 2.f, 85});
@@ -18,6 +22,9 @@ AVLTreeScene::AVLTreeScene (SceneManager &manager) :
     eraseField.setPosition({Setting::screenWidth / 2.f, 85});
     eraseField.setLabel("Erase");
     eraseField.disable();
+    searchField.setPosition({Setting::screenWidth / 2.f, 85});
+    searchField.setLabel("Search");
+    searchField.disable();
     
     // set callback functions: AVL Tree UI
     treeUI.setCallbackEnableButtons([&](int f) {
@@ -34,7 +41,7 @@ AVLTreeScene::AVLTreeScene (SceneManager &manager) :
     });
     treeUI.setCallbackPlayPause(changePlayButton);
 
-    // set callback functions: input field and button for insertion
+    // set callback functions: INSERT
     insertField.setCallbackFunction([&](const std::string &msg) {
         std::vector<int> numbers = stringToNumbers(msg);
         if (numbers.empty()) return;
@@ -48,10 +55,10 @@ AVLTreeScene::AVLTreeScene (SceneManager &manager) :
     });
     featureButtons[0].setCallback([&]() {
         if (insertField.isEnabled()) insertField.disable();
-        else insertField.enable();
+        else insertField.enable(), eraseField.disable(), searchField.disable();
     });
 
-    // set callback functions: input field and button for deletion
+    // set callback functions: ERASE
     eraseField.setCallbackFunction([&](const std::string &msg) {
         std::vector<int> numbers = stringToNumbers(msg);
         if (numbers.empty()) return;
@@ -65,11 +72,35 @@ AVLTreeScene::AVLTreeScene (SceneManager &manager) :
     });
     featureButtons[1].setCallback([&]() {
         if (eraseField.isEnabled()) eraseField.disable();
-        else eraseField.disable();
+        else eraseField.enable(), insertField.disable(), searchField.disable();
     });
 
+    // set callback functions: SEARCH
+    searchField.setCallbackFunction([&](const std::string &msg) {
+        std::vector<int> numbers = stringToNumbers(msg);
+        if (numbers.empty() || numbers.size() >= 2) return;
+        for (int value : numbers) {
+            treeUI.transformLogic([&](DS::AVLTree &avl) {
+                return avl.search(value);
+            });
+        }
+    });
     featureButtons[2].setCallback([&]() {
-        std::cerr << "Read file " << openFileDialog() << std::endl;
+        if (searchField.isEnabled()) searchField.disable();
+        else searchField.enable(), insertField.disable(), eraseField.disable();
+    });
+
+    featureButtons[3].setCallback([&]() {
+        std::string filePath = openFileDialog();
+        std::vector<int> numbers = fileToNumbers(filePath);
+        if (numbers.empty()) return;
+        treeUI.resetManager();
+        for (int value : numbers) {
+            treeUI.transformLogic([&](DS::AVLTree &avl) {
+                return avl.insert(value), true;
+            });
+            treeUI.nextCompleteState();
+        }
     });
 
     // set callback functions: previous/next buttons
@@ -97,12 +128,15 @@ void AVLTreeScene::handleEvent(sf::RenderWindow &window, const std::optional<sf:
     insertField.handleTextEvents(window, event);
     eraseField.handleMouseEvents(window, event);
     eraseField.handleTextEvents(window, event);
+    searchField.handleMouseEvents(window, event);
+    searchField.handleTextEvents(window, event);
     handleButtons(window, event);
 }
 
 void AVLTreeScene::timePropagation(float delta) {
     insertField.timePropagation();
     eraseField.timePropagation();
+    searchField.timePropagation();
     treeUI.timePropagation(delta);
 }
 
@@ -111,5 +145,6 @@ void AVLTreeScene::draw(sf::RenderWindow &window) {
     window.draw(treeUI.getCurrentCode());
     window.draw(insertField);
     window.draw(eraseField);
+    window.draw(searchField);
     drawButtons(window);
 }

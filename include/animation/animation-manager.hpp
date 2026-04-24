@@ -134,6 +134,8 @@ public:
      */
     void transformLogic (std::function<bool(TypeLogic&)> transformFunction);
 
+    void resetManager();
+    
     void play();
     void pause();
     bool checkIsPlaying() const;

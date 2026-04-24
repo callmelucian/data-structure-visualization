@@ -8,6 +8,7 @@
 #include <random>
 #include <algorithm>
 #include <vector>
+#include <iostream>
 
 #include "global-setting.hpp"
 
@@ -22,6 +23,7 @@ float cube(float a);
 int convert (const std::string &s);
 
 std::vector<int> stringToNumbers (const std::string &s);
+std::vector<int> fileToNumbers (const std::string &path);
 
 /**
  * @brief Return a unit vector pointing from a to b

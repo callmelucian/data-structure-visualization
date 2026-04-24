@@ -6,7 +6,7 @@ AnimationManager<TypeUI, TypeLogic>::AnimationManager (const TypeUI &init) :
     currentEventStep(0), stateUIIterator(0), stateLogicIterator(0), isPlaying(false) {
 
     // set position for UI and code highlighter
-    stateUI[0].setPosition({Setting::screenWidth / 2.f, Setting::screenHeight / 2.f});
+    stateUI[0].setPosition({Setting::screenWidth / 2.f, Setting::screenHeight / 2.f - 50.f});
     stateCode[0].setPosition({Setting::screenWidth - 20.f, Setting::screenHeight - 20.f});
 
     // initialize callback functions
@@ -155,6 +155,11 @@ void AnimationManager<TypeUI, TypeLogic>::transformLogic (std::function<bool(Typ
 }
 
 template <typename TypeUI, typename TypeLogic>
+void AnimationManager<TypeUI, TypeLogic>::resetManager() {
+    while (previousCompleteState());
+}
+
+template <typename TypeUI, typename TypeLogic>
 void AnimationManager<TypeUI, TypeLogic>::play() {
     isPlaying = true;
     callbackPlayPause(true);
@@ -206,6 +211,11 @@ void AnimationManager<UI::BinaryTree, DS::AVLTree>::initCallbackFunctions() {
     stateLogic[0].setCallbackHighlightNode([&] (int nodeID) {
         this->createAnimationEvent(
             std::make_unique<BinaryTreeHighlightNode>(nodeID)
+        );
+    });
+    stateLogic[0].setCallbackColorNode([&] (int nodeID, bool color) {
+        this->createAnimationEvent(
+            std::make_unique<BinaryTreeColorNode>(nodeID, color ? 1 : 0)
         );
     });
     stateLogic[0].setCallbackCompleteAnimation([&]() {
@@ -349,7 +359,7 @@ void AnimationManager<UI::BinaryTree, DS::RedBlackTree>::initCallbackFunctions()
     });
     stateLogic[0].setCallbackColorNode ([&] (int nodeID, bool color) {
         this->createAnimationEvent(
-            std::make_unique<BinaryTreeColorNode>(nodeID, color)
+            std::make_unique<BinaryTreeColorNode>(nodeID, color ? 2 : 1)
         );
     });
     stateLogic[0].setCallbackCompleteAnimation([&]() {

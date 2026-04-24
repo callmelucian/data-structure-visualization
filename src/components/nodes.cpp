@@ -6,12 +6,12 @@ namespace UI {
 
 // ========== NODE ==========
 Node::Node(const std::string &msg, float radius, float thickness) :
-    circle(radius, 100), label(Theme::ibmRegular, msg), annotation(Theme::ibmRegular) {
+    circle(radius, 100), label(Theme::googleSansRegular, msg), annotation(Theme::googleSansItalic) {
     
     // setup circle
     circle.setOrigin({radius, radius});
-    circle.setFillColor(Theme::getTransparent());
-    circle.setOutlineColor(Theme::getPrimary());
+    circle.setFillColor(Theme::getButton());
+    circle.setOutlineColor(Theme::getTextSecondary());
     circle.setOutlineThickness(thickness);
 
     // setup label
@@ -196,18 +196,6 @@ void FloatingNode::timePropagation (float deltaTime) {
     setPosition(getPosition() + velocity * deltaTime * 50.f);
 }
 
-// sf::Vector2f FloatingNode::getPosition() const {
-//     return nodeUI.getPosition();
-// }
-
-// float FloatingNode::getRadius() const {
-//     return nodeUI.getRadius();
-// }
-
-// void FloatingNode::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-//     target.draw(nodeUI, states);
-// }
-
 void FloatingNode::activateNode() {
     isActivated = true;
     setColor(sf::Color::Green);
@@ -270,7 +258,7 @@ void drawEdge(sf::RenderTarget &target, sf::RenderStates states, const AnimatedN
     line.setOrigin({0, thickness / 2.0f});
     line.setPosition(start);
     line.setRotation(sf::radians(angle));
-    line.setFillColor(sf::Color::Black);
+    line.setFillColor(Theme::getTextSecondary());
 
         // draw arrow head
     if (isDirected) {
@@ -283,88 +271,12 @@ void drawEdge(sf::RenderTarget &target, sf::RenderStates states, const AnimatedN
         
         arrowhead.setPosition(end);
         arrowhead.setRotation(sf::radians(angle));
-        arrowhead.setFillColor(sf::Color::Black);
+        arrowhead.setFillColor(Theme::getTextSecondary());
         target.draw(arrowhead, states);
     }
 
     // draw
     target.draw(line, states);
 }
-
-// void drawEdge(sf::RenderTarget &target, sf::RenderStates state, const FloatingNode* from, const FloatingNode* to, sf::Color edgeColor, float thickness) {
-//     if (from->getPosition() == to->getPosition()) return;
-
-//     // get centers of the endpoints
-//     sf::Vector2f fromCenter = from->getPosition();
-//     sf::Vector2f toCenter = to->getPosition();
-//     sf::Vector2f shift = (toCenter - fromCenter) * from->getRadius() / distance(fromCenter, toCenter);
-
-//     // pre calculations
-//     sf::Vector2f start = fromCenter + shift;
-//     sf::Vector2f end = toCenter - shift;
-//     sf::Vector2f delta = end - start;
-//     float dist = distance(start, end);
-//     float angle = std::atan2(delta.y, delta.x);
-
-//     // setup line
-//     sf::RectangleShape line({dist, thickness});
-//     line.setOrigin({0, thickness / 2.0f});
-//     line.setPosition(start);
-//     line.setRotation(sf::radians(angle));
-//     line.setFillColor(edgeColor);
-
-//     // draw
-//     target.draw(line, state);
-// }
-
-// void drawEdge(sf::RenderTarget &target, sf::RenderStates state, 
-//               const FloatingNode* from, const FloatingNode* to,
-//               int weight, sf::Color edgeColor, float thickness) {
-    
-//     if (from->getPosition() == to->getPosition()) return;
-
-//     sf::Vector2f fromCenter = from->getPosition();
-//     sf::Vector2f toCenter = to->getPosition();
-//     float d = distance(fromCenter, toCenter);
-    
-//     sf::Vector2f shift = (toCenter - fromCenter) * from->getRadius() / d;
-//     sf::Vector2f start = fromCenter + shift;
-//     sf::Vector2f end = toCenter - shift;
-    
-//     sf::Vector2f delta = end - start;
-//     float dist = std::sqrt(delta.x * delta.x + delta.y * delta.y);
-//     float angle = std::atan2(delta.y, delta.x);
-
-//     sf::RectangleShape line({dist, thickness});
-//     line.setOrigin({0, thickness / 2.0f});
-//     line.setPosition(start);
-//     line.setRotation(sf::radians(angle));
-//     line.setFillColor(edgeColor);
-//     target.draw(line, state);
-
-//     float arrowSize = thickness * 3.0f;
-//     sf::ConvexShape arrowhead;
-//     arrowhead.setPointCount(3);
-//     arrowhead.setPoint(0, {0, 0});                          // Tip of arrow
-//     arrowhead.setPoint(1, {-arrowSize, -arrowSize * 0.8f}); // Back top
-//     arrowhead.setPoint(2, {-arrowSize,  arrowSize * 0.8f}); // Back bottom
-    
-//     arrowhead.setPosition(end);
-//     arrowhead.setRotation(sf::radians(angle));
-//     arrowhead.setFillColor(edgeColor);
-//     target.draw(arrowhead, state);
-
-//     Text text(Theme::ibmRegular, std::to_string(weight), 15);
-//     text.setFillColor(edgeColor);
-//     text.centerOrigin();
-
-//     // position text at midpoint
-//     sf::Vector2f midpoint = (start + end) / 2.0f;
-//     sf::Vector2f unitNormal(-delta.y / dist, delta.x / dist);
-//     float textOffset = 15.0f + thickness; 
-//     text.setPosition(midpoint + unitNormal * textOffset);
-
-//     target.draw(text, state);
-// }
 
 }; // namespace UI

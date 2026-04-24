@@ -127,7 +127,15 @@ inline const std::vector<std::string> AVL_TREE_ERASE = {
     "    return selfBalance(ptr)"
 };
 
-
+inline const std::vector<std::string> AVL_TREE_SEARCH = {
+    "bool searchValue (Node* ptr, int searchKey):",
+    "    if ptr == nullptr: return false",
+    "    if searchKey == ptr->value: return true",
+    "    if searchKey < ptr->value:",
+    "        return search(ptr->lpt, searchKey)",
+    "    if searchKey > ptr->value:",
+    "        return search(ptr->rpt, searchKey)",
+};
 
 inline const std::vector<std::string> DIJKSTRA_CODE = {
     "intialize all nodes with infinity distance",

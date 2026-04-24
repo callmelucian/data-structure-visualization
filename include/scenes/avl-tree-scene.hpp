@@ -21,7 +21,7 @@
 
 class AVLTreeScene : public Scene {
 private:
-    UI::TextInputField insertField, eraseField;
+    UI::TextInputField insertField, eraseField, searchField;
     AnimationManager<UI::BinaryTree, DS::AVLTree> treeUI;
 
 public:

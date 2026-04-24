@@ -35,34 +35,49 @@ float cube(float a) {
 }
 
 int convert (const std::string &s) {
-    int ans = 0;
+    int ans = 0, sgn = false;
     for (char c : s) {
-        if (c < '0' || '9' < c) return -1;
-        ans = ans * 10 + c - '0';
+        if (c == '-') sgn = true;
+        else {
+            if (c < '0' || '9' < c) return INT_MAX;
+            ans = ans * 10 + c - '0';
+        }
     }
-    return ans;
+    return sgn ? -ans : ans;
 }
 
 std::vector<int> stringToNumbers(const std::string &s) {
     std::vector<int> result;
     int curValue = 0;
-    bool sgn = false, filled = false;
+    bool sgn = false, filled = false, legit = false;
 
     for (char c : s) {
         if (c == ' ') {
-            if (filled) result.push_back(sgn ? -curValue : curValue);
-            curValue = 0, sgn = filled = false;
+            if (legit) result.push_back(sgn ? -curValue : curValue);
+            curValue = 0, sgn = filled = false, legit = false;
         }
         else if (c == '-') {
             if (!filled) sgn = true;
             else return {};
-            filled = true;
+            filled = true, legit = false;
         }
         else if ('0' <= c && c <= '9')
-            curValue = curValue * 10 + (c - '0'), filled = true;
+            curValue = curValue * 10 + (c - '0'), filled = legit = true;
         else return {};
     }
-    if (filled) result.push_back(curValue);
+    if (legit) result.push_back(sgn ? -curValue : curValue);
+    return result;
+}
+
+std::vector<int> fileToNumbers (const std::string &path) {
+    std::ifstream inp(path);
+    std::vector<int> result;
+    std::string token;
+    while (inp >> token) {
+        int value = convert(token);
+        if (value != INT_MAX) result.push_back(value);
+        else return {};
+    }
     return result;
 }
 

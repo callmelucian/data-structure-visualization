@@ -11,8 +11,8 @@ namespace Setting {
     inline constexpr float screenWidth = 1800;
     inline constexpr float screenHeight = 900;
     inline constexpr sf::Vector2f screenCenter({screenWidth / 2.f, screenHeight / 2.f});
-    inline constexpr float focusX = 1600;
-    inline constexpr float focusY = 600;
+    inline constexpr float focusX = 1550;
+    inline constexpr float focusY = 450;
 
     float animationFactor(); // 1 + animationCoefficient / 50
     float animationDelay(); // 6.8 - animationCoefficient / 15

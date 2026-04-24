@@ -6,7 +6,7 @@ namespace UI {
 
 TextInputField::TextInputField (float width, float height, float radius) :
     content(Theme::googleSansRegular),
-    fieldLabel(Theme::googleSansBoldItalic),
+    fieldLabel(Theme::googleSansItalic),
     container(width, height, radius),
     focus(false), showCursor(false), enableFlag(true) {
     
@@ -28,8 +28,8 @@ TextInputField::TextInputField (float width, float height, float radius) :
     content.setCharacterSize(20);
     fieldLabel.setFillColor(Theme::getTextPrimary());
     fieldLabel.centerOrigin();
-    fieldLabel.setPosition({0.f, -(height / 2.f + 10.f)});
-    fieldLabel.setCharacterSize(13);
+    fieldLabel.setPosition({0.f, -(height / 2.f + 12.f)});
+    fieldLabel.setCharacterSize(14);
 }
 
 void TextInputField::setString (const std::string &msg) {
