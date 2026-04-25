@@ -1,48 +1,22 @@
 #include "../../include/scenes/rb-tree-scene.hpp"
 
-RBTreeScene::RBTreeScene (SceneManager &manager) :
-    Scene(manager, 5),
-    insertField(1000, 40), eraseField(1000, 40), searchField(1000, 40) {
-
-    // initialize buttons
-    featureButtons[0].setString("INSERT");
-    featureButtons[0].setCharacterSize(20);
-    featureButtons[1].setString("ERASE");
-    featureButtons[1].setCharacterSize(20);
-    featureButtons[2].setString("SEARCH");
-    featureButtons[2].setCharacterSize(20);
-    featureButtons[3].setString("FILE");
-    featureButtons[3].setCharacterSize(20);
-    featureButtons[4].setString("CLEAR");
-    featureButtons[4].setCharacterSize(20);
-
-    // intialize fields
-    insertField.setPosition({Setting::screenWidth / 2.f, 85});
-    insertField.setLabel("Insert/Init");
-    insertField.disable();
-    eraseField.setPosition({Setting::screenWidth / 2.f, 85});
-    eraseField.setLabel("Erase");
-    eraseField.disable();
-    searchField.setPosition({Setting::screenWidth / 2.f, 85});
-    searchField.setLabel("Search");
-    searchField.disable();    
-
+RBTreeScene::RBTreeScene (SceneManager &manager) : Scene(manager, 5, 3) {
     // set callback functions: AVL Tree UI
     ui.setCallbackEnableButtons([&](int f) {
-        for (UI::Button &button : featureButtons) {
+        for (UI::Button &button : buttons) {
             if (f) button.enableButton();
             else button.disableButton();
         }
-        if (!f) {
-            insertField.disable();
-            eraseField.disable();
-            searchField.disable();
-        }
+        if (!f) disableFields();
     });
     ui.setCallbackPlayPause(changePlayButton);
+    disableFields();
 
-    // set callback functions: INSERT
-    insertField.setCallbackFunction([&](const std::string &msg) {
+    // insert button
+    buttons[0].setString("INSERT");
+    buttons[0].setCharacterSize(20);
+    fields[0].setLabel("Insert/Init");
+    fields[0].setCallbackFunction([&](const std::string &msg) {
         std::vector<int> numbers = stringToNumbers(msg);
         for (int value : numbers) {
             ui.transformLogic([&](DS::RedBlackTree &rb) {
@@ -50,13 +24,16 @@ RBTreeScene::RBTreeScene (SceneManager &manager) :
             });
         }
     });
-    featureButtons[0].setCallback([&]() {
-        if (insertField.isEnabled()) insertField.disable();
-        else insertField.enable(), eraseField.disable(), searchField.disable();
+    buttons[0].setCallback([&]() {
+        if (fields[0].isEnabled()) fields[0].disable();
+        else disableFields(), fields[0].enable();
     });
 
-    // set callback functions: ERASE
-    eraseField.setCallbackFunction([&](const std::string &msg) {
+    // erase button
+    buttons[1].setString("ERASE");
+    buttons[1].setCharacterSize(20);
+    fields[1].setLabel("Erase");
+    fields[1].setCallbackFunction([&](const std::string &msg) {
         std::vector<int> numbers = stringToNumbers(msg);
         for (int value : numbers) {
             ui.transformLogic([&](DS::RedBlackTree &rb) {
@@ -64,13 +41,16 @@ RBTreeScene::RBTreeScene (SceneManager &manager) :
             });
         }
     });
-    featureButtons[1].setCallback([&]() {
-        if (eraseField.isEnabled()) eraseField.disable();
-        else eraseField.enable(), insertField.disable(), searchField.disable();
+    buttons[1].setCallback([&]() {
+        if (fields[1].isEnabled()) fields[1].disable();
+        else disableFields(), fields[1].enable();
     });
 
-    // set callback functions: SEARCH
-    searchField.setCallbackFunction([&](const std::string &msg) {
+    // search button
+    buttons[2].setString("SEARCH");
+    buttons[2].setCharacterSize(20);
+    fields[2].setLabel("Search");
+    fields[2].setCallbackFunction([&](const std::string &msg) {
         std::vector<int> numbers = stringToNumbers(msg);
         if (numbers.empty() || numbers.size() >= 2) return;
         for (int value : numbers) {
@@ -79,12 +59,15 @@ RBTreeScene::RBTreeScene (SceneManager &manager) :
             });
         }
     });
-    featureButtons[2].setCallback([&]() {
-        if (searchField.isEnabled()) searchField.disable();
-        else searchField.enable(), insertField.disable(), eraseField.disable();
+    buttons[2].setCallback([&]() {
+        if (fields[2].isEnabled()) fields[2].disable();
+        else disableFields(), fields[2].enable();
     });
 
-    featureButtons[3].setCallback([&]() {
+    // import file
+    buttons[3].setString("IMPORT FILE");
+    buttons[3].setCharacterSize(20);
+    buttons[3].setCallback([&]() {
         std::string filePath = openFileDialog();
         std::vector<int> numbers = fileToNumbers(filePath);
         if (numbers.empty()) return;
@@ -97,7 +80,10 @@ RBTreeScene::RBTreeScene (SceneManager &manager) :
         }
     });
 
-    featureButtons[4].setCallback([&]() {
+    // clear
+    buttons[4].setString("CLEAR");
+    buttons[4].setCharacterSize(20); 
+    buttons[4].setCallback([&]() {
         ui.appendEmpty(), ui.nextCompleteState();
     });
 
@@ -122,27 +108,16 @@ RBTreeScene::RBTreeScene (SceneManager &manager) :
 
 void RBTreeScene::handleEvent(sf::RenderWindow &window, const std::optional<sf::Event> &event) {
     ui.getCurrentCode().handleMouseEvents(window, event);
-    insertField.handleMouseEvents(window, event);
-    insertField.handleTextEvents(window, event);
-    eraseField.handleMouseEvents(window, event);
-    eraseField.handleTextEvents(window, event);
-    searchField.handleMouseEvents(window, event);
-    searchField.handleTextEvents(window, event);
-    handleButtons(window, event);
+    baseHandleEvent(window, event);
 }
 
 void RBTreeScene::timePropagation(float delta) {
-    insertField.timePropagation();
-    eraseField.timePropagation();
-    searchField.timePropagation();
+    baseTimePropagation(delta);
     ui.timePropagation(delta);
 }
 
 void RBTreeScene::draw(sf::RenderWindow &window) {
     window.draw(ui.getCurrentUI());
-    window.draw(insertField);
-    window.draw(eraseField);
-    window.draw(searchField);
-    drawButtons(window);
+    baseDraw(window);
     window.draw(ui.getCurrentCode());
 }

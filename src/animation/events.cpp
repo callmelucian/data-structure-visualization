@@ -226,6 +226,18 @@ int LinkedListSetHead::apply (UI::LinkedList &ui, UI::CodeHighlighter &code) {
     return ui.setHead(nodeID), true;
 }
 
+// ========== LINKED LIST COLOR NODE ========== //
+LinkedListColorNode::LinkedListColorNode (int nodeID, bool color) : nodeID(nodeID), color(color) {}
+int LinkedListColorNode::apply (UI::LinkedList &ui, UI::CodeHighlighter &code) {
+    return ui.colorNode(nodeID, color ? Theme::getRBRed() : Theme::getButton()), true;
+}
+
+// ========== LINKED LIST CHANGE VALUE ========== //
+LinkedListChangeValue::LinkedListChangeValue (int nodeID, int newValue) : nodeID(nodeID), newValue(newValue) {}
+int LinkedListChangeValue::apply (UI::LinkedList &ui, UI::CodeHighlighter &code) {
+    return ui.changeValue(nodeID, std::to_string(newValue)), true;
+}
+
 // ========== COMPLETE ANIMATION ========== //
 
 template <typename TypeUI>

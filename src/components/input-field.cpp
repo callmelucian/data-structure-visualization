@@ -83,6 +83,10 @@ bool TextInputField::isFocused() const {
     return focus; 
 }
 
+void TextInputField::focusField() {
+    focus = true;
+}
+
 bool TextInputField::isEnabled() const {
     return enableFlag;
 }

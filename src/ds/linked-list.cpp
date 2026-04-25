@@ -7,7 +7,7 @@ LinkedList::Node::Node() : value(0), visualID(0), pNext(nullptr) {}
 LinkedList::Node::Node (int value, int visualID) : value(value), visualID(visualID), pNext(nullptr) {}
 
 // ===== CONSTRUCTORS & DESTRUCTORS =====
-LinkedList::LinkedList() : rootNode(nullptr), nodeCounter(0) {}
+LinkedList::LinkedList() : rootNode(nullptr), nodeCounter(0), listSize(0) {}
 LinkedList::LinkedList (const LinkedList &other) {
     copyFrom(other);
 }
@@ -30,6 +30,8 @@ void LinkedList::copyFrom (const LinkedList &other) {
     this->callbackAddEdge = other.callbackAddEdge;
     this->callbackHighlightNode = other.callbackHighlightNode;
     this->callbackSetHead = other.callbackSetHead;
+    this->callbackColorNode = other.callbackColorNode;
+    this->callbackChangeValue = other.callbackChangeValue;
     this->callbackApplyAnimation = other.callbackApplyAnimation;
     this->callbackCompleteAnimation = other.callbackCompleteAnimation;
     this->callbackLoadCode = other.callbackLoadCode;
@@ -53,8 +55,8 @@ int LinkedList::getVisualID (Node* ptr) {
 }
 
 // ===== PUBLIC FUNCTIONS =====
-void LinkedList::appendElement (int insertKey) {
-    callbackLoadCode(CodeRepo::LINKED_LIST_INSERT);
+void LinkedList::append (int insertKey) {
+    callbackLoadCode(CodeRepo::LINKED_LIST_APPEND);
     callbackHighlightCode(0);
     callbackApplyAnimation();
 
@@ -64,33 +66,32 @@ void LinkedList::appendElement (int insertKey) {
         callbackHighlightNode(nodeCounter);
         callbackApplyAnimation();
         rootNode = new Node(insertKey, nodeCounter++);
+        listSize++;
     }
     else {
-        callbackHighlightCode(2);
-        callbackApplyAnimation();
-
         Node* ptr = rootNode;
-        callbackHighlightCode(3);
+        callbackHighlightCode(2);
         callbackHighlightNode(getVisualID(ptr));
         callbackApplyAnimation();
 
-        while (ptr->pNext != nullptr) {
-            callbackHighlightCode(4);
+        if (ptr->pNext != nullptr) {
+            callbackHighlightCode(3);
             callbackHighlightNode(getVisualID(ptr));
             callbackApplyAnimation();
-
+        }
+        while (ptr->pNext != nullptr) {
             ptr = ptr->pNext;
-            callbackHighlightCode(5);
             callbackHighlightNode(getVisualID(ptr));
             callbackApplyAnimation();
         }
 
-        callbackHighlightCode(6);
+        callbackHighlightCode(4);
         callbackCreateNode(insertKey, false);
         callbackHighlightNode(nodeCounter);
         callbackAddEdge(getVisualID(ptr), nodeCounter);
         callbackApplyAnimation();
         ptr->pNext = new Node(insertKey, nodeCounter++);
+        listSize++;
     }
 
     callbackHighlightCode(-1);
@@ -98,6 +99,58 @@ void LinkedList::appendElement (int insertKey) {
     callbackHighlightNode(-1);
     callbackCompleteAnimation();
     callbackApplyAnimation();
+}
+
+bool LinkedList::insert (int position, int insertKey) {
+    if (position > listSize) return false;
+    callbackLoadCode(CodeRepo::LINKED_LIST_INSERT);
+    callbackHighlightCode(0);
+    callbackApplyAnimation();
+
+    if (position == 0) {
+        callbackHighlightCode(1);
+        callbackCreateNode(insertKey, true);
+        callbackHighlightNode(nodeCounter);
+        Node* newHead = new Node(insertKey, nodeCounter++);
+        callbackAddEdge(getVisualID(newHead), getVisualID(rootNode));
+        newHead->pNext = rootNode, rootNode = newHead;
+        callbackApplyAnimation();
+    }
+
+    else {
+        Node* ptr = rootNode;
+        callbackHighlightCode(2);
+        callbackHighlightNode(getVisualID(ptr));
+        callbackApplyAnimation();
+
+        for (int i = 1; i < position; i++) {
+            ptr = ptr->pNext;
+            callbackHighlightCode(3);
+            callbackHighlightNode(getVisualID(ptr));
+            callbackApplyAnimation();
+        }
+
+        callbackHighlightCode(4);
+        callbackCreateNode(insertKey, false);
+        callbackHighlightNode(nodeCounter);
+        Node* newNode = new Node(insertKey, nodeCounter++);
+        if (ptr->pNext) callbackAddEdge(getVisualID(newNode), getVisualID(ptr->pNext));
+        callbackAddEdge(getVisualID(ptr), getVisualID(newNode));
+        callbackApplyAnimation();
+
+        newNode->pNext = ptr->pNext;
+        ptr->pNext = newNode;
+
+        callbackHighlightCode(5);
+        callbackApplyAnimation();
+    }
+
+    callbackHighlightCode(-1);
+    callbackLoadCode({});
+    callbackHighlightNode(-1);
+    callbackCompleteAnimation();
+    callbackApplyAnimation();
+    return true;
 }
 
 void LinkedList::erase (int eraseKey) {
@@ -122,41 +175,40 @@ void LinkedList::erase (int eraseKey) {
         callbackDeleteNode(getVisualID(tmp));
         callbackApplyAnimation();
         delete tmp;
+        listSize--;
     }
     
     else {
-        callbackHighlightCode(4);
-        callbackApplyAnimation();
-
         Node* ptr = rootNode;
-        callbackHighlightCode(5);
+        callbackHighlightCode(3);
         callbackHighlightNode(getVisualID(ptr));
         callbackApplyAnimation();
 
         while (ptr->pNext != nullptr && ptr->pNext->value != eraseKey) {
-            callbackHighlightCode(6);
+            callbackHighlightCode(4);
             callbackHighlightNode(getVisualID(ptr));
             callbackApplyAnimation();
 
             ptr = ptr->pNext;
-            callbackHighlightCode(7);
+            callbackHighlightCode(5);
             callbackHighlightNode(getVisualID(ptr));
             callbackApplyAnimation();
         }
 
         if (ptr->pNext != nullptr) {
             Node* toDelete = ptr->pNext;
-            callbackHighlightCode(8);
+            callbackHighlightCode(6);
             callbackHighlightNode(getVisualID(toDelete));
             callbackApplyAnimation();
 
             ptr->pNext = ptr->pNext->pNext;
-            callbackHighlightCode(9);
+            callbackHighlightCode(7);
             callbackAddEdge(getVisualID(ptr), getVisualID(ptr->pNext));
             callbackHighlightNode(-1);
             callbackDeleteNode(getVisualID(toDelete));
             callbackApplyAnimation();
             delete toDelete;
+            listSize--;
         }
     }
 
@@ -165,6 +217,68 @@ void LinkedList::erase (int eraseKey) {
     callbackHighlightNode(-1);
     callbackCompleteAnimation();
     callbackApplyAnimation();
+}
+
+bool LinkedList::update (int oldKey, int newKey) {
+    if (rootNode == nullptr) return false;
+    callbackLoadCode(CodeRepo::LINKED_LIST_UPDATE);
+    callbackHighlightCode(0);
+    callbackApplyAnimation();
+
+    for (Node* ptr = rootNode; ptr != nullptr; ptr = ptr->pNext) {
+        callbackHighlightCode(1);
+        callbackHighlightNode(getVisualID(ptr));
+        callbackApplyAnimation();
+
+        if (ptr->value == oldKey) {
+            callbackHighlightCode(2);
+            callbackChangeValue(getVisualID(ptr), newKey);
+            callbackApplyAnimation();
+        }
+    }
+
+    callbackHighlightCode(-1);
+    callbackLoadCode({});
+    callbackHighlightNode(-1);
+    callbackCompleteAnimation();
+    callbackApplyAnimation();
+    return true;
+}
+
+bool LinkedList::search (int searchKey) {
+    if (rootNode == nullptr) return false;
+    callbackLoadCode(CodeRepo::LINKED_LIST_SEARCH);
+    callbackHighlightCode(0);
+    callbackApplyAnimation();
+
+    bool found = false;
+    for (Node* ptr = rootNode; ptr != nullptr; ptr = ptr->pNext) {
+        callbackHighlightCode(1);
+        callbackHighlightNode(getVisualID(ptr));
+        callbackApplyAnimation();
+
+        if (ptr->value == searchKey) {
+            callbackHighlightCode(2);
+            callbackColorNode(getVisualID(ptr), true);
+            callbackApplyAnimation();
+
+            found = true;
+            callbackColorNode(getVisualID(ptr), false);
+            callbackApplyAnimation();
+            break;
+        }
+    }
+    if (!found) {
+        callbackHighlightCode(3);
+        callbackApplyAnimation();
+    }
+
+    callbackHighlightCode(-1);
+    callbackLoadCode({});
+    callbackHighlightNode(-1);
+    callbackCompleteAnimation();
+    callbackApplyAnimation();
+    return true;
 }
 
 }; // namespace DS

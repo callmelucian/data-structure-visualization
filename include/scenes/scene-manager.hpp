@@ -7,6 +7,7 @@
 
 #include "../assets/theme.hpp"
 #include "../components/button.hpp"
+#include "../components/input-field.hpp"
 #include "../core/global-setting.hpp"
 #include "../animation/animation-manager.hpp"
 
@@ -36,18 +37,22 @@ protected:
     UI::Button playButton;
     UI::Button prevStepButton, prevOperationButton;
     UI::Button nextStepButton, nextOperationButton;
+    std::vector<UI::Button> buttons;
+    std::vector<UI::TextInputField> fields;
+
     std::function<void(bool)> changePlayButton;
-    std::vector<UI::Button> featureButtons;
 public:
     // constructor
-    Scene (SceneManager &manager, int buttonCount = 5);
+    Scene (SceneManager &manager, int buttonCount = 5, int fieldCount = 2);
 
     // get background color
     sf::Color getBackground();
     void setBackground (const sf::Color &color);
 
-    void handleButtons (sf::RenderWindow &window, const std::optional<sf::Event> &event);
-    void drawButtons (sf::RenderWindow &window);
+    void baseHandleEvent (sf::RenderWindow &window, const std::optional<sf::Event> &event);
+    void baseDraw (sf::RenderWindow &window);
+    void baseTimePropagation (float deltaTime);
+    void disableFields();
 
     // virtual destructor
     virtual ~Scene() {}

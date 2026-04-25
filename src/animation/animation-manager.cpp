@@ -474,6 +474,16 @@ void AnimationManager<UI::LinkedList, DS::LinkedList>::initCallbackFunctions() {
             std::make_unique<LinkedListSetHead>(nodeID)
         );
     });
+    stateLogic[0].setCallbackColorNode([&] (int nodeID, bool color) {
+        this->createAnimationEvent(
+            std::make_unique<LinkedListColorNode>(nodeID, color)
+        );
+    });
+    stateLogic[0].setCallbackChangeValue([&] (int nodeID, int newValue) {
+        this->createAnimationEvent(
+            std::make_unique<LinkedListChangeValue>(nodeID, newValue)
+        );
+    });
     stateLogic[0].setCallbackApplyAnimation([&]() {
         this->nextStep();
     });

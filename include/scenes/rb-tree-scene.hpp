@@ -18,7 +18,6 @@
 
 class RBTreeScene : public Scene {
 private:
-    UI::TextInputField insertField, eraseField, searchField;
     AnimationManager<UI::BinaryTree, DS::RedBlackTree> ui;
 
 public:

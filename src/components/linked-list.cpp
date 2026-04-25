@@ -136,6 +136,10 @@ void LinkedList::timePropagation (float deltaTime) {
     }
 }
 
+void LinkedList::changeValue (int nodeID, const std::string &s) {
+    if (nodeID < nodeUI.size()) nodeUI[nodeID]->setString(s);
+}
+
 // overrides
 void LinkedList::draw (sf::RenderTarget &target, sf::RenderStates states) const {
     // apply state transform

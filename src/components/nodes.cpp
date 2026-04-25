@@ -77,6 +77,13 @@ void Node::setAnnotation (const std::string &msg) {
     annotation.centerOrigin();
 }
 
+void Node::setString (const std::string &s) {
+    label.setString(s);
+    float squareSize = std::sqrt(2 * getRadius() * getRadius());
+    label.setAutoCharacterSize(squareSize, squareSize);
+    label.centerOrigin();
+}
+
 void Node::handleMousePress(const sf::Vector2f &mousePos) {}
 void Node::handleMouseMovement(const sf::Vector2f &mousePos) {}
 void Node::handleMouseRelease(const sf::Vector2f &mousePos) {}
@@ -164,6 +171,10 @@ void AnimatedNode::randomPosition() {
 
 void AnimatedNode::copyPosition (const AnimatedNode &other) {
     setPosition(other.getPosition());
+}
+
+void AnimatedNode::setString (const std::string &s) {
+    nodeUI.setString(s);
 }
 
 void AnimatedNode::draw(sf::RenderTarget& target, sf::RenderStates states) const {

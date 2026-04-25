@@ -6,47 +6,64 @@ namespace CodeRepo {
 
 inline const std::vector<std::string> HASH_MAP_INSERT = {
     "void insertValue (int value):",
-    "    if root[value % 17] is empty: create new node",
-    "    else:",
-    "        ptr = rootNode[value % 17]",
-    "        while ptr->pNext != nullptr:",
-    "            ptr = ptr->pNext",
+    "    if root[value % 17] is empty: create new node and return",
+    "    ptr = rootNode[value % 17]",
+    "    while ptr->pNext != nullptr:",
+    "        ptr = ptr->pNext",
+    "    ptr->pNext = new node"
+};
+
+inline const std::vector<std::string> LINKED_LIST_APPEND = {
+    "void appendValue (int value):",
+    "    if empty: head = new node and return",
+    "    ptr = head",
+    "    while ptr->pNext != nullptr: ptr = ptr->pNext",
     "    ptr->pNext = new node"
 };
 
 inline const std::vector<std::string> LINKED_LIST_INSERT = {
-    "void insertValue (int value):",
-    "    if empty: head = new node",
-    "    else:",
-    "        ptr = head",
-    "        while ptr->pNext != nullptr:",
-    "            ptr = ptr->pNext",
-    "    ptr->pNext = new node"
+    "void insertValue (int position, int insertKey):",
+    "    if position == 0: insert at head and return",
+    "    let ptr = head",
+    "    loop position - 1 times: cur = cur->pNext",
+    "    newNode = new node",
+    "    newNode->pNext = cur->pNext, cur->pNext = newNode"
 };
 
 inline const std::vector<std::string> HASH_MAP_ERASE = {
     "void eraseValue (int value):",
     "    if root[value % 17] is empty: return",
     "    if root[value % 17]->value == value:",
-    "        delete head and make new head",
-    "    else:",
-    "        Node* ptr = rootNode[eraseKey % 17]",
-    "        while ptr->pNext != nullptr and ptr->pNext->value != value:",
-    "            ptr = ptr->pNext",
-    "        if ptr->pNext != nulltr:",
-    "            delete ptr->pNext and make new link"
+    "        delete head, make new head and return",
+    "    Node* ptr = rootNode[eraseKey % 17]",
+    "    while ptr->pNext != nullptr and ptr->pNext->value != value:",
+    "        ptr = ptr->pNext",
+    "    if ptr->pNext != nulltr:",
+    "        delete ptr->pNext and make new link"
 };
 
 inline const std::vector<std::string> LINKED_LIST_ERASE = {
     "void eraseValue (int value):",
     "    if empty: return",
-    "    if head->value == value: delete head",
-    "    else:",
-    "        ptr = head",
-    "        while ptr->pNext != nullptr and ptr->pNext->value != value:",
-    "            ptr = ptr->pNext",
-    "        if ptr->pNext != nulltr:",
-    "            delete ptr->pNext"
+    "    if head->value == value: delete head and return",
+    "    ptr = head",
+    "    while ptr->pNext != nullptr and ptr->pNext->value != value:",
+    "        ptr = ptr->pNext",
+    "    if ptr->pNext != nulltr:",
+    "        delete ptr->pNext"
+};
+
+inline const std::vector<std::string> LINKED_LIST_UPDATE = {
+    "void update (int oldKey, int newKey):",
+    "    for (ptr = head; ptr != nullptr; ptr = ptr->pNext):",
+    "        if ptr->value == oldKey: ptr->value = newKey",
+};
+
+inline const std::vector<std::string> LINKED_LIST_SEARCH = {
+    "bool search (int searchKey):",
+    "    for (ptr = head; ptr != nullptr; ptr = ptr->pNext):",
+    "        if ptr->value == searchKey: return true",
+    "    return false"
 };
 
 inline const std::vector<std::string> AVL_TREE_INSERT = {

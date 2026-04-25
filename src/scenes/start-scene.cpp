@@ -21,11 +21,11 @@ StartScene::StartScene (SceneManager &manager) :
     toDijkstra.setCallback([&]() { manager.changeScene(2); });
     // toDijkstra.disableButton();
 
-    toHashMap.setString("HASH MAP");
+    toHashMap.setString("LINKED LIST");
     toHashMap.setCharacterSize(30);
     toHashMap.setPosition({Setting::screenWidth / 2.f, Setting::screenHeight / 2.f - 50});
     toHashMap.setCallback([&]() { manager.changeScene(3); });
-    toHashMap.disableButton();
+    // toHashMap.disableButton();
 
     toLinkedList.setString("LINKED LIST");
     toLinkedList.setCharacterSize(30);

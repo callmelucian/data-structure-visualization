@@ -49,6 +49,7 @@ public:
     void copyPosition (const LinkedList &other);
     void copyFrom (const LinkedList &other);
     void timePropagation (float deltaTime);
+    void changeValue (int nodeID, const std::string &s);
     
     // overrides
     void draw (sf::RenderTarget &target, sf::RenderStates states) const override;

@@ -16,7 +16,7 @@ float calculateContainerWidth (int buttonCount) {
 }
 
 // Scene Implementation
-Scene::Scene (SceneManager &manager, int buttonCount) :
+Scene::Scene (SceneManager &manager, int buttonCount, int fieldCount) :
     backgroundColor(Theme::getBackground()), manager(manager),
     container(calculateContainerWidth(buttonCount), LARGE_RADIUS + BUTTON_HEIGHT + 2 * BUTTON_MARGIN + 5.f, 20.f),
     previousScene(MEDIUM_RADIUS, MEDIUM_RADIUS, MEDIUM_RADIUS / 2.f),
@@ -26,7 +26,8 @@ Scene::Scene (SceneManager &manager, int buttonCount) :
     prevOperationButton(SMALL_RADIUS, SMALL_RADIUS, SMALL_RADIUS / 2.f),
     nextStepButton(SMALL_RADIUS, SMALL_RADIUS, SMALL_RADIUS / 2.f),
     nextOperationButton(SMALL_RADIUS, SMALL_RADIUS, SMALL_RADIUS / 2.f),
-    featureButtons(buttonCount, UI::Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_RADIUS)) {
+    buttons(buttonCount, UI::Button(BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_RADIUS)),
+    fields(fieldCount, UI::TextInputField(1000, 40)) {
     
     // ESC button
     previousScene.setPosition({40 + MEDIUM_RADIUS / 2.f, 40 + MEDIUM_RADIUS / 2.f});
@@ -63,16 +64,20 @@ Scene::Scene (SceneManager &manager, int buttonCount) :
     sf::Vector2f position = {Setting::screenWidth / 2.f - container.getSize().x / 2.f, 810};
     position.x += BUTTON_WIDTH / 2.f + BUTTON_MARGIN;
     for (int i = 0; i < buttonCount; i++) {
-        featureButtons[i].setPosition(position);
+        buttons[i].setPosition(position);
         position.x += BUTTON_WIDTH + BUTTON_PADDING;
     }
 
     // container
     float containerY = (playButton.getPosition().y - LARGE_RADIUS / 2.f - BUTTON_MARGIN
-                        + featureButtons[0].getPosition().y + BUTTON_HEIGHT / 2.f + BUTTON_MARGIN) / 2.f;
+                        + buttons[0].getPosition().y + BUTTON_HEIGHT / 2.f + BUTTON_MARGIN) / 2.f;
     container.setFillColor(Theme::getLightBackground());
     container.setPosition({Setting::screenWidth / 2.f, containerY});
     container.centerOrigin();
+
+    // fields
+    for (UI::TextInputField &field : fields)
+        field.setPosition({Setting::screenWidth / 2.f, 85});
 }
 
 sf::Color Scene::getBackground() { 
@@ -83,7 +88,7 @@ void Scene::setBackground (const sf::Color &color) {
     backgroundColor = color;
 }
 
-void Scene::handleButtons (sf::RenderWindow &window, const std::optional<sf::Event> &event) {
+void Scene::baseHandleEvent (sf::RenderWindow &window, const std::optional<sf::Event> &event) {
     previousScene.handleMouseEvents(window, event);
     setting.handleMouseEvents(window, event);
     playButton.handleMouseEvents(window, event);
@@ -91,11 +96,15 @@ void Scene::handleButtons (sf::RenderWindow &window, const std::optional<sf::Eve
     prevOperationButton.handleMouseEvents(window, event);
     nextStepButton.handleMouseEvents(window, event);
     nextOperationButton.handleMouseEvents(window, event);
-    for (UI::Button &button : featureButtons)
+    for (UI::Button &button : buttons)
         button.handleMouseEvents(window, event);
+    for (UI::TextInputField &field : fields) {
+        field.handleMouseEvents(window, event);
+        field.handleTextEvents(window, event);
+    }
 }
 
-void Scene::drawButtons (sf::RenderWindow &window) {
+void Scene::baseDraw (sf::RenderWindow &window) {
     window.draw(previousScene);
     window.draw(setting);
     window.draw(container);
@@ -104,7 +113,16 @@ void Scene::drawButtons (sf::RenderWindow &window) {
     window.draw(prevOperationButton);
     window.draw(nextStepButton);
     window.draw(nextOperationButton);
-    for (UI::Button &button : featureButtons) window.draw(button);
+    for (UI::Button &button : buttons) window.draw(button);
+    for (UI::TextInputField &field : fields) window.draw(field);
+}
+
+void Scene::disableFields() {
+    for (UI::TextInputField &field : fields) field.disable();
+}
+
+void Scene::baseTimePropagation (float deltaTime) {
+    for (UI::TextInputField &field : fields) field.timePropagation();
 }
 
 // SceneManager Implementation

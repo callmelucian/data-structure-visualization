@@ -6,14 +6,13 @@
 
 // include scenes
 #include "../include/scenes/scene-manager.hpp"
-// #include "../include/scenes/avl-tree-scene.hpp"
+#include "../include/scenes/avl-tree-scene.hpp"
 // #include "../include/scenes/dijkstra-scene.hpp"
 // #include "../include/scenes/prim-scene.hpp"
-// #include "../include/scenes/rb-tree-scene.hpp"
+#include "../include/scenes/rb-tree-scene.hpp"
 // #include "../include/scenes/hash-map-scene.hpp"
-// #include "../include/scenes/linked-list-scene.hpp"
-// #include "../include/scenes/start-scene.hpp"
-#include "../include/scenes/test-scene.hpp"
+#include "../include/scenes/linked-list-scene.hpp"
+#include "../include/scenes/start-scene.hpp"
 
 #include "../assets/theme.hpp"
 
@@ -51,14 +50,14 @@ int main() {
     manager.addNewScene(
         std::make_unique<RBTreeScene>(manager)
     );
+    manager.addNewScene(
+        std::make_unique<LinkedListScene>(manager)
+    );
     // manager.addNewScene(
     //     std::make_unique<DijkstraScene>(window, manager)
     // );
     // manager.addNewScene(
     //     std::make_unique<HashMapScene>(window, manager)
-    // );
-    // manager.addNewScene(
-    //     std::make_unique<LinkedListScene>(window, manager)
     // );
     // manager.addNewScene(
     //     std::make_unique<PrimScene>(window, manager)

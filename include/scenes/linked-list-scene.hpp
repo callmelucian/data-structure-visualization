@@ -18,17 +18,11 @@
 
 class LinkedListScene : public Scene {
 private:
-    UI::Button backButton, settingButton;
-    UI::Button insertButton, eraseButton;
-    UI::TextInputField insertField, eraseField;
-    AnimationManager<UI::LinkedList, DS::LinkedList> treeUI;
-
-    UI::Button playButton;
-    UI::Button prevStepButton, prevOperationButton;
-    UI::Button nextStepButton, nextOperationButton;
+    AnimationManager<UI::LinkedList, DS::LinkedList> ui;
+    int insertHold, updateHold;
 
 public:
-    LinkedListScene(const sf::RenderWindow &window, SceneManager &manager);
+    LinkedListScene (SceneManager &manager);
     
     void handleEvent(sf::RenderWindow &window, const std::optional<sf::Event> &event) override;
     void timePropagation(float delta) override;

@@ -18,13 +18,15 @@ private:
         Node (int value, int visualID);
     };
     Node* rootNode;
-    int nodeCounter;
+    int nodeCounter, listSize;
 
     std::function<void(int,bool)> callbackCreateNode;
     std::function<void(int)> callbackDeleteNode;
     std::function<void(int,int)> callbackAddEdge;
     std::function<void(int)> callbackHighlightNode;
     std::function<void(int)> callbackSetHead;
+    std::function<void(int,bool)> callbackColorNode;
+    std::function<void(int,int)> callbackChangeValue;
     std::function<void()> callbackApplyAnimation;
     std::function<void()> callbackCompleteAnimation;
     std::function<void(const std::vector<std::string>&)> callbackLoadCode;
@@ -61,6 +63,14 @@ public:
         callbackSetHead = std::move(func);
     }
 
+    void setCallbackColorNode (auto func) {
+        callbackColorNode = std::move(func);
+    }
+
+    void setCallbackChangeValue (auto func) {
+        callbackChangeValue = std::move(func);
+    }
+
     void setCallbackApplyAnimation(auto func) {
         callbackApplyAnimation = std::move(func);
     }
@@ -77,10 +87,11 @@ public:
         callbackHighlightCode = std::move(func);
     }
 
-    void appendElement (int insertKey);
+    void append (int insertKey);
+    bool insert (int position, int insertKey);
     void erase (int eraseKey);
-    void insert (int targetKey, int insertKey);
-    int find (int targetKey);
+    bool update (int oldKey, int newKey);
+    bool search (int targetKey);
 };
 
 }; // namespace DS

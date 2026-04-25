@@ -43,6 +43,8 @@ public:
 
     void clampPosition (const sf::Vector2f &pos, float maxWidth, float maxHeight);
 
+    void setString (const std::string &s);
+
     // handle mouse press
     void handleMousePress(const sf::Vector2f &mousePos) override;
     
@@ -98,6 +100,8 @@ public:
     void randomPosition();
 
     void copyPosition (const AnimatedNode &other);
+
+    void setString (const std::string &s);
 
     // draw node onto the screen
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

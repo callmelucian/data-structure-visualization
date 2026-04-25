@@ -50,6 +50,8 @@ public:
     bool isFocused() const;
     bool isEnabled() const;
 
+    void focusField();
+
     void handleTextEntered(const char &unicode) override;
 
     // (override) get boundary of the button's shape

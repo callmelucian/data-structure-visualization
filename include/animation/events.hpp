@@ -277,6 +277,23 @@ public:
     int apply (UI::LinkedList &ui, UI::CodeHighlighter &code) override;
 };
 
+class LinkedListColorNode : public AnimationEvent<UI::LinkedList> {
+private:
+    int nodeID;
+    bool color;
+public:
+    LinkedListColorNode (int nodeID, bool color);
+    int apply (UI::LinkedList &ui, UI::CodeHighlighter &code) override;
+};
+
+class LinkedListChangeValue : public AnimationEvent<UI::LinkedList> {
+private:
+    int nodeID, newValue;
+public:
+    LinkedListChangeValue (int nodeID, int newValue);
+    int apply (UI::LinkedList &ui, UI::CodeHighlighter &code) override;
+};
+
 // ========== COMMON ==========
 
 template <typename TypeUI>
