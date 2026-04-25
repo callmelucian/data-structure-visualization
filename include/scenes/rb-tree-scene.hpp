@@ -18,17 +18,11 @@
 
 class RBTreeScene : public Scene {
 private:
-    UI::Button backButton, settingButton;
-    UI::Button insertButton, eraseButton;
-    UI::TextInputField insertField, eraseField;
-    AnimationManager<UI::BinaryTree, DS::RedBlackTree> treeUI;
-
-    UI::Button playButton;
-    UI::Button prevStepButton, prevOperationButton;
-    UI::Button nextStepButton, nextOperationButton;
+    UI::TextInputField insertField, eraseField, searchField;
+    AnimationManager<UI::BinaryTree, DS::RedBlackTree> ui;
 
 public:
-    RBTreeScene(const sf::RenderWindow &window, SceneManager &manager);
+    RBTreeScene (SceneManager &manager);
     
     void handleEvent(sf::RenderWindow &window, const std::optional<sf::Event> &event) override;
     void timePropagation(float delta) override;

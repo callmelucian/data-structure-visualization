@@ -11,7 +11,7 @@ Node::Node(const std::string &msg, float radius, float thickness) :
     // setup circle
     circle.setOrigin({radius, radius});
     circle.setFillColor(Theme::getButton());
-    circle.setOutlineColor(Theme::getTextSecondary());
+    circle.setOutlineColor(Theme::getTextPrimary());
     circle.setOutlineThickness(thickness);
 
     // setup label
@@ -258,7 +258,7 @@ void drawEdge(sf::RenderTarget &target, sf::RenderStates states, const AnimatedN
     line.setOrigin({0, thickness / 2.0f});
     line.setPosition(start);
     line.setRotation(sf::radians(angle));
-    line.setFillColor(Theme::getTextSecondary());
+    line.setFillColor(Theme::getTextPrimary());
 
         // draw arrow head
     if (isDirected) {
@@ -271,7 +271,7 @@ void drawEdge(sf::RenderTarget &target, sf::RenderStates states, const AnimatedN
         
         arrowhead.setPosition(end);
         arrowhead.setRotation(sf::radians(angle));
-        arrowhead.setFillColor(Theme::getTextSecondary());
+        arrowhead.setFillColor(Theme::getTextPrimary());
         target.draw(arrowhead, states);
     }
 

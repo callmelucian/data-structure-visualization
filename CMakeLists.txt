@@ -45,7 +45,7 @@ add_executable(DataVisApp
     src/scenes/avl-tree-scene.cpp
     # src/scenes/dijkstra-scene.cpp
     # src/scenes/prim-scene.cpp
-    # src/scenes/rb-tree-scene.cpp
+    src/scenes/rb-tree-scene.cpp
     # src/scenes/hash-map-scene.cpp
     # src/scenes/linked-list-scene.cpp
     src/scenes/start-scene.cpp

@@ -33,7 +33,7 @@ private:
     std::function<void(int, bool)> callbackCreateNode;
     std::function<void(int)> callbackDeleteNode;
     std::function<void(int, int)> callbackSwapValue;
-    std::function<void(int, bool)> callbackColorNode;
+    std::function<void(int, int)> callbackColorNode;
     std::function<void(int, int, bool)> callbackAddEdge;
     std::function<void(int)> callbackChangeRoot;
     std::function<void()> callbackApplyAnimation;
@@ -71,6 +71,10 @@ private:
     Node* insertValue (Node* ptr, Node* parent, bool leftChild, int insertKey);
 
     Node* eraseValue (Node* ptr, Node* parent, bool leftChild, int eraseKey);
+
+    bool searchValue (Node* ptr, int searchValue);
+
+    void colorNodes (Node* ptr, int targetColor);
 
     Node* copyNodes (Node* otherNode);
 
@@ -132,6 +136,8 @@ public:
     void insert (int value);
 
     bool erase (int value);
+
+    bool search (int value);
 };
 
 }; // namespace DS

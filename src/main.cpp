@@ -48,6 +48,9 @@ int main() {
     manager.addNewScene(
         std::make_unique<AVLTreeScene>(manager)
     );
+    manager.addNewScene(
+        std::make_unique<RBTreeScene>(manager)
+    );
     // manager.addNewScene(
     //     std::make_unique<DijkstraScene>(window, manager)
     // );
@@ -59,9 +62,6 @@ int main() {
     // );
     // manager.addNewScene(
     //     std::make_unique<PrimScene>(window, manager)
-    // );
-    // manager.addNewScene(
-    //     std::make_unique<RBTreeScene>(window, manager)
     // );
     // manager.addNewScene(
     //     std::make_unique<SettingScene>(window, manager)

@@ -1,165 +1,148 @@
 #include "../../include/scenes/rb-tree-scene.hpp"
 
-RBTreeScene::RBTreeScene(const sf::RenderWindow &window, SceneManager &manager) :
-    Scene(window, manager), backButton(100, 30), settingButton(100, 30),
-    insertButton(100, 30), eraseButton(100, 30),
-    insertField(150, 30), eraseField(150, 30),
-    treeUI(UI::BinaryTree()), playButton(50, 30),
-    prevStepButton(50, 30), prevOperationButton(50, 30),
-    nextStepButton(50, 30), nextOperationButton(50, 30) {
-    
-    // intialize back button
-    backButton.setString("BACK");
-    backButton.setCharacterSize(20);
-    backButton.setPosition({100, 40});
-    backButton.setCallback([&]() {
-        manager.changeScene(0);
-    });
+RBTreeScene::RBTreeScene (SceneManager &manager) :
+    Scene(manager, 5),
+    insertField(1000, 40), eraseField(1000, 40), searchField(1000, 40) {
 
-    // intialize setting button
-    settingButton.setString("SETTING");
-    settingButton.setCharacterSize(20);
-    settingButton.setPosition({Setting::screenWidth - 100, 40});
-    settingButton.setCallback([&]() {
-        manager.changeScene(7);
-    });
-    
     // initialize buttons
-    insertButton.setString("INSERT");
-    insertButton.setCharacterSize(20);
-    eraseButton.setString("ERASE (Beta)");
-    // eraseButton.setCharacterSize(20);
+    featureButtons[0].setString("INSERT");
+    featureButtons[0].setCharacterSize(20);
+    featureButtons[1].setString("ERASE");
+    featureButtons[1].setCharacterSize(20);
+    featureButtons[2].setString("SEARCH");
+    featureButtons[2].setCharacterSize(20);
+    featureButtons[3].setString("FILE");
+    featureButtons[3].setCharacterSize(20);
+    featureButtons[4].setString("CLEAR");
+    featureButtons[4].setCharacterSize(20);
 
-    prevStepButton.setString("<");
-    prevStepButton.setCharacterSize(25);
-    prevOperationButton.setString("<<");
-    prevOperationButton.setCharacterSize(25);
-    playButton.setString("|>");
-    playButton.setCharacterSize(25);
-    nextStepButton.setString(">");
-    nextStepButton.setCharacterSize(25);
-    nextOperationButton.setString(">>");
-    nextOperationButton.setCharacterSize(25);
-
-    // set positions for objects
-    insertButton.setPosition({240, 850});
-    insertField.setPosition({115, 850});
-    eraseButton.setPosition({525, 850});
-    eraseField.setPosition({400, 850});
-    
-    prevOperationButton.setPosition({65, 800});
-    prevStepButton.setPosition({125, 800});
-    playButton.setPosition({185, 800});
-    nextStepButton.setPosition({245, 800});
-    nextOperationButton.setPosition({305, 800});
+    // intialize fields
+    insertField.setPosition({Setting::screenWidth / 2.f, 85});
+    insertField.setLabel("Insert/Init");
+    insertField.disable();
+    eraseField.setPosition({Setting::screenWidth / 2.f, 85});
+    eraseField.setLabel("Erase");
+    eraseField.disable();
+    searchField.setPosition({Setting::screenWidth / 2.f, 85});
+    searchField.setLabel("Search");
+    searchField.disable();    
 
     // set callback functions: AVL Tree UI
-    treeUI.setCallbackEnableButtons([&](int f) {
-        if (f) {
-            insertButton.enableButton();
-            eraseButton.enableButton();
-            insertField.enable();
-            eraseField.enable();
+    ui.setCallbackEnableButtons([&](int f) {
+        for (UI::Button &button : featureButtons) {
+            if (f) button.enableButton();
+            else button.disableButton();
         }
-        else {
-            insertButton.disableButton();
-            eraseButton.disableButton();
+        if (!f) {
             insertField.disable();
             eraseField.disable();
+            searchField.disable();
         }
     });
-    treeUI.setCallbackPlayPause([&] (bool f) {
-        playButton.setString(f ? "||" : "|>");
-        playButton.setCharacterSize(25);
-    });
+    ui.setCallbackPlayPause(changePlayButton);
 
-    // set callback functions: input field and button for insertion
+    // set callback functions: INSERT
     insertField.setCallbackFunction([&](const std::string &msg) {
-        int value = convert(msg);
-        if (value == -1) {
-            std::cerr << "Input field contains non-numerical value!" << std::endl;
-            return;
+        std::vector<int> numbers = stringToNumbers(msg);
+        for (int value : numbers) {
+            ui.transformLogic([&](DS::RedBlackTree &rb) {
+                return rb.insert(value), true;
+            });
         }
-        treeUI.transformLogic([&](DS::RedBlackTree &logic) {
-            return logic.insert(value), true;
-        });
     });
-    insertButton.setCallback([&]() {
-        insertField.releaseText();
+    featureButtons[0].setCallback([&]() {
+        if (insertField.isEnabled()) insertField.disable();
+        else insertField.enable(), eraseField.disable(), searchField.disable();
     });
 
-    // set callback functions: input field and button for deletion
+    // set callback functions: ERASE
     eraseField.setCallbackFunction([&](const std::string &msg) {
-        int value = convert(msg);
-        if (value == -1) {
-            std::cerr << "Input field contains non-numerical value!" << std::endl;
-            return;
+        std::vector<int> numbers = stringToNumbers(msg);
+        for (int value : numbers) {
+            ui.transformLogic([&](DS::RedBlackTree &rb) {
+                return rb.erase(value);
+            });
         }
-        treeUI.transformLogic([&](DS::RedBlackTree &logic) {
-            return logic.erase(value);
-        });
     });
-    eraseButton.setCallback([&]() {
-        eraseField.releaseText();
+    featureButtons[1].setCallback([&]() {
+        if (eraseField.isEnabled()) eraseField.disable();
+        else eraseField.enable(), insertField.disable(), searchField.disable();
+    });
+
+    // set callback functions: SEARCH
+    searchField.setCallbackFunction([&](const std::string &msg) {
+        std::vector<int> numbers = stringToNumbers(msg);
+        if (numbers.empty() || numbers.size() >= 2) return;
+        for (int value : numbers) {
+            ui.transformLogic([&](DS::RedBlackTree &rb) {
+                return rb.search(value);
+            });
+        }
+    });
+    featureButtons[2].setCallback([&]() {
+        if (searchField.isEnabled()) searchField.disable();
+        else searchField.enable(), insertField.disable(), eraseField.disable();
+    });
+
+    featureButtons[3].setCallback([&]() {
+        std::string filePath = openFileDialog();
+        std::vector<int> numbers = fileToNumbers(filePath);
+        if (numbers.empty()) return;
+        ui.appendEmpty(), ui.nextCompleteState();
+        for (int value : numbers) {
+            ui.transformLogic([&](DS::RedBlackTree &rb) {
+                return rb.insert(value), true;
+            });
+            ui.nextCompleteState();
+        }
+    });
+
+    featureButtons[4].setCallback([&]() {
+        ui.appendEmpty(), ui.nextCompleteState();
     });
 
     // set callback functions: previous/next buttons
     prevOperationButton.setCallback([&]() {
-        treeUI.previousCompleteState();
+        ui.previousCompleteState();
     });
     prevStepButton.setCallback([&]() {
-        treeUI.previousState();
+        ui.previousState();
     });
     nextOperationButton.setCallback([&]() {
-        treeUI.nextCompleteState();
+        ui.nextCompleteState();
     });
     nextStepButton.setCallback([&]() {
-        treeUI.nextState();
+        ui.nextState();
     });
     playButton.setCallback([&]() {
-        if (treeUI.checkIsPlaying()) treeUI.pause();
-        else treeUI.play();
+        if (ui.checkIsPlaying()) ui.pause();
+        else ui.play();
     });
 }
 
 void RBTreeScene::handleEvent(sf::RenderWindow &window, const std::optional<sf::Event> &event) {
+    ui.getCurrentCode().handleMouseEvents(window, event);
     insertField.handleMouseEvents(window, event);
     insertField.handleTextEvents(window, event);
-    insertButton.handleMouseEvents(window, event);
-    treeUI.getCurrentCode().handleMouseEvents(window, event);
-
     eraseField.handleMouseEvents(window, event);
     eraseField.handleTextEvents(window, event);
-    eraseButton.handleMouseEvents(window, event);
-
-    prevOperationButton.handleMouseEvents(window, event);
-    prevStepButton.handleMouseEvents(window, event);
-    nextOperationButton.handleMouseEvents(window, event);
-    nextStepButton.handleMouseEvents(window, event);
-    playButton.handleMouseEvents(window, event);
-
-    backButton.handleMouseEvents(window, event);
-    settingButton.handleMouseEvents(window, event);
+    searchField.handleMouseEvents(window, event);
+    searchField.handleTextEvents(window, event);
+    handleButtons(window, event);
 }
 
 void RBTreeScene::timePropagation(float delta) {
     insertField.timePropagation();
     eraseField.timePropagation();
-    treeUI.timePropagation(delta);
+    searchField.timePropagation();
+    ui.timePropagation(delta);
 }
 
 void RBTreeScene::draw(sf::RenderWindow &window) {
-    window.draw(treeUI.getCurrentUI());
-    window.draw(treeUI.getCurrentCode());
-    window.draw(backButton);
-    window.draw(settingButton);
+    window.draw(ui.getCurrentUI());
     window.draw(insertField);
-    window.draw(insertButton);
     window.draw(eraseField);
-    window.draw(eraseButton);
-    window.draw(prevOperationButton);
-    window.draw(prevStepButton);
-    window.draw(nextOperationButton);
-    window.draw(nextStepButton);
-    window.draw(playButton);
+    window.draw(searchField);
+    drawButtons(window);
+    window.draw(ui.getCurrentCode());
 }

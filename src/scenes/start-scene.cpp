@@ -13,12 +13,13 @@ StartScene::StartScene (SceneManager &manager) :
     toAVL.setCharacterSize(30);
     toAVL.setPosition({Setting::screenWidth / 2.f, Setting::screenHeight / 2.f - 250});
     toAVL.setCallback([&]() { manager.changeScene(1); });
+    // toAVL.disableButton();
 
-    toDijkstra.setString("DIJKSTRA");
+    toDijkstra.setString("RB TREE");
     toDijkstra.setCharacterSize(30);
     toDijkstra.setPosition({Setting::screenWidth / 2.f, Setting::screenHeight / 2.f - 150});
     toDijkstra.setCallback([&]() { manager.changeScene(2); });
-    toDijkstra.disableButton();
+    // toDijkstra.disableButton();
 
     toHashMap.setString("HASH MAP");
     toHashMap.setCharacterSize(30);

@@ -1,12 +1,12 @@
 #include "../../include/animation/animation-manager.hpp"
 
 template <typename TypeUI, typename TypeLogic>
-AnimationManager<TypeUI, TypeLogic>::AnimationManager (const TypeUI &init) :
-    stateUI(1, init), completeUI(1, true), stateLogic(1), stateCode(1),
+AnimationManager<TypeUI, TypeLogic>::AnimationManager() :
+    stateUI(1), completeUI(1, true), stateLogic(1), stateCode(1),
     currentEventStep(0), stateUIIterator(0), stateLogicIterator(0), isPlaying(false) {
 
     // set position for UI and code highlighter
-    stateUI[0].setPosition({Setting::screenWidth / 2.f, Setting::screenHeight / 2.f - 50.f});
+    stateUI[0].setPosition({Setting::screenWidth / 2.f, Setting::screenHeight / 2.f - 55.f});
     stateCode[0].setPosition({Setting::screenWidth - 20.f, Setting::screenHeight - 20.f});
 
     // initialize callback functions
@@ -155,8 +155,25 @@ void AnimationManager<TypeUI, TypeLogic>::transformLogic (std::function<bool(Typ
 }
 
 template <typename TypeUI, typename TypeLogic>
+void AnimationManager<TypeUI, TypeLogic>::appendEmpty() {
+    while (!isPlaying && stateLogicIterator + 1 < stateLogic.size()) stateLogic.pop_back();
+    while (!isPlaying && stateUIIterator + 1 < stateUI.size())
+        stateUI.pop_back(), stateCode.pop_back(), completeUI.pop_back();
+    
+    stateUI.push_back(stateUI[0]);
+    stateCode.push_back(stateCode[0]);
+    completeUI.push_back(completeUI[0]);
+    stateLogic.push_back(stateLogic[0]);
+    play();
+    while (eventIDQueue.size()) popAnimation();
+}
+
+template <typename TypeUI, typename TypeLogic>
 void AnimationManager<TypeUI, TypeLogic>::resetManager() {
-    while (previousCompleteState());
+    while (stateUIIterator || stateLogicIterator) previousCompleteState();
+    while (stateLogicIterator + 1 < stateLogic.size()) stateLogic.pop_back();
+    while (stateUIIterator + 1 < stateUI.size())
+        stateUI.pop_back(), stateCode.pop_back(), completeUI.pop_back();
 }
 
 template <typename TypeUI, typename TypeLogic>
@@ -357,9 +374,9 @@ void AnimationManager<UI::BinaryTree, DS::RedBlackTree>::initCallbackFunctions()
             std::make_unique<BinaryTreeHighlightNode>(nodeID)
         );
     });
-    stateLogic[0].setCallbackColorNode ([&] (int nodeID, bool color) {
+    stateLogic[0].setCallbackColorNode ([&] (int nodeID, int color) {
         this->createAnimationEvent(
-            std::make_unique<BinaryTreeColorNode>(nodeID, color ? 2 : 1)
+            std::make_unique<BinaryTreeColorNode>(nodeID, color)
         );
     });
     stateLogic[0].setCallbackCompleteAnimation([&]() {

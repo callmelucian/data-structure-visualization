@@ -26,9 +26,9 @@ RedBlackTree::Node* RedBlackTree::leftRotation (Node* ptr, Node* parent, bool is
     ptr->rpt = tmp;
     callbackAddEdge(getVisualID(ptr), getVisualID(tmp), false); // tmp could be nullptr
     rightChild->color = ptr->color;
-    callbackColorNode(getVisualID(rightChild), ptr->color == BLACK);
+    callbackColorNode(getVisualID(rightChild), ptr->color == BLACK ? 2 : 1);
     ptr->color = RED;
-    callbackColorNode(getVisualID(ptr), false);
+    callbackColorNode(getVisualID(ptr), 1);
     fixEdges(parent, rightChild, isLeftChild);
     return rightChild;
 }
@@ -42,9 +42,9 @@ RedBlackTree::Node* RedBlackTree::rightRotation (Node* ptr, Node* parent, bool i
     ptr->lpt = tmp;
     callbackAddEdge(getVisualID(ptr), getVisualID(tmp), true); // tmp could be nullptr
     leftChild->color = ptr->color;
-    callbackColorNode(getVisualID(leftChild), ptr->color == BLACK);
+    callbackColorNode(getVisualID(leftChild), ptr->color == BLACK ? 2 : 1);
     ptr->color = RED;
-    callbackColorNode(getVisualID(ptr), false);
+    callbackColorNode(getVisualID(ptr), 1);
     fixEdges(parent, leftChild, isLeftChild);
     return leftChild;
 }
@@ -101,11 +101,11 @@ RedBlackTree::Node* RedBlackTree::getSmallestKey (Node* ptr) {
 
 void RedBlackTree::flipColors (Node* ptr) {
     ptr->color = RED;
-    callbackColorNode(getVisualID(ptr), false);
+    callbackColorNode(getVisualID(ptr), 1);
     ptr->lpt->color = BLACK;
-    callbackColorNode(getVisualID(ptr->lpt), true);
+    callbackColorNode(getVisualID(ptr->lpt), 2);
     ptr->rpt->color = BLACK;
-    callbackColorNode(getVisualID(ptr->rpt), true);
+    callbackColorNode(getVisualID(ptr->rpt), 2);
 }
 
 RedBlackTree::Node* RedBlackTree::insertValue (Node* ptr, Node* parent, bool leftChild, int insertKey) {
@@ -117,7 +117,7 @@ RedBlackTree::Node* RedBlackTree::insertValue (Node* ptr, Node* parent, bool lef
     if (ptr == nullptr) {
         callbackHighlightCode(1);
         callbackCreateNode(insertKey, false);
-        callbackColorNode(nodeCounter, false);
+        callbackColorNode(nodeCounter, 1);
         callbackHighlightNode(nodeCounter);
         ptr = new Node(insertKey, nodeCounter++);
         fixEdges(parent, ptr, leftChild);
@@ -243,8 +243,8 @@ RedBlackTree::Node* RedBlackTree::eraseValue (Node* ptr, Node* parent, bool left
 
             callbackHighlightCode(13);
             callbackSwapValue(getVisualID(ptr), getVisualID(tmp));
-            callbackColorNode(getVisualID(ptr), ptr->color == BLACK);
-            callbackColorNode(getVisualID(tmp), tmp->color == BLACK);
+            callbackColorNode(getVisualID(ptr), ptr->color == BLACK ? 2 : 1);
+            callbackColorNode(getVisualID(tmp), tmp->color == BLACK ? 2 : 1);
             std::swap(ptr->value, tmp->value);
             callbackApplyAnimation();
         }
@@ -264,6 +264,56 @@ RedBlackTree::Node* RedBlackTree::eraseValue (Node* ptr, Node* parent, bool left
     Node* newRoot = selfBalancing(ptr, parent, leftChild);
     callbackLoadCode(CodeRepo::RB_TREE_ERASE_VALUE);
     return newRoot;
+}
+
+bool RedBlackTree::searchValue (Node* ptr, int searchKey) {
+    callbackHighlightCode(0);
+    callbackHighlightNode(getVisualID(ptr));
+    callbackApplyAnimation();
+
+    if (ptr == nullptr) {
+        callbackHighlightCode(1);
+        callbackApplyAnimation();
+        return false;
+    }
+
+    if (searchKey == ptr->value) {
+        callbackHighlightCode(2);
+        callbackColorNode(getVisualID(ptr), 1);
+        callbackApplyAnimation();
+
+        callbackColorNode(getVisualID(ptr), 0);
+        callbackApplyAnimation();
+        return true;
+    }
+
+    if (searchKey < ptr->value) {
+        callbackHighlightCode(3);
+        callbackApplyAnimation();
+        
+        callbackHighlightCode(4);
+        callbackApplyAnimation();
+        return searchValue(ptr->lpt, searchKey);
+    }
+
+    if (searchKey > ptr->value) {
+        callbackHighlightCode(5);
+        callbackApplyAnimation();
+        
+        callbackHighlightCode(6);
+        callbackApplyAnimation();
+        return searchValue(ptr->rpt, searchKey);
+    }
+
+    return false;
+}
+
+void RedBlackTree::colorNodes (Node* ptr, int targetColor) {
+    if (ptr == nullptr) return;
+    int curColor = (targetColor == -1 ? (ptr->color == BLACK ? 2 : 1) : targetColor);
+    callbackColorNode(getVisualID(ptr), curColor);
+    if (ptr->lpt) colorNodes(ptr->lpt, targetColor);
+    if (ptr->rpt) colorNodes(ptr->rpt, targetColor);
 }
 
 RedBlackTree::Node* RedBlackTree::copyNodes (Node* otherNode) {
@@ -326,7 +376,7 @@ void RedBlackTree::insert (int value) {
 
         callbackHighlightCode(1);
         callbackCreateNode(value, true);
-        callbackColorNode(nodeCounter, false);
+        callbackColorNode(nodeCounter, 1);
         callbackHighlightNode(nodeCounter);
         root = new Node(value, nodeCounter++);
         callbackApplyAnimation();
@@ -339,7 +389,7 @@ void RedBlackTree::insert (int value) {
 
     root->color = BLACK;
     callbackHighlightCode(7);
-    callbackColorNode(getVisualID(root), true);
+    callbackColorNode(getVisualID(root), 2);
     callbackApplyAnimation();
 
     callbackHighlightNode(-1);
@@ -358,9 +408,23 @@ bool RedBlackTree::erase (int value) {
         root->color = BLACK;
         callbackLoadCode(CodeRepo::RB_TREE_ERASE_VALUE);
         callbackHighlightCode(15);
-        callbackColorNode(getVisualID(root), true);
+        callbackColorNode(getVisualID(root), 2);
         callbackApplyAnimation();
     }
+    callbackHighlightNode(-1);
+    callbackLoadCode({});
+    callbackCompleteAnimation();
+    callbackApplyAnimation();
+    return true;
+}
+
+bool RedBlackTree::search (int value) {
+    if (root == nullptr) return false;
+    colorNodes(root, 0);
+    callbackLoadCode(CodeRepo::AVL_TREE_SEARCH);
+    searchValue(root, value);
+    
+    colorNodes(root, -1);
     callbackHighlightNode(-1);
     callbackLoadCode({});
     callbackCompleteAnimation();

@@ -67,7 +67,7 @@ public:
     /**
      * @brief constructor
      */
-    AnimationManager (const TypeUI &init);
+    AnimationManager();
 
     /**
      * @brief create an animation event with a corresponding event ID
@@ -135,6 +135,7 @@ public:
     void transformLogic (std::function<bool(TypeLogic&)> transformFunction);
 
     void resetManager();
+    void appendEmpty();
     
     void play();
     void pause();

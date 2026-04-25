@@ -4,7 +4,7 @@ namespace UI {
 
 CodeHighlighter::CodeHighlighter() 
     : highlightedRow(-1), lineSpacing(1.2f), padding(21.f), 
-      titleBarHeight(30.f), fontSize(16), followMouse(false), titleText(Theme::ibmBoldItalic) 
+      titleBarHeight(30.f), fontSize(16), followMouse(false), titleText(Theme::googleSansBoldItalic) 
 {
     background.setFillColor(sf::Color({255, 255, 255, 150}));
     background.setOutlineColor(sf::Color::Black);
@@ -15,9 +15,10 @@ CodeHighlighter::CodeHighlighter()
     titleBar.setOutlineThickness(2.f);
     highlightBar.setFillColor(sf::Color({200, 200, 200, 150})); 
 
-    titleText.setCharacterSize(14);
+    titleText.setCharacterSize(15);
     titleText.setFillColor(sf::Color::White);
     titleText.setString("SOURCE CODE");
+    loadCode({});
 }
 
 void CodeHighlighter::loadCode(const std::vector<std::string>& codes) {
@@ -25,7 +26,7 @@ void CodeHighlighter::loadCode(const std::vector<std::string>& codes) {
     highlightedRow = -1;
 
     for (const auto& str : codes) {
-        UI::Text text(Theme::ibmRegular, str, fontSize);
+        UI::Text text(Theme::googleSansItalic, str, fontSize);
         text.setFillColor(sf::Color::Black);
         textLines.push_back(text);
     }
