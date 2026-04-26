@@ -53,7 +53,7 @@ inline const std::vector<std::vector<sf::Color>> textColors = {
 };
 
 inline const std::vector<std::vector<sf::Color>> accentColors = {
-    {sf::Color({162, 153, 125}), sf::Color({207, 198, 181})}
+    {sf::Color({162, 153, 125}), sf::Color({207, 198, 181}), sf::Color({127, 106, 44})}
 };
 
 inline const std::vector<std::vector<sf::Color>> buttonColors = {
@@ -132,6 +132,7 @@ namespace Theme {
     inline sf::Color getTextSecondary() { return textColors[themeIterator][1]; }
     inline sf::Color getAccentPrimary() { return accentColors[themeIterator][0]; }
     inline sf::Color getAccentSecondary() { return accentColors[themeIterator][1]; }
+    inline sf::Color getAccentDark() { return accentColors[themeIterator][2]; }
     inline sf::Color getButton() { return buttonColors[themeIterator][0]; }
     inline sf::Color getHoveredButton() { return buttonColors[themeIterator][1]; }
     inline sf::Color getPressedButton() { return buttonColors[themeIterator][2]; }

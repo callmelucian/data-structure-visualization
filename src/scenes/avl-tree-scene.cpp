@@ -1,6 +1,6 @@
 #include "../../include/scenes/avl-tree-scene.hpp"
 
-AVLTreeScene::AVLTreeScene (SceneManager &manager) : Scene(manager, 5, 3) {
+AVLTreeScene::AVLTreeScene (SceneManager &manager) : Scene(manager, 6, 3) {
     // set callback functions: AVL Tree UI
     ui.setCallbackEnableButtons([&](int f) {
         for (UI::Button &button : buttons) {
@@ -83,6 +83,14 @@ AVLTreeScene::AVLTreeScene (SceneManager &manager) : Scene(manager, 5, 3) {
     buttons[4].setString("CLEAR");
     buttons[4].setCharacterSize(20);
 
+    // code
+    buttons[5].setString("SHOW CODE", 20);
+    buttons[5].setCallback([&]() {
+        if (ui.getCurrentCode().isShown())
+            ui.getCurrentCode().hide(), ui.centerUI();
+        else ui.getCurrentCode().show(), ui.offcenterUI();
+    });
+
     // set callback functions: previous/next buttons
     prevOperationButton.setCallback([&]() {
         ui.previousCompleteState();
@@ -113,7 +121,7 @@ void AVLTreeScene::timePropagation(float delta) {
 }
 
 void AVLTreeScene::draw(sf::RenderWindow &window) {
+    window.draw(ui.getCurrentCode());
     window.draw(ui.getCurrentUI());
     baseDraw(window);
-    window.draw(ui.getCurrentCode());
 }

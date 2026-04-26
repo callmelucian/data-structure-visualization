@@ -127,6 +127,7 @@ void Button::handleTextEntered(const char &unicode) {}
 
 void Button::disableButton() {
     clickable = false;
+    container.setFillColor(Theme::getButton());
     label.setFillColor(Theme::getTextSecondary());
 }
 

@@ -6,37 +6,38 @@
 
 #include "../../assets/theme.hpp"
 #include "ui-base.hpp"
+#include "../core/utility.hpp"
 
 namespace UI {
 
 class CodeHighlighter : public UI::Base {
 private:
-    std::vector<UI::Text> textLines;
-    sf::RectangleShape background, highlightBar, titleBar;
-    UI::Text titleText;
-
+    std::vector<UI::Text> textLines; 
+    sf::RectangleShape background, highlightBar;
     int highlightedRow;
-    float lineSpacing, padding, titleBarHeight;
+    float lineSpacing, titleBarHeight;
     unsigned int fontSize;
-    bool followMouse;
-    sf::Vector2f grabOffset;
-
-    void updateBounds();
+    bool shown;
+    sf::Vector2f targetHighlightPos;
 public:
     CodeHighlighter();
 
     void loadCode(const std::vector<std::string>& codes);
     void highlightCode(int row);
-    void copyPosition (const CodeHighlighter &other);
-
+    void copyPosition(const CodeHighlighter &other);
+    void timePropagation(float deltaTime);
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
-    // overwritten functions
+    bool isShown() const;
+    void show();
+    void hide();
+
+    // overrides
     sf::FloatRect getBoundary() const override;
-    void handleMousePress (const sf::Vector2f &mousePos) override;
-    void handleMouseRelease (const sf::Vector2f &mousePos) override;
-    void handleMouseMovement (const sf::Vector2f &mousePos) override;
-    void handleTextEntered (const char &unicode) override;
+    void handleMousePress(const sf::Vector2f &mousePos) override;
+    void handleMouseRelease(const sf::Vector2f &mousePos) override;
+    void handleMouseMovement(const sf::Vector2f &mousePos) override;
+    void handleTextEntered(const char &unicode) override;
 };
 
 } // namespace UI

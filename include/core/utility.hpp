@@ -13,6 +13,7 @@
 #include "global-setting.hpp"
 
 extern const int INPUT_NUMBER_LIMIT;
+extern const float eps;
 
 // utility
 float cube(float a);

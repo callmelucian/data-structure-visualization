@@ -7,7 +7,7 @@ AnimationManager<TypeUI, TypeLogic>::AnimationManager() :
 
     // set position for UI and code highlighter
     stateUI[0].setPosition({Setting::screenWidth / 2.f, Setting::screenHeight / 2.f - 55.f});
-    stateCode[0].setPosition({Setting::screenWidth - 20.f, Setting::screenHeight - 20.f});
+    // stateCode[0].setPosition({Setting::screenWidth - 20.f, Setting::screenHeight - 20.f});
 
     // initialize callback functions
     initCallbackFunctions();
@@ -111,6 +111,7 @@ bool AnimationManager<TypeUI, TypeLogic>::nextState (bool playing) {
     UI::CodeHighlighter tempCode = getCurrentCode();
     stateUIIterator++;
     getCurrentUI().copyPosition(tempUI);
+    getCurrentUI().setPosition(tempUI.getPosition());
     getCurrentCode().copyPosition(tempCode);
     if (!isPlaying) callbackEnableButtons(completeUI[stateUIIterator]);
     stateLogicIterator += completeUI[stateUIIterator];
@@ -125,6 +126,7 @@ bool AnimationManager<TypeUI, TypeLogic>::nextCompleteState (bool playing) {
     bool lastModify = true;
     while (lastModify = nextState() && !isComplete());
     getCurrentUI().copyPosition(tempUI);
+    getCurrentUI().setPosition(tempUI.getPosition());
     getCurrentCode().copyPosition(tempCode);
     return lastModify;
 }
@@ -141,6 +143,7 @@ void AnimationManager<TypeUI, TypeLogic>::timePropagation (float deltaTime) {
         }
     }
     getCurrentUI().timePropagation(deltaTime);
+    getCurrentCode().timePropagation(deltaTime);
 }
 
 template <typename TypeUI, typename TypeLogic>
@@ -193,64 +196,74 @@ bool AnimationManager<TypeUI, TypeLogic>::checkIsPlaying() const {
     return isPlaying;
 }
 
+template <typename TypeUI, typename TypeLogic>
+void AnimationManager<TypeUI, TypeLogic>::centerUI() {
+    getCurrentUI().setPosition({Setting::screenWidth / 2.f, Setting::screenHeight / 2.f - 55.f});
+}
+
+template <typename TypeUI, typename TypeLogic>
+void AnimationManager<TypeUI, TypeLogic>::offcenterUI() {
+    getCurrentUI().setPosition({Setting::offCenter, Setting::screenHeight / 2.f - 55.f});
+}
+
 // ========== TEMPLATE-SPECIFIC FUNCTIONS: AnimationManager<UI::BinaryTree, DS::AVLTree> ==========
 
-// template<>
-// void AnimationManager<UI::BinaryTree, DS::AVLTree>::initCallbackFunctions() {
-//     stateLogic[0].setCallbackCreateNode([this] (int value, bool isRoot) {
-//         this->createAnimationEvent(
-//             std::make_unique<BinaryTreeCreateNode>(std::to_string(value), isRoot)
-//         );
-//     });
-//     stateLogic[0].setCallbackAddEdge([&] (int parent, int node, bool isLeft) {
-//         this->createAnimationEvent(
-//             std::make_unique<BinaryTreeAddEdge>(parent, node, isLeft)
-//         );
-//     });
-//     stateLogic[0].setCallbackChangeRoot([&] (int newRoot) {
-//         this->createAnimationEvent(
-//             std::make_unique<BinaryTreeChangeRoot>(newRoot)
-//         );
-//     });
-//     stateLogic[0].setCallbackDeleteNode([&] (int visualID) {
-//         this->createAnimationEvent(
-//             std::make_unique<BinaryTreeDeleteNode>(visualID)
-//         );
-//     });
-//     stateLogic[0].setCallbackSwapValue([&] (int a, int b) {
-//         this->createAnimationEvent(
-//             std::make_unique<BinaryTreeSwapValue>(a, b)
-//         );
-//     });
-//     stateLogic[0].setCallbackApplyAnimation([&]() {
-//         this->nextStep();
-//     });
-//     stateLogic[0].setCallbackHighlightNode([&] (int nodeID) {
-//         this->createAnimationEvent(
-//             std::make_unique<BinaryTreeHighlightNode>(nodeID)
-//         );
-//     });
-//     stateLogic[0].setCallbackColorNode([&] (int nodeID, bool color) {
-//         this->createAnimationEvent(
-//             std::make_unique<BinaryTreeColorNode>(nodeID, color ? 1 : 0)
-//         );
-//     });
-//     stateLogic[0].setCallbackCompleteAnimation([&]() {
-//         this->createAnimationEvent(
-//             std::make_unique<CompleteAnimation<UI::BinaryTree>>()
-//         );
-//     });
-//     stateLogic[0].setCallbackLoadCode([&] (const std::vector<std::string> &vec) {
-//         this->createAnimationEvent(
-//             std::make_unique<CodeHighlightLoadCode<UI::BinaryTree>>(vec)
-//         );
-//     });
-//     stateLogic[0].setCallbackHighlightCode([&] (int row) {
-//         this->createAnimationEvent(
-//             std::make_unique<CodeHighlighting<UI::BinaryTree>>(row)
-//         );
-//     });
-// }
+template<>
+void AnimationManager<UI::BinaryTree, DS::AVLTree>::initCallbackFunctions() {
+    stateLogic[0].setCallbackCreateNode([this] (int value, bool isRoot) {
+        this->createAnimationEvent(
+            std::make_unique<BinaryTreeCreateNode>(std::to_string(value), isRoot)
+        );
+    });
+    stateLogic[0].setCallbackAddEdge([&] (int parent, int node, bool isLeft) {
+        this->createAnimationEvent(
+            std::make_unique<BinaryTreeAddEdge>(parent, node, isLeft)
+        );
+    });
+    stateLogic[0].setCallbackChangeRoot([&] (int newRoot) {
+        this->createAnimationEvent(
+            std::make_unique<BinaryTreeChangeRoot>(newRoot)
+        );
+    });
+    stateLogic[0].setCallbackDeleteNode([&] (int visualID) {
+        this->createAnimationEvent(
+            std::make_unique<BinaryTreeDeleteNode>(visualID)
+        );
+    });
+    stateLogic[0].setCallbackSwapValue([&] (int a, int b) {
+        this->createAnimationEvent(
+            std::make_unique<BinaryTreeSwapValue>(a, b)
+        );
+    });
+    stateLogic[0].setCallbackApplyAnimation([&]() {
+        this->nextStep();
+    });
+    stateLogic[0].setCallbackHighlightNode([&] (int nodeID) {
+        this->createAnimationEvent(
+            std::make_unique<BinaryTreeHighlightNode>(nodeID)
+        );
+    });
+    stateLogic[0].setCallbackColorNode([&] (int nodeID, bool color) {
+        this->createAnimationEvent(
+            std::make_unique<BinaryTreeColorNode>(nodeID, color ? 1 : 0)
+        );
+    });
+    stateLogic[0].setCallbackCompleteAnimation([&]() {
+        this->createAnimationEvent(
+            std::make_unique<CompleteAnimation<UI::BinaryTree>>()
+        );
+    });
+    stateLogic[0].setCallbackLoadCode([&] (const std::vector<std::string> &vec) {
+        this->createAnimationEvent(
+            std::make_unique<CodeHighlightLoadCode<UI::BinaryTree>>(vec)
+        );
+    });
+    stateLogic[0].setCallbackHighlightCode([&] (int row) {
+        this->createAnimationEvent(
+            std::make_unique<CodeHighlighting<UI::BinaryTree>>(row)
+        );
+    });
+}
 
 // ========== TEMPLATE-SPECIFIC FUNCTIONS: AnimationManager<UI::Graph, DS::Dijkstra> ==========
 
@@ -339,172 +352,172 @@ void AnimationManager<UI::Graph, DS::DijkstraAlgorithm>::initCallbackFunctions()
 
 // ========== TEMPLATE-SPECIFIC FUNCTIONS: AnimationManager<UI::BinaryTree, DS::RedBlackTree> ==========
 
-// template<>
-// void AnimationManager<UI::BinaryTree, DS::RedBlackTree>::initCallbackFunctions() {
-//     stateLogic[0].setCallbackCreateNode([this] (int value, bool isRoot) {
-//         this->createAnimationEvent(
-//             std::make_unique<BinaryTreeCreateNode>(std::to_string(value), isRoot)
-//         );
-//     });
-//     stateLogic[0].setCallbackAddEdge([&] (int parent, int node, bool isLeft) {
-//         this->createAnimationEvent(
-//             std::make_unique<BinaryTreeAddEdge>(parent, node, isLeft)
-//         );
-//     });
-//     stateLogic[0].setCallbackChangeRoot([&] (int newRoot) {
-//         this->createAnimationEvent(
-//             std::make_unique<BinaryTreeChangeRoot>(newRoot)
-//         );
-//     });
-//     stateLogic[0].setCallbackDeleteNode([&] (int visualID) {
-//         this->createAnimationEvent(
-//             std::make_unique<BinaryTreeDeleteNode>(visualID)
-//         );
-//     });
-//     stateLogic[0].setCallbackSwapValue([&] (int a, int b) {
-//         this->createAnimationEvent(
-//             std::make_unique<BinaryTreeSwapValue>(a, b)
-//         );
-//     });
-//     stateLogic[0].setCallbackApplyAnimation([&]() {
-//         this->nextStep();
-//     });
-//     stateLogic[0].setCallbackHighlightNode([&] (int nodeID) {
-//         this->createAnimationEvent(
-//             std::make_unique<BinaryTreeHighlightNode>(nodeID)
-//         );
-//     });
-//     stateLogic[0].setCallbackColorNode ([&] (int nodeID, int color) {
-//         this->createAnimationEvent(
-//             std::make_unique<BinaryTreeColorNode>(nodeID, color)
-//         );
-//     });
-//     stateLogic[0].setCallbackCompleteAnimation([&]() {
-//         this->createAnimationEvent(
-//             std::make_unique<CompleteAnimation<UI::BinaryTree>>()
-//         );
-//     });
-//     stateLogic[0].setCallbackLoadCode([&] (const std::vector<std::string> &vec) {
-//         this->createAnimationEvent(
-//             std::make_unique<CodeHighlightLoadCode<UI::BinaryTree>>(vec)
-//         );
-//     });
-//     stateLogic[0].setCallbackHighlightCode([&] (int row) {
-//         this->createAnimationEvent(
-//             std::make_unique<CodeHighlighting<UI::BinaryTree>>(row)
-//         );
-//     });
-// }
+template<>
+void AnimationManager<UI::BinaryTree, DS::RedBlackTree>::initCallbackFunctions() {
+    stateLogic[0].setCallbackCreateNode([this] (int value, bool isRoot) {
+        this->createAnimationEvent(
+            std::make_unique<BinaryTreeCreateNode>(std::to_string(value), isRoot)
+        );
+    });
+    stateLogic[0].setCallbackAddEdge([&] (int parent, int node, bool isLeft) {
+        this->createAnimationEvent(
+            std::make_unique<BinaryTreeAddEdge>(parent, node, isLeft)
+        );
+    });
+    stateLogic[0].setCallbackChangeRoot([&] (int newRoot) {
+        this->createAnimationEvent(
+            std::make_unique<BinaryTreeChangeRoot>(newRoot)
+        );
+    });
+    stateLogic[0].setCallbackDeleteNode([&] (int visualID) {
+        this->createAnimationEvent(
+            std::make_unique<BinaryTreeDeleteNode>(visualID)
+        );
+    });
+    stateLogic[0].setCallbackSwapValue([&] (int a, int b) {
+        this->createAnimationEvent(
+            std::make_unique<BinaryTreeSwapValue>(a, b)
+        );
+    });
+    stateLogic[0].setCallbackApplyAnimation([&]() {
+        this->nextStep();
+    });
+    stateLogic[0].setCallbackHighlightNode([&] (int nodeID) {
+        this->createAnimationEvent(
+            std::make_unique<BinaryTreeHighlightNode>(nodeID)
+        );
+    });
+    stateLogic[0].setCallbackColorNode ([&] (int nodeID, int color) {
+        this->createAnimationEvent(
+            std::make_unique<BinaryTreeColorNode>(nodeID, color)
+        );
+    });
+    stateLogic[0].setCallbackCompleteAnimation([&]() {
+        this->createAnimationEvent(
+            std::make_unique<CompleteAnimation<UI::BinaryTree>>()
+        );
+    });
+    stateLogic[0].setCallbackLoadCode([&] (const std::vector<std::string> &vec) {
+        this->createAnimationEvent(
+            std::make_unique<CodeHighlightLoadCode<UI::BinaryTree>>(vec)
+        );
+    });
+    stateLogic[0].setCallbackHighlightCode([&] (int row) {
+        this->createAnimationEvent(
+            std::make_unique<CodeHighlighting<UI::BinaryTree>>(row)
+        );
+    });
+}
 
-// // ========== TEMPLATE-SPECIFIC FUNCTIONS: AnimationManager<UI::HashMap, DS::HashMap> ==========
+// ========== TEMPLATE-SPECIFIC FUNCTIONS: AnimationManager<UI::HashMap, DS::HashMap> ==========
 
-// template<>
-// void AnimationManager<UI::HashMap, DS::HashMap>::initCallbackFunctions() {
-//         stateLogic[0].setCallbackCreateNode([&] (int value) {
-//         this->createAnimationEvent(
-//             std::make_unique<HashMapCreateNode>(value)
-//         );
-//     });
-//     stateLogic[0].setCallbackDeleteNode([&] (int nodeID) {
-//         this->createAnimationEvent(
-//             std::make_unique<HashMapDeleteNode>(nodeID)
-//         );
-//     });
-//     stateLogic[0].setCallbackAddEdge([&] (int fromNode, int toNode) {
-//         this->createAnimationEvent(
-//             std::make_unique<HashMapAddEdge>(fromNode, toNode)
-//         );
-//     });
-//     stateLogic[0].setCallbackAttachRoot([&] (int slot, int nodeID) {
-//         this->createAnimationEvent(
-//             std::make_unique<HashMapAttachRoot>(slot, nodeID)
-//         );
-//     });
-//     stateLogic[0].setCallbackHighlightNode([&] (int nodeID) {
-//         this->createAnimationEvent(
-//             std::make_unique<HashMapHighlightNode>(nodeID)
-//         );
-//     });
-//     stateLogic[0].setCallbackColorNode([&] (int nodeID, bool color) {
-//         this->createAnimationEvent(
-//             std::make_unique<HashMapColorNode>(nodeID, color)
-//         );
-//     });
-//     stateLogic[0].setCallbackApplyAnimation([&]() {
-//         this->nextStep();
-//     });
-//     stateLogic[0].setCallbackCompleteAnimation([&]() {
-//         this->createAnimationEvent(
-//             std::make_unique<CompleteAnimation<UI::HashMap>>()
-//         );
-//     });
-//     stateLogic[0].setCallbackLoadCode([&] (const std::vector<std::string> &vec) {
-//         this->createAnimationEvent(
-//             std::make_unique<CodeHighlightLoadCode<UI::HashMap>>(vec)
-//         );
-//     });
-//     stateLogic[0].setCallbackHighlightCode([&] (int row) {
-//         this->createAnimationEvent(
-//             std::make_unique<CodeHighlighting<UI::HashMap>>(row)
-//         );
-//     });
-// }
+template<>
+void AnimationManager<UI::HashMap, DS::HashMap>::initCallbackFunctions() {
+        stateLogic[0].setCallbackCreateNode([&] (int value) {
+        this->createAnimationEvent(
+            std::make_unique<HashMapCreateNode>(value)
+        );
+    });
+    stateLogic[0].setCallbackDeleteNode([&] (int nodeID) {
+        this->createAnimationEvent(
+            std::make_unique<HashMapDeleteNode>(nodeID)
+        );
+    });
+    stateLogic[0].setCallbackAddEdge([&] (int fromNode, int toNode) {
+        this->createAnimationEvent(
+            std::make_unique<HashMapAddEdge>(fromNode, toNode)
+        );
+    });
+    stateLogic[0].setCallbackAttachRoot([&] (int slot, int nodeID) {
+        this->createAnimationEvent(
+            std::make_unique<HashMapAttachRoot>(slot, nodeID)
+        );
+    });
+    stateLogic[0].setCallbackHighlightNode([&] (int nodeID) {
+        this->createAnimationEvent(
+            std::make_unique<HashMapHighlightNode>(nodeID)
+        );
+    });
+    stateLogic[0].setCallbackColorNode([&] (int nodeID, bool color) {
+        this->createAnimationEvent(
+            std::make_unique<HashMapColorNode>(nodeID, color)
+        );
+    });
+    stateLogic[0].setCallbackApplyAnimation([&]() {
+        this->nextStep();
+    });
+    stateLogic[0].setCallbackCompleteAnimation([&]() {
+        this->createAnimationEvent(
+            std::make_unique<CompleteAnimation<UI::HashMap>>()
+        );
+    });
+    stateLogic[0].setCallbackLoadCode([&] (const std::vector<std::string> &vec) {
+        this->createAnimationEvent(
+            std::make_unique<CodeHighlightLoadCode<UI::HashMap>>(vec)
+        );
+    });
+    stateLogic[0].setCallbackHighlightCode([&] (int row) {
+        this->createAnimationEvent(
+            std::make_unique<CodeHighlighting<UI::HashMap>>(row)
+        );
+    });
+}
 
-// // ========== TEMPLATE-SPECIFIC FUNCTIONS: AnimationManager<UI::LinkedList, DS::LinkedList> ==========
+// ========== TEMPLATE-SPECIFIC FUNCTIONS: AnimationManager<UI::LinkedList, DS::LinkedList> ==========
 
-// template<>
-// void AnimationManager<UI::LinkedList, DS::LinkedList>::initCallbackFunctions() {
-//         stateLogic[0].setCallbackCreateNode([&] (int value, bool isRoot) {
-//         this->createAnimationEvent(
-//             std::make_unique<LinkedListCreateNode>(std::to_string(value), isRoot)
-//         );
-//     });
-//     stateLogic[0].setCallbackDeleteNode([&] (int nodeID) {
-//         this->createAnimationEvent(
-//             std::make_unique<LinkedListDeleteNode>(nodeID)
-//         );
-//     });
-//     stateLogic[0].setCallbackAddEdge([&] (int fromNode, int toNode) {
-//         this->createAnimationEvent(
-//             std::make_unique<LinkedListAddEdge>(fromNode, toNode)
-//         );
-//     });
-//     stateLogic[0].setCallbackHighlightNode([&] (int nodeID) {
-//         this->createAnimationEvent(
-//             std::make_unique<LinkedListHighlightNode>(nodeID)
-//         );
-//     });
-//     stateLogic[0].setCallbackSetHead([&] (int nodeID) {
-//         this->createAnimationEvent(
-//             std::make_unique<LinkedListSetHead>(nodeID)
-//         );
-//     });
-//     stateLogic[0].setCallbackColorNode([&] (int nodeID, bool color) {
-//         this->createAnimationEvent(
-//             std::make_unique<LinkedListColorNode>(nodeID, color)
-//         );
-//     });
-//     stateLogic[0].setCallbackChangeValue([&] (int nodeID, int newValue) {
-//         this->createAnimationEvent(
-//             std::make_unique<LinkedListChangeValue>(nodeID, newValue)
-//         );
-//     });
-//     stateLogic[0].setCallbackApplyAnimation([&]() {
-//         this->nextStep();
-//     });
-//     stateLogic[0].setCallbackCompleteAnimation([&]() {
-//         this->createAnimationEvent(
-//             std::make_unique<CompleteAnimation<UI::LinkedList>>()
-//         );
-//     });
-//     stateLogic[0].setCallbackLoadCode([&] (const std::vector<std::string> &vec) {
-//         this->createAnimationEvent(
-//             std::make_unique<CodeHighlightLoadCode<UI::LinkedList>>(vec)
-//         );
-//     });
-//     stateLogic[0].setCallbackHighlightCode([&] (int row) {
-//         this->createAnimationEvent(
-//             std::make_unique<CodeHighlighting<UI::LinkedList>>(row)
-//         );
-//     });
-// }
+template<>
+void AnimationManager<UI::LinkedList, DS::LinkedList>::initCallbackFunctions() {
+        stateLogic[0].setCallbackCreateNode([&] (int value, bool isRoot) {
+        this->createAnimationEvent(
+            std::make_unique<LinkedListCreateNode>(std::to_string(value), isRoot)
+        );
+    });
+    stateLogic[0].setCallbackDeleteNode([&] (int nodeID) {
+        this->createAnimationEvent(
+            std::make_unique<LinkedListDeleteNode>(nodeID)
+        );
+    });
+    stateLogic[0].setCallbackAddEdge([&] (int fromNode, int toNode) {
+        this->createAnimationEvent(
+            std::make_unique<LinkedListAddEdge>(fromNode, toNode)
+        );
+    });
+    stateLogic[0].setCallbackHighlightNode([&] (int nodeID) {
+        this->createAnimationEvent(
+            std::make_unique<LinkedListHighlightNode>(nodeID)
+        );
+    });
+    stateLogic[0].setCallbackSetHead([&] (int nodeID) {
+        this->createAnimationEvent(
+            std::make_unique<LinkedListSetHead>(nodeID)
+        );
+    });
+    stateLogic[0].setCallbackColorNode([&] (int nodeID, bool color) {
+        this->createAnimationEvent(
+            std::make_unique<LinkedListColorNode>(nodeID, color)
+        );
+    });
+    stateLogic[0].setCallbackChangeValue([&] (int nodeID, int newValue) {
+        this->createAnimationEvent(
+            std::make_unique<LinkedListChangeValue>(nodeID, newValue)
+        );
+    });
+    stateLogic[0].setCallbackApplyAnimation([&]() {
+        this->nextStep();
+    });
+    stateLogic[0].setCallbackCompleteAnimation([&]() {
+        this->createAnimationEvent(
+            std::make_unique<CompleteAnimation<UI::LinkedList>>()
+        );
+    });
+    stateLogic[0].setCallbackLoadCode([&] (const std::vector<std::string> &vec) {
+        this->createAnimationEvent(
+            std::make_unique<CodeHighlightLoadCode<UI::LinkedList>>(vec)
+        );
+    });
+    stateLogic[0].setCallbackHighlightCode([&] (int row) {
+        this->createAnimationEvent(
+            std::make_unique<CodeHighlighting<UI::LinkedList>>(row)
+        );
+    });
+}

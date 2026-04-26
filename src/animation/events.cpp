@@ -2,75 +2,75 @@
 
 // ========== BINARY TREE CREATE NODE ========== //
 
-// BinaryTreeCreateNode::BinaryTreeCreateNode (const std::string &s) : msgString(s), isRoot(false) {}
-// BinaryTreeCreateNode::BinaryTreeCreateNode (const std::string &s, bool isRoot) : msgString(s), isRoot(isRoot) {}
+BinaryTreeCreateNode::BinaryTreeCreateNode (const std::string &s) : msgString(s), isRoot(false) {}
+BinaryTreeCreateNode::BinaryTreeCreateNode (const std::string &s, bool isRoot) : msgString(s), isRoot(isRoot) {}
 
-// int BinaryTreeCreateNode::apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) {
-//     ui.createNode(msgString, isRoot);
-//     return true;
-// }
+int BinaryTreeCreateNode::apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) {
+    ui.createNode(msgString, isRoot);
+    return true;
+}
 
-// // ========== BINARY TREE DELETE NODE ========== //
+// ========== BINARY TREE DELETE NODE ========== //
 
-// BinaryTreeDeleteNode::BinaryTreeDeleteNode (int nodeID) : nodeID(nodeID) {}
+BinaryTreeDeleteNode::BinaryTreeDeleteNode (int nodeID) : nodeID(nodeID) {}
 
-// int BinaryTreeDeleteNode::apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) {
-//     ui.deleteNode(nodeID);
-//     return true;
-// }
+int BinaryTreeDeleteNode::apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) {
+    ui.deleteNode(nodeID);
+    return true;
+}
 
-// // ========== BINARY TREE ADD EDGE ========== //
+// ========== BINARY TREE ADD EDGE ========== //
 
-// BinaryTreeAddEdge::BinaryTreeAddEdge (int parent, int childNode, bool isLeft) :
-//     parent(parent), childNode(childNode), isLeft(isLeft) {}
+BinaryTreeAddEdge::BinaryTreeAddEdge (int parent, int childNode, bool isLeft) :
+    parent(parent), childNode(childNode), isLeft(isLeft) {}
 
-// int BinaryTreeAddEdge::apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) {
-//     return ui.addEdge(parent, childNode, isLeft);
-// }
+int BinaryTreeAddEdge::apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) {
+    return ui.addEdge(parent, childNode, isLeft);
+}
 
-// // ========== BINARY TREE CHANGE ROOT ========== //
+// ========== BINARY TREE CHANGE ROOT ========== //
 
-// BinaryTreeChangeRoot::BinaryTreeChangeRoot (int newRoot) : newRoot(newRoot) {}
+BinaryTreeChangeRoot::BinaryTreeChangeRoot (int newRoot) : newRoot(newRoot) {}
 
-// int BinaryTreeChangeRoot::apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) {
-//     return ui.setRootNode(newRoot);
-// }
+int BinaryTreeChangeRoot::apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) {
+    return ui.setRootNode(newRoot);
+}
 
-// // ========== BINARY TREE CHANGE ROOT ========== //
+// ========== BINARY TREE CHANGE ROOT ========== //
 
-// BinaryTreeSwapValue::BinaryTreeSwapValue (int a, int b) : a(a), b(b) {}
+BinaryTreeSwapValue::BinaryTreeSwapValue (int a, int b) : a(a), b(b) {}
 
-// int BinaryTreeSwapValue::apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) {
-//     ui.swapNode(a, b);
-//     return true;
-// }
+int BinaryTreeSwapValue::apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) {
+    ui.swapNode(a, b);
+    return true;
+}
 
-// // ========== BINARY TREE HIGHLIGHT NODE ========== //
+// ========== BINARY TREE HIGHLIGHT NODE ========== //
 
-// BinaryTreeHighlightNode::BinaryTreeHighlightNode (int targetNode) : targetNode(targetNode) {}
+BinaryTreeHighlightNode::BinaryTreeHighlightNode (int targetNode) : targetNode(targetNode) {}
 
-// int BinaryTreeHighlightNode::apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) {
-//     return ui.setHighlight(targetNode);
-// }
+int BinaryTreeHighlightNode::apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) {
+    return ui.setHighlight(targetNode);
+}
 
-// // ========== BINARY TREE COLOR NODE (FOR RB-TREE) ========== //
+// ========== BINARY TREE COLOR NODE (FOR RB-TREE) ========== //
 
-// BinaryTreeColorNode::BinaryTreeColorNode (int nodeID, int color) : nodeID(nodeID), color(color) {}
+BinaryTreeColorNode::BinaryTreeColorNode (int nodeID, int color) : nodeID(nodeID), color(color) {}
 
-// int BinaryTreeColorNode::apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) {
-//     return ui.colorNode(nodeID,
-//         !color ? Theme::getButton() :
-//         (color == 1 ? Theme::getRBRed() :Theme::getRBBlack())
-//     ), true;
-// }
+int BinaryTreeColorNode::apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) {
+    return ui.colorNode(nodeID,
+        !color ? Theme::getButton() :
+        (color == 1 ? Theme::getRBRed() :Theme::getRBBlack())
+    ), true;
+}
 
-// // ========== BINARY TREE LOCK HIGHLIGHT ========== //
+// ========== BINARY TREE LOCK HIGHLIGHT ========== //
 
-// BinaryTreeLockHighlight::BinaryTreeLockHighlight() {}
+BinaryTreeLockHighlight::BinaryTreeLockHighlight() {}
 
-// int BinaryTreeLockHighlight::apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) {
-//     return ui.lockHighlight(), false;
-// }
+int BinaryTreeLockHighlight::apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) {
+    return ui.lockHighlight(), false;
+}
 
 // ========== GRAPH CREATE NODE ========== //
 
@@ -162,87 +162,87 @@ int GraphHighlightEdge::apply (UI::Graph &ui, UI::CodeHighlighter &code) {
 }
 
 // ========== HASH MAP CREATE NODE ========== //
-// HashMapCreateNode::HashMapCreateNode (int value) : value(value) {}
+HashMapCreateNode::HashMapCreateNode (int value) : value(value) {}
 
-// int HashMapCreateNode::apply (UI::HashMap &ui, UI::CodeHighlighter &code) {
-//     return ui.createNode(value), true;
-// }
+int HashMapCreateNode::apply (UI::HashMap &ui, UI::CodeHighlighter &code) {
+    return ui.createNode(value), true;
+}
 
-// // ========== HASH MAP DELETE NODE ========== //
-// HashMapDeleteNode::HashMapDeleteNode (int nodeID) : nodeID(nodeID) {}
+// ========== HASH MAP DELETE NODE ========== //
+HashMapDeleteNode::HashMapDeleteNode (int nodeID) : nodeID(nodeID) {}
 
-// int HashMapDeleteNode::apply (UI::HashMap &ui, UI::CodeHighlighter &code) {
-//     return ui.deletedNode(nodeID), true;
-// }
+int HashMapDeleteNode::apply (UI::HashMap &ui, UI::CodeHighlighter &code) {
+    return ui.deletedNode(nodeID), true;
+}
 
-// // ========== HASH MAP ADD EDGE ========== //
-// HashMapAddEdge::HashMapAddEdge (int fromID, int toID) : fromID(fromID), toID(toID) {}
+// ========== HASH MAP ADD EDGE ========== //
+HashMapAddEdge::HashMapAddEdge (int fromID, int toID) : fromID(fromID), toID(toID) {}
 
-// int HashMapAddEdge::apply (UI::HashMap &ui, UI::CodeHighlighter &code) {
-//     return ui.addEdge(fromID, toID), true;
-// }
+int HashMapAddEdge::apply (UI::HashMap &ui, UI::CodeHighlighter &code) {
+    return ui.addEdge(fromID, toID), true;
+}
 
-// // ========= HASH MAP ATTACH ROOT ========== //
-// HashMapAttachRoot::HashMapAttachRoot (int slot, int nodeID) : slot(slot), nodeID(nodeID) {}
+// ========= HASH MAP ATTACH ROOT ========== //
+HashMapAttachRoot::HashMapAttachRoot (int slot, int nodeID) : slot(slot), nodeID(nodeID) {}
 
-// int HashMapAttachRoot::apply (UI::HashMap &ui, UI::CodeHighlighter &code) {
-//     return ui.attachRoot(slot, nodeID), true;
-// }
+int HashMapAttachRoot::apply (UI::HashMap &ui, UI::CodeHighlighter &code) {
+    return ui.attachRoot(slot, nodeID), true;
+}
 
-// // ========== HASH MAP HIGHLIGHT NODE ========== //
-// HashMapHighlightNode::HashMapHighlightNode (int nodeID) : nodeID(nodeID) {}
+// ========== HASH MAP HIGHLIGHT NODE ========== //
+HashMapHighlightNode::HashMapHighlightNode (int nodeID) : nodeID(nodeID) {}
 
-// int HashMapHighlightNode::apply (UI::HashMap &ui, UI::CodeHighlighter &code) {
-//     return ui.setHighlight(nodeID), true;
-// }
+int HashMapHighlightNode::apply (UI::HashMap &ui, UI::CodeHighlighter &code) {
+    return ui.setHighlight(nodeID), true;
+}
 
-// // ========== HASH MAP COLOR NODE ========== //
-// HashMapColorNode::HashMapColorNode (int nodeID, bool color) : nodeID(nodeID), color(color) {}
-// int HashMapColorNode::apply (UI::HashMap &ui, UI::CodeHighlighter &code) {
-//     return ui.colorNode(nodeID, color ? Theme::getRBRed() : Theme::getButton()), true;
-// }
+// ========== HASH MAP COLOR NODE ========== //
+HashMapColorNode::HashMapColorNode (int nodeID, bool color) : nodeID(nodeID), color(color) {}
+int HashMapColorNode::apply (UI::HashMap &ui, UI::CodeHighlighter &code) {
+    return ui.colorNode(nodeID, color ? Theme::getRBRed() : Theme::getButton()), true;
+}
 
-// // ========== LINKED LIST CREATE NODE ========== //
-// LinkedListCreateNode::LinkedListCreateNode (const std::string &s, bool isHead) : value(s), isHead(isHead) {}
-// int LinkedListCreateNode::apply (UI::LinkedList &ui, UI::CodeHighlighter &code) {
-//     return ui.createNode(value, isHead), true;
-// }
+// ========== LINKED LIST CREATE NODE ========== //
+LinkedListCreateNode::LinkedListCreateNode (const std::string &s, bool isHead) : value(s), isHead(isHead) {}
+int LinkedListCreateNode::apply (UI::LinkedList &ui, UI::CodeHighlighter &code) {
+    return ui.createNode(value, isHead), true;
+}
 
-// // ========== LINKED LIST DELETE NODE ========== //
-// LinkedListDeleteNode::LinkedListDeleteNode (int nodeID) : nodeID(nodeID) {}
-// int LinkedListDeleteNode::apply (UI::LinkedList &ui, UI::CodeHighlighter &code) {
-//     return ui.deleteNode(nodeID), true;
-// }
+// ========== LINKED LIST DELETE NODE ========== //
+LinkedListDeleteNode::LinkedListDeleteNode (int nodeID) : nodeID(nodeID) {}
+int LinkedListDeleteNode::apply (UI::LinkedList &ui, UI::CodeHighlighter &code) {
+    return ui.deleteNode(nodeID), true;
+}
 
-// // ========== LINKED LIST ADD EDGE ========== //
-// LinkedListAddEdge::LinkedListAddEdge (int fromID, int toID) : fromID(fromID), toID(toID) {}
-// int LinkedListAddEdge::apply (UI::LinkedList &ui, UI::CodeHighlighter &code) {
-//     return ui.addEdge(fromID, toID), true;
-// }
+// ========== LINKED LIST ADD EDGE ========== //
+LinkedListAddEdge::LinkedListAddEdge (int fromID, int toID) : fromID(fromID), toID(toID) {}
+int LinkedListAddEdge::apply (UI::LinkedList &ui, UI::CodeHighlighter &code) {
+    return ui.addEdge(fromID, toID), true;
+}
 
-// // ========== LINKED LIST HIGHLIGHT NODE ========== //
-// LinkedListHighlightNode::LinkedListHighlightNode (int nodeID) : nodeID(nodeID) {}
-// int LinkedListHighlightNode::apply (UI::LinkedList &ui, UI::CodeHighlighter &code) {
-//     return ui.setHighlight(nodeID), true;
-// }
+// ========== LINKED LIST HIGHLIGHT NODE ========== //
+LinkedListHighlightNode::LinkedListHighlightNode (int nodeID) : nodeID(nodeID) {}
+int LinkedListHighlightNode::apply (UI::LinkedList &ui, UI::CodeHighlighter &code) {
+    return ui.setHighlight(nodeID), true;
+}
 
-// // ========== LINKED LIST HIGHLIGHT NODE ========== //
-// LinkedListSetHead::LinkedListSetHead (int nodeID) : nodeID(nodeID) {}
-// int LinkedListSetHead::apply (UI::LinkedList &ui, UI::CodeHighlighter &code) {
-//     return ui.setHead(nodeID), true;
-// }
+// ========== LINKED LIST HIGHLIGHT NODE ========== //
+LinkedListSetHead::LinkedListSetHead (int nodeID) : nodeID(nodeID) {}
+int LinkedListSetHead::apply (UI::LinkedList &ui, UI::CodeHighlighter &code) {
+    return ui.setHead(nodeID), true;
+}
 
-// // ========== LINKED LIST COLOR NODE ========== //
-// LinkedListColorNode::LinkedListColorNode (int nodeID, bool color) : nodeID(nodeID), color(color) {}
-// int LinkedListColorNode::apply (UI::LinkedList &ui, UI::CodeHighlighter &code) {
-//     return ui.colorNode(nodeID, color ? Theme::getRBRed() : Theme::getButton()), true;
-// }
+// ========== LINKED LIST COLOR NODE ========== //
+LinkedListColorNode::LinkedListColorNode (int nodeID, bool color) : nodeID(nodeID), color(color) {}
+int LinkedListColorNode::apply (UI::LinkedList &ui, UI::CodeHighlighter &code) {
+    return ui.colorNode(nodeID, color ? Theme::getRBRed() : Theme::getButton()), true;
+}
 
-// // ========== LINKED LIST CHANGE VALUE ========== //
-// LinkedListChangeValue::LinkedListChangeValue (int nodeID, int newValue) : nodeID(nodeID), newValue(newValue) {}
-// int LinkedListChangeValue::apply (UI::LinkedList &ui, UI::CodeHighlighter &code) {
-//     return ui.changeValue(nodeID, std::to_string(newValue)), true;
-// }
+// ========== LINKED LIST CHANGE VALUE ========== //
+LinkedListChangeValue::LinkedListChangeValue (int nodeID, int newValue) : nodeID(nodeID), newValue(newValue) {}
+int LinkedListChangeValue::apply (UI::LinkedList &ui, UI::CodeHighlighter &code) {
+    return ui.changeValue(nodeID, std::to_string(newValue)), true;
+}
 
 // ========== COMPLETE ANIMATION ========== //
 

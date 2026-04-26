@@ -39,11 +39,11 @@ StartScene::StartScene (SceneManager &manager) :
     toPrim.setCallback([&]() { manager.changeScene(5); });
     // toPrim.disableButton();
 
-    toRBTree.setString("RB TREE");
+    toRBTree.setString("MST (PRIM)");
     toRBTree.setCharacterSize(30);
     toRBTree.setPosition({Setting::screenWidth / 2.f, Setting::screenHeight / 2.f + 250});
     toRBTree.setCallback([&]() { manager.changeScene(6); });
-    toRBTree.disableButton();
+    // toRBTree.disableButton();
 }
 
 void StartScene::handleEvent (sf::RenderWindow &window, const std::optional<sf::Event> &event) {

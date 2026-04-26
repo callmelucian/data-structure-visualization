@@ -19,7 +19,7 @@
 class DijkstraScene : public Scene {
 private:
     AnimationManager<UI::Graph, DS::DijkstraAlgorithm> ui;
-    bool canEdit, canDelete;
+    bool canEdit, canDelete, fastPropagation;
 
 public:
     DijkstraScene (SceneManager &manager);

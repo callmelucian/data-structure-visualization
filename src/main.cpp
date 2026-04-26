@@ -6,13 +6,13 @@
 
 // include scenes
 #include "../include/scenes/scene-manager.hpp"
-// #include "../include/scenes/avl-tree-scene.hpp"
+#include "../include/scenes/avl-tree-scene.hpp"
 #include "../include/scenes/dijkstra-scene.hpp"
-// #include "../include/scenes/prim-scene.hpp"
-// #include "../include/scenes/rb-tree-scene.hpp"
-// #include "../include/scenes/hash-map-scene.hpp"
-// #include "../include/scenes/linked-list-scene.hpp"
-// #include "../include/scenes/start-scene.hpp"
+#include "../include/scenes/prim-scene.hpp"
+#include "../include/scenes/rb-tree-scene.hpp"
+#include "../include/scenes/hash-map-scene.hpp"
+#include "../include/scenes/linked-list-scene.hpp"
+#include "../include/scenes/start-scene.hpp"
 
 #include "../assets/theme.hpp"
 
@@ -41,30 +41,30 @@ int main() {
 
     // initialize scene manager
     SceneManager manager;
-    // manager.addNewScene(
-    //     std::make_unique<StartScene>(manager)
-    // );
-    // manager.addNewScene(
-    //     std::make_unique<AVLTreeScene>(manager)
-    // );
-    // manager.addNewScene(
-    //     std::make_unique<RBTreeScene>(manager)
-    // );
-    // manager.addNewScene(
-    //     std::make_unique<LinkedListScene>(manager)
-    // );
-    // manager.addNewScene(
-    //     std::make_unique<HashMapScene>(manager)
-    // );
+    manager.addNewScene(
+        std::make_unique<StartScene>(manager)
+    );
+    manager.addNewScene(
+        std::make_unique<AVLTreeScene>(manager)
+    );
+    manager.addNewScene(
+        std::make_unique<RBTreeScene>(manager)
+    );
+    manager.addNewScene(
+        std::make_unique<LinkedListScene>(manager)
+    );
+    manager.addNewScene(
+        std::make_unique<HashMapScene>(manager)
+    );
     manager.addNewScene(
         std::make_unique<DijkstraScene>(manager)
     );
-    // manager.addNewScene(
-    //     std::make_unique<PrimScene>(window, manager)
-    // );
-    // manager.addNewScene(
-    //     std::make_unique<SettingScene>(manager)
-    // );
+    manager.addNewScene(
+        std::make_unique<PrimScene>(manager)
+    );
+    manager.addNewScene(
+        std::make_unique<SettingScene>(manager)
+    );
     manager.runMainLoop(window);
 
     return 0;

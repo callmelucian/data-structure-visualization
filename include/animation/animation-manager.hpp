@@ -141,6 +141,9 @@ public:
     void pause();
     bool checkIsPlaying() const;
 
+    void centerUI();
+    void offcenterUI();
+
     /**
      * Initialize callback functions
      */
@@ -148,7 +151,7 @@ public:
 };
 
 template class AnimationManager<UI::Graph, DS::DijkstraAlgorithm>;
-// template class AnimationManager<UI::BinaryTree, DS::AVLTree>;
-// template class AnimationManager<UI::BinaryTree, DS::RedBlackTree>;
-// template class AnimationManager<UI::HashMap, DS::HashMap>;
-// template class AnimationManager<UI::LinkedList, DS::LinkedList>;
+template class AnimationManager<UI::BinaryTree, DS::AVLTree>;
+template class AnimationManager<UI::BinaryTree, DS::RedBlackTree>;
+template class AnimationManager<UI::HashMap, DS::HashMap>;
+template class AnimationManager<UI::LinkedList, DS::LinkedList>;

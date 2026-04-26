@@ -12,8 +12,6 @@
 #include "../core/global-setting.hpp"
 #include "../core/utility.hpp"
 
-extern const float eps;
-
 namespace UI {
 
 class Node : public Base {

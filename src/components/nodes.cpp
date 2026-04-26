@@ -1,7 +1,5 @@
 #include "../../include/components/nodes.hpp"
 
-const float eps = 1e-6;
-
 namespace UI {
 
 // ========== NODE ==========
@@ -58,8 +56,8 @@ void Node::setAnnotationColor (const sf::Color &color) {
 
 void Node::randomPosition() {
     setPosition({
-        randFloat(0, Setting::screenWidth),
-        randFloat(0, Setting::screenHeight)
+        randFloat(0, Setting::focusX),
+        randFloat(0, Setting::focusY)
     });
 }
 
@@ -227,7 +225,6 @@ void FloatingNode::handleMousePress (const sf::Vector2f &mousePos) {
     if (!containPosition(mousePos) || isActivated) return;
     setColor(Theme::getPressedButton());
     setScale({0.97f, 0.97f});
-    std::cerr << "I'm set to true" << std::endl;
     isClicked = true;
 }
 

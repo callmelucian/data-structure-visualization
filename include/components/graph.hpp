@@ -90,7 +90,7 @@ public:
 
     void copyFrom (const Graph &other);
 
-    void timePropagation (float deltaTime, float maxWidth = Setting::screenWidth, float maxHeight = Setting::screenHeight);
+    void timePropagation (float deltaTime, float maxWidth = Setting::focusX, float maxHeight = Setting::focusY);
 
     void makeDirected();
     

@@ -1,6 +1,7 @@
 #include "../../include/core/utility.hpp"
 
 const int INPUT_NUMBER_LIMIT = 1e8;
+const float eps = 1e-6;
 
 float magnitude(const sf::Vector2f &v) { 
     return std::sqrt(v.x * v.x + v.y * v.y); 

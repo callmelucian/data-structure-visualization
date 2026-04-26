@@ -1,6 +1,7 @@
 #include "../../include/scenes/dijkstra-scene.hpp"
 
-DijkstraScene::DijkstraScene (SceneManager &manager) : Scene(manager, 6, 2), canEdit(false), canDelete(false) {
+DijkstraScene::DijkstraScene (SceneManager &manager) :
+    Scene(manager, 6, 2), canEdit(false), canDelete(false), fastPropagation(false) {
     // set callback functions for button-UI communications
     ui.getCurrentUI().setCallbackAllowEdit([&] (bool f) {
         if (f) buttons[0].enableButton();
@@ -113,6 +114,7 @@ DijkstraScene::DijkstraScene (SceneManager &manager) : Scene(manager, 6, 2), can
             });
             ui.nextCompleteState();
         }
+        ui.getCurrentUI().setOrigin({Setting::focusX / 2.f, Setting::focusY / 2.f});
     });
 
     // clear
