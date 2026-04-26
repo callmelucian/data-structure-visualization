@@ -13,8 +13,7 @@ AVLTreeScene::AVLTreeScene (SceneManager &manager) : Scene(manager, 5, 3) {
     disableFields();
 
     // insert button
-    buttons[0].setString("INSERT");
-    buttons[0].setCharacterSize(20);
+    buttons[0].setString("INSERT", 20);
     fields[0].setCallbackFunction([&](const std::string &msg) {
         std::vector<int> numbers = stringToNumbers(msg);
         for (int value : numbers) {
@@ -77,6 +76,7 @@ AVLTreeScene::AVLTreeScene (SceneManager &manager) : Scene(manager, 5, 3) {
         }
     });
 
+    // clear
     buttons[4].setCallback([&]() {
         ui.appendEmpty(), ui.nextCompleteState();
     });

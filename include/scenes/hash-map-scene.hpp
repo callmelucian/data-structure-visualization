@@ -10,7 +10,6 @@
 #include "../animation/events.hpp"
 
 // UI components
-#include "../components/action-bar.hpp"
 #include "../components/button.hpp"
 #include "../components/hash-map.hpp"
 #include "../components/input-field.hpp"

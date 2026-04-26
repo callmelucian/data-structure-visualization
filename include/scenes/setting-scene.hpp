@@ -10,7 +10,6 @@
 
 // UI components
 #include "../components/button.hpp"
-#include "../components/action-bar.hpp"
 #include "../components/slider.hpp"
 
 class SettingScene : public Scene {

@@ -1,4 +1,4 @@
-    #include "../../include/components/graph.hpp"
+#include "../../include/components/graph.hpp"
 
 // ========== CONSTANTS INITIALIZATION ==========
 const float REPULSIVE_CONSTANT = 100'000.f;
@@ -12,14 +12,14 @@ namespace UI {
 Edge::Edge() :
     fromID(0), toID(0), weight(0),
     isDeleted(false), isActivated(false), isHovered(false), isHighlighted(false), isDirected(false),
-    defaultColor(Theme::getTextSecondary()),
+    defaultColor(Theme::getTextPrimary()),
     fromObserver(nullptr), toObserver(nullptr),
     thickness(0.f) {}
 
 Edge::Edge (int fromNode, int toNode, int weight, Node* fromObserver, Node* toObserver, bool isDirected) :
     fromID(fromNode), toID(toNode), weight(weight),
     isDeleted(false), isActivated(false), isHovered(false), isHighlighted(false), isDirected(isDirected),
-    defaultColor(Theme::getTextSecondary()),
+    defaultColor(Theme::getTextPrimary()),
     fromObserver(fromObserver), toObserver(toObserver),
     thickness(2.f) {}
 
@@ -41,8 +41,8 @@ sf::Vector2f Edge::getToPosition() const {
 }
 
 sf::Color Edge::getColor() const {
-    if (isActivated || isHighlighted) return Theme::getAccentMain(0);
-    if (isHovered) return Theme::getTextPrimary();
+    if (isHighlighted || isActivated) return Theme::getAccentPrimary();
+    if (isHovered) return Theme::getTextSecondary();
     return defaultColor;
 }
 
@@ -142,18 +142,22 @@ void Graph::copyFrom (const Graph &other) {
         FloatingNode* node = other.nodes[i];
         if (node != nullptr) {
             nodes.push_back(new UI::FloatingNode(*node));
-            nodes.back()->setCallbackOnClick([this, i]() {
-                if (activatedNode == -1) activatedNode = i;
-                else {
-                    callbackTriggerAddEdge(activatedNode, i);
-                    activatedNode = -1;
-                }
-            });
+            // nodes.back()->setCallbackOnClick([this, i]() {
+            //     std::cerr << "what " << activatedNode << std::endl;
+            //     if (activatedNode == -1) activatedNode = i;
+            //     else {
+            //         callbackTriggerAddEdge(activatedNode, i);
+            //         activatedNode = -1;
+            //     }
+            // });
             if (highlighter.getAddress() == node)
                 highlighter.setTargetNode(nodes.back());
         }
         else nodes.push_back(nullptr);
     }
+
+    for (int i = 0; i < other.nodes.size(); i++)
+        assert(other.nodes[i]->isClickedCheck() == nodes[i]->isClickedCheck());
 
     for (Edge &curr : edges)
         curr.updateObserver(this->nodes[curr.fromID], this->nodes[curr.toID]);
@@ -217,13 +221,14 @@ void Graph::makeDirected() {
 void Graph::insertNode (int label) {
     int curr = nodes.size();
     nodes.push_back(new FloatingNode(std::to_string(label)));
-    nodes.back()->setCallbackOnClick([this, curr]() {
-        if (activatedNode == -1) activatedNode = curr;
-        else {
-            callbackTriggerAddEdge(activatedNode, curr);
-            activatedNode = -1;
-        }
-    });
+    // nodes.back()->setCallbackOnClick([this, curr]() {
+    //     std::cerr << "what " << activatedNode << std::endl;
+    //     if (activatedNode == -1) activatedNode = curr;
+    //     else {
+    //         callbackTriggerAddEdge(activatedNode, curr);
+    //         activatedNode = -1;
+    //     }
+    // });
     isDeleted.push_back(false);
     autosetTargetOrigin();
 }
@@ -310,12 +315,12 @@ void Graph::resetEdgeActivation() {
 void Graph::clearAnnotation() {
     for (FloatingNode* ptr : nodes) {
         ptr->setAnnotation("");
-        ptr->setAnnotationColor(sf::Color::Red);
+        ptr->setAnnotationColor(Theme::getAccentSecondary());
     }
 }
 
 void Graph::markAnnotation (int nodeID) {
-    nodes[nodeID]->setAnnotationColor(sf::Color::Green);
+    nodes[nodeID]->setAnnotationColor(Theme::getAccentPrimary());
 }
 
 void Graph::highlightNode (int nodeID) {
@@ -347,6 +352,11 @@ void Graph::calculatePositions() {}
 
 void Graph::handleMousePress (const sf::Vector2f &mousePos) {
     if (callbackIsEditing(mousePos)) return;
+
+    std::cerr << "MOUSE PRESS" << std::endl;
+    for (int i = 0; i < nodes.size(); i++) std::cerr << nodes[i]->isClickedCheck() << " ";
+    std::cerr << std::endl << std::endl;
+
     sf::Vector2f localPos = this->getInverseTransform().transformPoint(mousePos);
     bool clicked = false;
     for (int i = 0; i < nodes.size(); i++) {
@@ -359,6 +369,10 @@ void Graph::handleMousePress (const sf::Vector2f &mousePos) {
         nodes[activatedNode]->deactivateNode();
         activatedNode = -1;
     }
+
+    std::cerr << "MOUSE PRESS" << std::endl;
+    for (int i = 0; i < nodes.size(); i++) std::cerr << nodes[i]->isClickedCheck() << " ";
+    std::cerr << std::endl << std::endl;
     
     for (Edge &curr : edges) curr.isActivated = false;
     if (!clicked) {
@@ -379,15 +393,39 @@ void Graph::handleMousePress (const sf::Vector2f &mousePos) {
 
 void Graph::handleMouseRelease (const sf::Vector2f &mousePos) {
     sf::Vector2f localPos = this->getInverseTransform().transformPoint(mousePos);
-    for (UI::FloatingNode* ptr : nodes) {
-        assert(ptr);
+    // for (UI::FloatingNode* ptr : nodes) {
+    //     ptr->handleMouseRelease(localPos);
+    //     ptr->deactivateNode();
+    // }
+    std::cerr << "NEW TURN" << std::endl;
+    for (int i = 0; i < nodes.size(); i++) std::cerr << nodes[i]->isClickedCheck() << " ";
+    std::cerr << std::endl;
+
+    for (int i = 0; i < nodes.size(); i++) {
+        if (isDeleted[i]) continue;
+        FloatingNode* ptr = nodes[i];
+        bool flag = false;
+        if (ptr->needCallback()) {
+            std::cerr << "from " << activatedNode << " to " << i << std::endl;
+            if (activatedNode == -1) activatedNode = i;
+            else {
+                callbackTriggerAddEdge(activatedNode, i);
+                activatedNode = -1;
+            }
+            flag = true;
+        }
         ptr->handleMouseRelease(localPos);
+        if (flag) std::cerr << "debug " << ptr->isClickedCheck() << std::endl;
         ptr->deactivateNode();
     }
+    for (int i = 0; i < nodes.size(); i++) std::cerr << nodes[i]->isClickedCheck() << " ";
+    std::cerr << std::endl;
     if (activatedNode != -1) {
         nodes[activatedNode]->activateNode();
         callbackAllowDelete(true);
     }
+    for (int i = 0; i < nodes.size(); i++) std::cerr << nodes[i]->isClickedCheck() << " ";
+    std::cerr << std::endl << std::endl;
 }
 
 void Graph::handleMouseMovement (const sf::Vector2f &mousePos) {

@@ -10,7 +10,6 @@
 #include "../animation/events.hpp"
 
 // UI components
-#include "../components/action-bar.hpp"
 #include "../components/button.hpp"
 #include "../components/linked-list.hpp"
 #include "../components/input-field.hpp"

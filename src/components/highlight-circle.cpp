@@ -7,7 +7,7 @@ namespace UI {
 template <typename NodeType>
 HighlightCircle<NodeType>::HighlightCircle() :
     circle(36.f, 100), highlightLocked(true), nodeObserver(nullptr) {
-        circle.setOutlineColor(Theme::getFixedColor());
+        circle.setOutlineColor(Theme::getAccentPrimary());
         circle.setFillColor(Theme::getTransparent());
         circle.setOrigin({36.f, 36.f});
         circle.setOutlineThickness(6.f);

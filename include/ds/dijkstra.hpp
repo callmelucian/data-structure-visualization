@@ -111,6 +111,7 @@ public:
     void createNode();
 
     void createEdge (int fromNode, int toNode);
+    void createEdge (int fromNode, int toNode, int weight);
 
     void deleteNode (int targetNode);
 

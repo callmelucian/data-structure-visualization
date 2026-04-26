@@ -16,78 +16,78 @@ public:
     virtual int apply (TypeUI &ui, UI::CodeHighlighter &code) = 0;
 };
 
-class BinaryTreeCreateNode : public AnimationEvent<UI::BinaryTree> {
-private:
-    std::string msgString;
-    bool isRoot;
-public:
-    BinaryTreeCreateNode (const std::string &s);
-    BinaryTreeCreateNode (const std::string &s, bool isRoot);
+// class BinaryTreeCreateNode : public AnimationEvent<UI::BinaryTree> {
+// private:
+//     std::string msgString;
+//     bool isRoot;
+// public:
+//     BinaryTreeCreateNode (const std::string &s);
+//     BinaryTreeCreateNode (const std::string &s, bool isRoot);
 
-    int apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) override;
-};
+//     int apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) override;
+// };
 
-class BinaryTreeDeleteNode : public AnimationEvent<UI::BinaryTree> {
-private:
-    int nodeID;
-public:
-    BinaryTreeDeleteNode (int nodeID);
+// class BinaryTreeDeleteNode : public AnimationEvent<UI::BinaryTree> {
+// private:
+//     int nodeID;
+// public:
+//     BinaryTreeDeleteNode (int nodeID);
 
-    int apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) override;
-};
+//     int apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) override;
+// };
 
-class BinaryTreeAddEdge : public AnimationEvent<UI::BinaryTree> {
-private:
-    int parent, childNode;
-    bool isLeft;
-public:
-    BinaryTreeAddEdge (int parent, int childNode, bool isLeft);
+// class BinaryTreeAddEdge : public AnimationEvent<UI::BinaryTree> {
+// private:
+//     int parent, childNode;
+//     bool isLeft;
+// public:
+//     BinaryTreeAddEdge (int parent, int childNode, bool isLeft);
     
-    int apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) override;
-};
+//     int apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) override;
+// };
 
-class BinaryTreeChangeRoot : public AnimationEvent<UI::BinaryTree> {
-private:
-    int newRoot;
-public:
-    BinaryTreeChangeRoot (int newRoot);
+// class BinaryTreeChangeRoot : public AnimationEvent<UI::BinaryTree> {
+// private:
+//     int newRoot;
+// public:
+//     BinaryTreeChangeRoot (int newRoot);
 
-    int apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) override;
-};
+//     int apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) override;
+// };
 
-class BinaryTreeSwapValue : public AnimationEvent<UI::BinaryTree> {
-private:
-    int a, b;
-public:
-    BinaryTreeSwapValue (int a, int b);
+// class BinaryTreeSwapValue : public AnimationEvent<UI::BinaryTree> {
+// private:
+//     int a, b;
+// public:
+//     BinaryTreeSwapValue (int a, int b);
 
-    int apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) override;
-};
+//     int apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) override;
+// };
 
-class BinaryTreeHighlightNode : public AnimationEvent<UI::BinaryTree> {
-private:
-    int targetNode;
-public:
-    BinaryTreeHighlightNode (int targetNode);
+// class BinaryTreeHighlightNode : public AnimationEvent<UI::BinaryTree> {
+// private:
+//     int targetNode;
+// public:
+//     BinaryTreeHighlightNode (int targetNode);
 
-    int apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) override;
-};
+//     int apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) override;
+// };
 
-class BinaryTreeColorNode : public AnimationEvent<UI::BinaryTree> {
-private:
-    int nodeID, color;
-public:
-    BinaryTreeColorNode (int nodeID, int color);
+// class BinaryTreeColorNode : public AnimationEvent<UI::BinaryTree> {
+// private:
+//     int nodeID, color;
+// public:
+//     BinaryTreeColorNode (int nodeID, int color);
 
-    int apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) override;
-};
+//     int apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) override;
+// };
 
-class BinaryTreeLockHighlight : public AnimationEvent<UI::BinaryTree> {
-public:
-    BinaryTreeLockHighlight();
+// class BinaryTreeLockHighlight : public AnimationEvent<UI::BinaryTree> {
+// public:
+//     BinaryTreeLockHighlight();
 
-    int apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) override;
-};
+//     int apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) override;
+// };
 
 // ========== GRAPH ==========
 
@@ -195,113 +195,113 @@ public:
 };
 
 // ========== HASH MAP ==========
-class HashMapCreateNode : public AnimationEvent<UI::HashMap> {
-private:
-    int value;
-public:
-    HashMapCreateNode (int value);
-    int apply (UI::HashMap &ui, UI::CodeHighlighter &code) override;
-};
+// class HashMapCreateNode : public AnimationEvent<UI::HashMap> {
+// private:
+//     int value;
+// public:
+//     HashMapCreateNode (int value);
+//     int apply (UI::HashMap &ui, UI::CodeHighlighter &code) override;
+// };
 
-class HashMapDeleteNode : public AnimationEvent<UI::HashMap> {
-private:
-    int nodeID;
-public:
-    HashMapDeleteNode (int nodeID);
-    int apply (UI::HashMap &ui, UI::CodeHighlighter &code) override;
-};
+// class HashMapDeleteNode : public AnimationEvent<UI::HashMap> {
+// private:
+//     int nodeID;
+// public:
+//     HashMapDeleteNode (int nodeID);
+//     int apply (UI::HashMap &ui, UI::CodeHighlighter &code) override;
+// };
 
-class HashMapAddEdge : public AnimationEvent<UI::HashMap> {
-private:
-    int fromID, toID;
-public:
-    HashMapAddEdge (int fromID, int nodeID);
-    int apply (UI::HashMap &ui, UI::CodeHighlighter &code) override;
-};
+// class HashMapAddEdge : public AnimationEvent<UI::HashMap> {
+// private:
+//     int fromID, toID;
+// public:
+//     HashMapAddEdge (int fromID, int nodeID);
+//     int apply (UI::HashMap &ui, UI::CodeHighlighter &code) override;
+// };
 
-class HashMapAttachRoot : public AnimationEvent<UI::HashMap> {
-private:
-    int slot, nodeID;
-public:
-    HashMapAttachRoot (int slot, int nodeID);
-    int apply (UI::HashMap &ui, UI::CodeHighlighter &code) override;
-};
+// class HashMapAttachRoot : public AnimationEvent<UI::HashMap> {
+// private:
+//     int slot, nodeID;
+// public:
+//     HashMapAttachRoot (int slot, int nodeID);
+//     int apply (UI::HashMap &ui, UI::CodeHighlighter &code) override;
+// };
 
-class HashMapHighlightNode : public AnimationEvent<UI::HashMap> {
-private:
-    int nodeID;
-public:
-    HashMapHighlightNode (int nodeID);
-    int apply (UI::HashMap &ui, UI::CodeHighlighter &code) override;
-};
+// class HashMapHighlightNode : public AnimationEvent<UI::HashMap> {
+// private:
+//     int nodeID;
+// public:
+//     HashMapHighlightNode (int nodeID);
+//     int apply (UI::HashMap &ui, UI::CodeHighlighter &code) override;
+// };
 
-class HashMapColorNode : public AnimationEvent<UI::HashMap> {
-private:
-    int nodeID;
-    bool color;
-public:
-    HashMapColorNode (int nodeID, bool color);
-    int apply (UI::HashMap &ui, UI::CodeHighlighter &code) override;
-};
+// class HashMapColorNode : public AnimationEvent<UI::HashMap> {
+// private:
+//     int nodeID;
+//     bool color;
+// public:
+//     HashMapColorNode (int nodeID, bool color);
+//     int apply (UI::HashMap &ui, UI::CodeHighlighter &code) override;
+// };
 
-// ========== LINKED-LIST ==========
-class LinkedListCreateNode : public AnimationEvent<UI::LinkedList> {
-private:
-    std::string value;
-    bool isHead;
-public:
-    LinkedListCreateNode (const std::string &s, bool isHead);
-    int apply (UI::LinkedList &ui, UI::CodeHighlighter &code) override;
-};
+// // ========== LINKED-LIST ==========
+// class LinkedListCreateNode : public AnimationEvent<UI::LinkedList> {
+// private:
+//     std::string value;
+//     bool isHead;
+// public:
+//     LinkedListCreateNode (const std::string &s, bool isHead);
+//     int apply (UI::LinkedList &ui, UI::CodeHighlighter &code) override;
+// };
 
-class LinkedListDeleteNode : public AnimationEvent<UI::LinkedList> {
-private:
-    int nodeID;
-public:
-    LinkedListDeleteNode (int nodeID);
-    int apply (UI::LinkedList &ui, UI::CodeHighlighter &code) override;
-};
+// class LinkedListDeleteNode : public AnimationEvent<UI::LinkedList> {
+// private:
+//     int nodeID;
+// public:
+//     LinkedListDeleteNode (int nodeID);
+//     int apply (UI::LinkedList &ui, UI::CodeHighlighter &code) override;
+// };
 
-class LinkedListAddEdge : public AnimationEvent<UI::LinkedList> {
-private:
-    int fromID, toID;
-public:
-    LinkedListAddEdge (int fromID, int toID);
-    int apply (UI::LinkedList &ui, UI::CodeHighlighter &code) override;
-};
+// class LinkedListAddEdge : public AnimationEvent<UI::LinkedList> {
+// private:
+//     int fromID, toID;
+// public:
+//     LinkedListAddEdge (int fromID, int toID);
+//     int apply (UI::LinkedList &ui, UI::CodeHighlighter &code) override;
+// };
 
-class LinkedListHighlightNode : public AnimationEvent<UI::LinkedList> {
-private:
-    int nodeID;
-public:
-    LinkedListHighlightNode (int nodeID);
-    int apply (UI::LinkedList &ui, UI::CodeHighlighter &code) override;
-};
+// class LinkedListHighlightNode : public AnimationEvent<UI::LinkedList> {
+// private:
+//     int nodeID;
+// public:
+//     LinkedListHighlightNode (int nodeID);
+//     int apply (UI::LinkedList &ui, UI::CodeHighlighter &code) override;
+// };
 
-class LinkedListSetHead : public AnimationEvent<UI::LinkedList> {
-private:
-    int nodeID;
-public:
-    LinkedListSetHead (int nodeID);
-    int apply (UI::LinkedList &ui, UI::CodeHighlighter &code) override;
-};
+// class LinkedListSetHead : public AnimationEvent<UI::LinkedList> {
+// private:
+//     int nodeID;
+// public:
+//     LinkedListSetHead (int nodeID);
+//     int apply (UI::LinkedList &ui, UI::CodeHighlighter &code) override;
+// };
 
-class LinkedListColorNode : public AnimationEvent<UI::LinkedList> {
-private:
-    int nodeID;
-    bool color;
-public:
-    LinkedListColorNode (int nodeID, bool color);
-    int apply (UI::LinkedList &ui, UI::CodeHighlighter &code) override;
-};
+// class LinkedListColorNode : public AnimationEvent<UI::LinkedList> {
+// private:
+//     int nodeID;
+//     bool color;
+// public:
+//     LinkedListColorNode (int nodeID, bool color);
+//     int apply (UI::LinkedList &ui, UI::CodeHighlighter &code) override;
+// };
 
-class LinkedListChangeValue : public AnimationEvent<UI::LinkedList> {
-private:
-    int nodeID, newValue;
-public:
-    LinkedListChangeValue (int nodeID, int newValue);
-    int apply (UI::LinkedList &ui, UI::CodeHighlighter &code) override;
-};
+// class LinkedListChangeValue : public AnimationEvent<UI::LinkedList> {
+// private:
+//     int nodeID, newValue;
+// public:
+//     LinkedListChangeValue (int nodeID, int newValue);
+//     int apply (UI::LinkedList &ui, UI::CodeHighlighter &code) override;
+// };
 
 // ========== COMMON ==========
 
@@ -335,17 +335,17 @@ public:
 
 // ========== TEMPLATE CLASSES ==========
 
-template class CodeHighlightLoadCode<UI::BinaryTree>;
+// template class CodeHighlightLoadCode<UI::BinaryTree>;
 template class CodeHighlightLoadCode<UI::Graph>;
-template class CodeHighlightLoadCode<UI::HashMap>;
-template class CodeHighlightLoadCode<UI::LinkedList>;
+// template class CodeHighlightLoadCode<UI::HashMap>;
+// template class CodeHighlightLoadCode<UI::LinkedList>;
 
-template class CodeHighlighting<UI::BinaryTree>;
+// template class CodeHighlighting<UI::BinaryTree>;
 template class CodeHighlighting<UI::Graph>;
-template class CodeHighlighting<UI::HashMap>;
-template class CodeHighlighting<UI::LinkedList>;
+// template class CodeHighlighting<UI::HashMap>;
+// template class CodeHighlighting<UI::LinkedList>;
 
-template class CompleteAnimation<UI::BinaryTree>;
+// template class CompleteAnimation<UI::BinaryTree>;
 template class CompleteAnimation<UI::Graph>;
-template class CompleteAnimation<UI::HashMap>;
-template class CompleteAnimation<UI::LinkedList>;
+// template class CompleteAnimation<UI::HashMap>;
+// template class CompleteAnimation<UI::LinkedList>;

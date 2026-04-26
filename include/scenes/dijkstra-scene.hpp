@@ -11,7 +11,6 @@
 #include "../animation/events.hpp"
 
 // UI components
-#include "../components/action-bar.hpp"
 #include "../components/button.hpp"
 #include "../components/graph.hpp"
 #include "../components/input-field.hpp"
@@ -19,18 +18,11 @@
 
 class DijkstraScene : public Scene {
 private:
-    UI::Button backButton, settingButton;
-    
     AnimationManager<UI::Graph, DS::DijkstraAlgorithm> ui;
-    UI::TextInputField editField, runField;
-    UI::Button insertButton, editButton, deleteButton, runButton;
-    
-    UI::Button playButton;
-    UI::Button prevStepButton, prevOperationButton;
-    UI::Button nextStepButton, nextOperationButton;
+    bool canEdit, canDelete;
 
 public:
-    DijkstraScene (const sf::RenderWindow &window, SceneManager &manager);
+    DijkstraScene (SceneManager &manager);
 
     void handleEvent(sf::RenderWindow &window, const std::optional<sf::Event> &event) override;
     void timePropagation(float delta) override;

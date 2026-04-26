@@ -13,7 +13,6 @@
 #include "../animation/events.hpp"
 
 // UI components
-#include "../components/action-bar.hpp"
 #include "../components/button.hpp"
 #include "../components/binary-tree.hpp"
 #include "../components/input-field.hpp"

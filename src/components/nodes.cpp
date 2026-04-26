@@ -149,13 +149,13 @@ void swapAnimatedNode(AnimatedNode &a, AnimatedNode &b) {
     std::swap(a.nodeUI, b.nodeUI);
 }
 
-void AnimatedNode::highlightNode() {
-    nodeUI.setColor(Theme::getFixedColor());
-}
+// void AnimatedNode::highlightNode() {
+//     nodeUI.setColor(Theme::getFixedColor());
+// }
 
-void AnimatedNode::unHighlightNode() {
-    nodeUI.setColor(Theme::getTransparent());
-}
+// void AnimatedNode::unHighlightNode() {
+//     nodeUI.setColor(Theme::getTransparent());
+// }
 
 sf::Vector2f AnimatedNode::getPosition() const {
     return nodeUI.getPosition();
@@ -209,7 +209,7 @@ void FloatingNode::timePropagation (float deltaTime) {
 
 void FloatingNode::activateNode() {
     isActivated = true;
-    setColor(sf::Color::Green);
+    setColor(Theme::getAccentPrimary());
 }
 
 void FloatingNode::deactivateNode() {
@@ -227,8 +227,18 @@ void FloatingNode::handleMousePress (const sf::Vector2f &mousePos) {
     if (!containPosition(mousePos) || isActivated) return;
     setColor(Theme::getPressedButton());
     setScale({0.97f, 0.97f});
+    std::cerr << "I'm set to true" << std::endl;
     isClicked = true;
 }
+
+bool FloatingNode::needCallback() const {
+    return isClicked && !isActivated;
+}
+
+bool FloatingNode::isClickedCheck() const {
+    return isClicked;
+}
+
 
 void FloatingNode::handleMouseRelease (const sf::Vector2f &mousePos) {
     if (!isClicked || isActivated) return;
@@ -237,7 +247,7 @@ void FloatingNode::handleMouseRelease (const sf::Vector2f &mousePos) {
     );
     setScale({1.f, 1.f});
     isClicked = false;
-    callbackOnClick();
+    // callbackOnClick();
 }
 
 void FloatingNode::handleMouseMovement (const sf::Vector2f &mousePos) {

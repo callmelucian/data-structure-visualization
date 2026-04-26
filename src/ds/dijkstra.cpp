@@ -35,6 +35,18 @@ void DijkstraAlgorithm::createEdge (int fromNode, int toNode) {
     callbackApplyAnimation();
 }
 
+void DijkstraAlgorithm::createEdge (int fromNode, int toNode, int weight) {
+    adjency[fromNode].emplace_back(toNode, edgeWeight.size());
+    if (!isDirected)
+        adjency[toNode].emplace_back(fromNode, edgeWeight.size());
+    edgeWeight.push_back(weight);
+    edgeDeleted.push_back(false);
+    callbackAddEdge(fromNode, toNode, edgeWeight.back());
+    clearUIState();
+    callbackCompleteAnimation();
+    callbackApplyAnimation();
+}
+
 void DijkstraAlgorithm::deleteNode (int targetNode) {
     nodeDeleted[targetNode] = true;
     for (int fromNode = 0; fromNode < graphSize; fromNode++) {
@@ -148,7 +160,7 @@ void DijkstraAlgorithm::runPrim (int source) {
     callbackLoadCode(CodeRepo::PRIM_CODE);
     callbackClearAnnotation();
     for (int i = 0; i < edgeWeight.size(); i++)
-        if (!edgeDeleted[i]) callbackSetEdgeColor(i, Theme::getHoveredButton());
+        if (!edgeDeleted[i]) callbackSetEdgeColor(i, Theme::getTextSecondary());
     for (int i = 0; i < graphSize; i++)
         if (!nodeDeleted[i]) callbackEditAnnotation(i, INT_MAX);
     callbackHighlightCode(0);
@@ -172,7 +184,7 @@ void DijkstraAlgorithm::runPrim (int source) {
         callbackApplyAnimation();
 
         if (curNode != source) {
-            callbackSetEdgeColor(edgeID, Theme::getAccentSecondary(0));
+            callbackSetEdgeColor(edgeID, Theme::getTextPrimary());
             callbackHighlightCode(4);
             callbackApplyAnimation();
         }

@@ -81,6 +81,24 @@ std::vector<int> fileToNumbers (const std::string &path) {
     return result;
 }
 
+bool inRange (int l, int r, int p) {
+    return l <= p && p <= r;
+}
+
+bool checkValidGraph (const std::vector<int> &numbers) {
+    if (numbers.size() < 2) return false;
+    int n = numbers[0], m = numbers[1];
+    if (numbers.size() != 2 + 3 * m) return false;
+
+    for (int i = 0; i < m; i++) {
+        int start = 2 + 3 * i;
+        if (!inRange(0, n - 1, numbers[start])) return false;
+        if (!inRange(0, n - 1, numbers[start + 1])) return false;
+        if (!inRange(0, 1'000'000'000, numbers[start + 2])) return false;
+    }
+    return true;
+}
+
 std::ostream& operator<<(std::ostream &oup, const sf::Vector2f &v) {
     return oup << "(" << v.x << ", " << v.y << ")", oup;
 }

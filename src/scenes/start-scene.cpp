@@ -33,11 +33,11 @@ StartScene::StartScene (SceneManager &manager) :
     toLinkedList.setCallback([&]() { manager.changeScene(4); });
     // toLinkedList.disableButton();
 
-    toPrim.setString("MST (PRIM)");
+    toPrim.setString("DIJKSTRA");
     toPrim.setCharacterSize(30);
     toPrim.setPosition({Setting::screenWidth / 2.f, Setting::screenHeight / 2.f + 150});
     toPrim.setCallback([&]() { manager.changeScene(5); });
-    toPrim.disableButton();
+    // toPrim.disableButton();
 
     toRBTree.setString("RB TREE");
     toRBTree.setCharacterSize(30);

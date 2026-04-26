@@ -234,6 +234,7 @@ bool LinkedList::update (int oldKey, int newKey) {
             callbackHighlightCode(2);
             callbackChangeValue(getVisualID(ptr), newKey);
             callbackApplyAnimation();
+            ptr->value = newKey;
         }
     }
 

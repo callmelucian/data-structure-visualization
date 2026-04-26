@@ -24,7 +24,7 @@ Slider::Slider (float width, float height, float radius) :
     filled.setFillColor(Theme::getPressedButton());
 
     // setup annotation
-    annotation.setFillColor(Theme::getPrimary());
+    annotation.setFillColor(Theme::getTextPrimary());
     annotation.setAutoCharacterSize(width, height);
     annotation.setPosition({width / 2.f, height / 2.f});
     setString("50%");

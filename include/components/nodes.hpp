@@ -90,10 +90,9 @@ public:
     
     friend void swapAnimatedNode(AnimatedNode &a, AnimatedNode &b);
     
-    void highlightNode();
-    
-    void unHighlightNode();
-    
+    // void highlightNode();
+    // void unHighlightNode();
+
     sf::Vector2f getPosition() const;
 
     void setPosition (const sf::Vector2f vec);
@@ -135,6 +134,9 @@ public:
     void deactivateNode();
 
     void copyPosition (const FloatingNode &other);
+
+    bool needCallback() const;
+    bool isClickedCheck() const;
 
     // handle mouse press
     void handleMousePress(const sf::Vector2f &mousePos) override;
