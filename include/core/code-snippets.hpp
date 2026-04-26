@@ -4,15 +4,7 @@
 
 namespace CodeRepo {
 
-inline const std::vector<std::string> HASH_MAP_INSERT = {
-    "void insertValue (int value):",
-    "    if root[value % 17] is empty: create new node and return",
-    "    ptr = rootNode[value % 17]",
-    "    while ptr->pNext != nullptr:",
-    "        ptr = ptr->pNext",
-    "    ptr->pNext = new node"
-};
-
+// ========== LINKED LIST ==========
 inline const std::vector<std::string> LINKED_LIST_APPEND = {
     "void appendValue (int value):",
     "    if empty: head = new node and return",
@@ -28,18 +20,6 @@ inline const std::vector<std::string> LINKED_LIST_INSERT = {
     "    loop position - 1 times: cur = cur->pNext",
     "    newNode = new node",
     "    newNode->pNext = cur->pNext, cur->pNext = newNode"
-};
-
-inline const std::vector<std::string> HASH_MAP_ERASE = {
-    "void eraseValue (int value):",
-    "    if root[value % 17] is empty: return",
-    "    if root[value % 17]->value == value:",
-    "        delete head, make new head and return",
-    "    Node* ptr = rootNode[eraseKey % 17]",
-    "    while ptr->pNext != nullptr and ptr->pNext->value != value:",
-    "        ptr = ptr->pNext",
-    "    if ptr->pNext != nulltr:",
-    "        delete ptr->pNext and make new link"
 };
 
 inline const std::vector<std::string> LINKED_LIST_ERASE = {
@@ -66,6 +46,35 @@ inline const std::vector<std::string> LINKED_LIST_SEARCH = {
     "    return false"
 };
 
+// ========== HASH MAP ==========
+inline const std::vector<std::string> HASH_MAP_INSERT = {
+    "void insertValue (int value):",
+    "    if root[value % 17] is empty: create new node and return",
+    "    ptr = rootNode[value % 17]",
+    "    while ptr->pNext != nullptr: ptr = ptr->pNext",
+    "    ptr->pNext = new node"
+};
+
+inline const std::vector<std::string> HASH_MAP_ERASE = {
+    "void eraseValue (int value):",
+    "    if root[value % 17] is empty: return",
+    "    if root[value % 17]->value == value:",
+    "        delete head, make new head and return",
+    "    Node* ptr = rootNode[eraseKey % 17]",
+    "    while ptr->pNext != nullptr and ptr->pNext->value != value:",
+    "        ptr = ptr->pNext",
+    "    if ptr->pNext != nulltr:",
+    "        delete ptr->pNext and make new link"
+};
+
+inline const std::vector<std::string> HASH_MAP_SEARCH = {
+    "bool search (int searchKey):",
+    "    for (ptr = root[searchKey % 17]; ptr != nullptr; ptr = ptr->pNext):",
+    "        if ptr->value == searchKey: return true",
+    "    return false"
+};
+
+// ========== AVL TREE =========
 inline const std::vector<std::string> AVL_TREE_INSERT = {
     "Node* insertValue (Node* ptr, int insertKey):",
     "    if ptr == nullptr: return new Node(insertKey);",
@@ -74,46 +83,6 @@ inline const std::vector<std::string> AVL_TREE_INSERT = {
     "        ptr->leftST = insertValue(ptr->leftST, insertKey)",
     "    if insertKey > ptr->value:",
     "        ptr->rightST = insertValue(ptr->rightST, insertKey)",
-    "    return selfBalance(ptr)"
-};
-
-inline const std::vector<std::string> RB_TREE_INSERT = {
-    "Node* insertValue (Node* ptr, int insertKey):",
-    "    if ptr == nullptr: return new Node(insertKey, RED);",
-    "    if insertKey == ptr->value: return ptr",
-    "    if insertKey < ptr->value:",
-    "        ptr->leftST = insertValue(ptr->leftST, insertKey)",
-    "    if insertKey > ptr->value:",
-    "        ptr->rightST = insertValue(ptr->rightST, insertKey)",
-    "    if ptr is root: ptr->color = BLACK",
-    "    return selfBalance(ptr)"
-};
-
-inline const std::vector<std::string> RB_TREE_SELF_BALANCE = {
-    "Node* selfBalance (Node* ptr):",
-    "    if right child is red and left child is black: leftRotate",
-    "    if both left and left-left children are red: rightRotate",
-    "    if both left and right children are red: flipColors",
-    "    return ptr"
-};
-
-inline const std::vector<std::string> RB_TREE_ERASE_VALUE = {
-    "Node* eraseValue (Node* ptr, int eraseKey):",
-    "    if ptr == nullptr: return nullptr",
-    "    if eraseKey < ptr->value:",
-    "        if both left and left-left children are black/empty:",
-    "            ptr = moveRedLeft(ptr)",
-    "        ptr->leftST = eraseValue(ptr->leftST, eraseKey)",
-    "    if eraseKey >= ptr->value:",
-    "        if left child is red: rightRotate current subtree",
-    "        if eraseKey == ptr->value and current subtree contains 1 node:",
-    "            delete current node and return nullptr",
-    "        if both right and right-left children are black/empty:",
-    "            ptr = moveRedRight(ptr)",
-    "        if eraseKey == ptr->value:",
-    "            swap current node with the smallest value among rightST",
-    "        ptr->rightST = eraseValue(ptr->rightST, eraseKey)",
-    "    if ptr is root: ptr->color = BLACK",
     "    return selfBalance(ptr)"
 };
 
@@ -154,6 +123,48 @@ inline const std::vector<std::string> AVL_TREE_SEARCH = {
     "        return search(ptr->rpt, searchKey)",
 };
 
+// ========== RB TREE ==========
+inline const std::vector<std::string> RB_TREE_INSERT = {
+    "Node* insertValue (Node* ptr, int insertKey):",
+    "    if ptr == nullptr: return new Node(insertKey, RED);",
+    "    if insertKey == ptr->value: return ptr",
+    "    if insertKey < ptr->value:",
+    "        ptr->leftST = insertValue(ptr->leftST, insertKey)",
+    "    if insertKey > ptr->value:",
+    "        ptr->rightST = insertValue(ptr->rightST, insertKey)",
+    "    if ptr is root: ptr->color = BLACK",
+    "    return selfBalance(ptr)"
+};
+
+inline const std::vector<std::string> RB_TREE_SELF_BALANCE = {
+    "Node* selfBalance (Node* ptr):",
+    "    if right child is red and left child is black: leftRotate",
+    "    if both left and left-left children are red: rightRotate",
+    "    if both left and right children are red: flipColors",
+    "    return ptr"
+};
+
+inline const std::vector<std::string> RB_TREE_ERASE_VALUE = {
+    "Node* eraseValue (Node* ptr, int eraseKey):",
+    "    if ptr == nullptr: return nullptr",
+    "    if eraseKey < ptr->value:",
+    "        if both left and left-left children are black/empty:",
+    "            ptr = moveRedLeft(ptr)",
+    "        ptr->leftST = eraseValue(ptr->leftST, eraseKey)",
+    "    if eraseKey >= ptr->value:",
+    "        if left child is red: rightRotate current subtree",
+    "        if eraseKey == ptr->value and current subtree contains 1 node:",
+    "            delete current node and return nullptr",
+    "        if both right and right-left children are black/empty:",
+    "            ptr = moveRedRight(ptr)",
+    "        if eraseKey == ptr->value:",
+    "            swap current node with the smallest value among rightST",
+    "        ptr->rightST = eraseValue(ptr->rightST, eraseKey)",
+    "    if ptr is root: ptr->color = BLACK",
+    "    return selfBalance(ptr)"
+};
+
+// ========== GRAPH ==========
 inline const std::vector<std::string> DIJKSTRA_CODE = {
     "intialize all nodes with infinity distance",
     "distance[source] := 0",

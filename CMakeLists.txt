@@ -46,10 +46,10 @@ add_executable(DataVisApp
     # src/scenes/dijkstra-scene.cpp
     # src/scenes/prim-scene.cpp
     src/scenes/rb-tree-scene.cpp
-    # src/scenes/hash-map-scene.cpp
+    src/scenes/hash-map-scene.cpp
     src/scenes/linked-list-scene.cpp
     src/scenes/start-scene.cpp
-    # src/scenes/setting-scene.cpp
+    src/scenes/setting-scene.cpp
 )
 
 # 6. Link SFML to your app

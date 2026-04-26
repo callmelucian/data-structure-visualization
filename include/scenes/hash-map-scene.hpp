@@ -18,17 +18,11 @@
 
 class HashMapScene : public Scene {
 private:
-    UI::Button backButton, settingButton;
-    UI::Button insertButton, eraseButton;
-    UI::TextInputField insertField, eraseField;
-    AnimationManager<UI::HashMap, DS::HashMap> treeUI;
-
-    UI::Button playButton;
-    UI::Button prevStepButton, prevOperationButton;
-    UI::Button nextStepButton, nextOperationButton;
-
+    AnimationManager<UI::HashMap, DS::HashMap> ui;
+    int updateHold;
+    
 public:
-    HashMapScene(const sf::RenderWindow &window, SceneManager &manager);
+    HashMapScene (SceneManager &manager);
     
     void handleEvent(sf::RenderWindow &window, const std::optional<sf::Event> &event) override;
     void timePropagation(float delta) override;

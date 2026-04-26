@@ -165,6 +165,10 @@ void HashMap::copyPosition (const HashMap &other) {
     setOrigin(other.getOrigin());
 }
 
+void HashMap::colorNode (int nodeID, const sf::Color &color) {
+    nodeUI[nodeID]->setColor(color);
+}
+
 void HashMap::draw (sf::RenderTarget &target, sf::RenderStates states) const {
     // apply state transform
     states.transform *= getTransform();

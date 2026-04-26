@@ -13,27 +13,23 @@ namespace UI {
 
 class Slider : public UI::Base {
 private:
-    sf::RectangleShape holder;
-    sf::RectangleShape hovered;
-    sf::RectangleShape filled;
-    UI::Text annotation, label;
-    std::function<void(float)> changeValue;
-    std::function<std::string(float)> displayValue;
+    UI::RoundedRectangle holder, hovered, filled;
+    UI::Text annotation;
     bool followMouse;
+    float radius;
+
+    std::function<void(float)> changeValue;
 
 public:
-    Slider(float width, float height);
+    Slider (float width, float height, float radius = 20.f);
 
     void setString(const std::string &msg);
+
+    void setCharacterSize (unsigned characterSize);
 
     // set change-value function
     void setChangeValueFunction(auto cvf) {
         changeValue = cvf;
-    }
-
-    // set display-value function
-    void setDisplayValueFunction(auto dvf) {
-        displayValue = dvf;
     }
 
     // (override) draw slider onto the screen

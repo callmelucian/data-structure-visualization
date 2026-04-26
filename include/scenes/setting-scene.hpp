@@ -15,11 +15,13 @@
 
 class SettingScene : public Scene {
 private:
-    UI::Button backButton;
-    UI::Slider slider;
+    UI::Slider animationSpeed;
+    UI::Button themeColor;
+    std::vector<UI::Text> labels;
+    UI::Text title;
 
 public:
-    SettingScene (const sf::RenderWindow &window, SceneManager &manager);
+    SettingScene (SceneManager &manager);
     
     void handleEvent(sf::RenderWindow &window, const std::optional<sf::Event> &event) override;
     void timePropagation(float delta) override;

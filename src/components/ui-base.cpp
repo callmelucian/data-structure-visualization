@@ -88,6 +88,15 @@ void RoundedRectangle::centerOrigin() {
     setOrigin(sizeVector / 2.f);
 }
 
+void RoundedRectangle::setWidth (float newWidth) {
+    sizeVector.x = newWidth;
+    update();
+}
+
+float RoundedRectangle::getWidth() const {
+    return sizeVector.x;
+}
+
 sf::Vector2f RoundedRectangle::getPoint(std::size_t index) const {
     if (index >= getPointCount()) return {0, 0};
     size_t cornerIndex = index / cornerPointCount;

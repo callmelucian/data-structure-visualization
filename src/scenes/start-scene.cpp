@@ -27,11 +27,11 @@ StartScene::StartScene (SceneManager &manager) :
     toHashMap.setCallback([&]() { manager.changeScene(3); });
     // toHashMap.disableButton();
 
-    toLinkedList.setString("LINKED LIST");
+    toLinkedList.setString("HASH MAP");
     toLinkedList.setCharacterSize(30);
     toLinkedList.setPosition({Setting::screenWidth / 2.f, Setting::screenHeight / 2.f + 50});
     toLinkedList.setCallback([&]() { manager.changeScene(4); });
-    toLinkedList.disableButton();
+    // toLinkedList.disableButton();
 
     toPrim.setString("MST (PRIM)");
     toPrim.setCharacterSize(30);

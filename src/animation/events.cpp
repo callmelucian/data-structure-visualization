@@ -196,6 +196,12 @@ int HashMapHighlightNode::apply (UI::HashMap &ui, UI::CodeHighlighter &code) {
     return ui.setHighlight(nodeID), true;
 }
 
+// ========== HASH MAP COLOR NODE ========== //
+HashMapColorNode::HashMapColorNode (int nodeID, bool color) : nodeID(nodeID), color(color) {}
+int HashMapColorNode::apply (UI::HashMap &ui, UI::CodeHighlighter &code) {
+    return ui.colorNode(nodeID, color ? Theme::getRBRed() : Theme::getButton()), true;
+}
+
 // ========== LINKED LIST CREATE NODE ========== //
 LinkedListCreateNode::LinkedListCreateNode (const std::string &s, bool isHead) : value(s), isHead(isHead) {}
 int LinkedListCreateNode::apply (UI::LinkedList &ui, UI::CodeHighlighter &code) {

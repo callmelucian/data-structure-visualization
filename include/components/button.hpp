@@ -29,6 +29,7 @@ public:
 
     // set label string
     void setString(const std::string &msg);
+    void setString (const std::string &msg, int characterSize);
 
     // scale UI elements
     void setScale(float scaleConstant);

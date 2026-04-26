@@ -1,165 +1,140 @@
 #include "../../include/scenes/hash-map-scene.hpp"
 
-HashMapScene::HashMapScene(const sf::RenderWindow &window, SceneManager &manager) :
-    Scene(window, manager), backButton(100, 30), settingButton(100, 30),
-    insertButton(100, 30), eraseButton(100, 30),
-    insertField(150, 30), eraseField(150, 30),
-    treeUI(UI::HashMap()), playButton(50, 30),
-    prevStepButton(50, 30), prevOperationButton(50, 30),
-    nextStepButton(50, 30), nextOperationButton(50, 30) {
-    
-    // intialize back button
-    backButton.setString("BACK");
-    backButton.setCharacterSize(20);
-    backButton.setPosition({100, 40});
-    backButton.setCallback([&]() {
-        manager.changeScene(0);
-    });
-
-    // intialize setting button
-    settingButton.setString("SETTING");
-    settingButton.setCharacterSize(20);
-    settingButton.setPosition({Setting::screenWidth - 100, 40});
-    settingButton.setCallback([&]() {
-        manager.changeScene(7);
-    });
-
-    // initialize buttons
-    insertButton.setString("INSERT");
-    insertButton.setCharacterSize(20);
-    eraseButton.setString("ERASE");
-    eraseButton.setCharacterSize(20);
-
-    prevStepButton.setString("<");
-    prevStepButton.setCharacterSize(25);
-    prevOperationButton.setString("<<");
-    prevOperationButton.setCharacterSize(25);
-    playButton.setString("|>");
-    playButton.setCharacterSize(25);
-    nextStepButton.setString(">");
-    nextStepButton.setCharacterSize(25);
-    nextOperationButton.setString(">>");
-    nextOperationButton.setCharacterSize(25);
-
-    // set positions for objects
-    insertButton.setPosition({240, 850});
-    insertField.setPosition({115, 850});
-    eraseButton.setPosition({525, 850});
-    eraseField.setPosition({400, 850});
-    
-    prevOperationButton.setPosition({65, 800});
-    prevStepButton.setPosition({125, 800});
-    playButton.setPosition({185, 800});
-    nextStepButton.setPosition({245, 800});
-    nextOperationButton.setPosition({305, 800});
-
-    // set callback functions: AVL Tree UI
-    treeUI.setCallbackEnableButtons([&](int f) {
-        if (f) {
-            insertButton.enableButton();
-            eraseButton.enableButton();
-            insertField.enable();
-            eraseField.enable();
+HashMapScene::HashMapScene(SceneManager &manager) : Scene(manager, 6, 5), updateHold(0) {
+    // set callback functions: Hash Map UI
+    ui.setCallbackEnableButtons([&](int f) {
+        for (UI::Button &button : buttons) {
+            if (f) button.enableButton();
+            else button.disableButton();
         }
-        else {
-            insertButton.disableButton();
-            eraseButton.disableButton();
-            insertField.disable();
-            eraseField.disable();
+        if (!f) disableFields();
+    });
+    ui.setCallbackPlayPause(changePlayButton);
+    disableFields();
+
+    // insert button
+    buttons[0].setString("INSERT", 20);
+    buttons[0].setCallback([&]() {
+        if (fields[0].isEnabled()) fields[0].disable();
+        else disableFields(), fields[0].enable();
+    });
+    fields[0].setLabel("Enter value to be inserted");
+    fields[0].setCallbackFunction([&] (const std::string &msg) {
+        std::vector<int> numbers = stringToNumbers(msg);
+        for (int value : numbers) {
+            ui.transformLogic([&] (DS::HashMap &hm) {
+                return hm.insert(value), true;
+            });
         }
     });
-    treeUI.setCallbackPlayPause([&] (bool f) {
-        playButton.setString(f ? "||" : "|>");
-        playButton.setCharacterSize(25);
+
+    // erase button
+    buttons[1].setString("ERASE", 20);
+    buttons[1].setCallback([&]() {
+        if (fields[1].isEnabled()) fields[1].disable();
+        else disableFields(), fields[1].enable();
+    });
+    fields[1].setLabel("Enter value to be erased");
+    fields[1].setCallbackFunction([&] (const std::string &msg) {
+        std::vector<int> numbers = stringToNumbers(msg);
+        for (int value : numbers) {
+            ui.transformLogic([&] (DS::HashMap &hm) {
+                return hm.erase(value), true;
+            });
+        }
     });
 
-    // set callback functions: input field and button for insertion
-    insertField.setCallbackFunction([&](const std::string &msg) {
-        int value = convert(msg);
-        if (value == -1) {
-            std::cerr << "Input field contains non-numerical value!" << std::endl;
-            return;
-        }
-        treeUI.transformLogic([&](DS::HashMap &hm) {
-            return hm.insert(value), true;
+    // update button
+    buttons[2].setString("UPDATE", 20);
+    buttons[2].setCallback([&]() {
+        if (fields[2].isEnabled() || fields[3].isEnabled()) disableFields();
+        else disableFields(), fields[2].enable();
+    });
+    fields[2].setLabel("Enter value to be replaced");
+    fields[2].setCallbackFunction([&] (const std::string &msg) {
+        std::vector<int> numbers = stringToNumbers(msg);
+        if (numbers.size() != 1) return;
+        updateHold = numbers[0];
+        fields[2].disable(), fields[3].enable(), fields[3].focusField();
+    });
+    fields[3].setLabel("Enter value to replace");
+    fields[3].setCallbackFunction([&] (const std::string &msg) {
+        std::vector<int> numbers = stringToNumbers(msg);
+        if (numbers.size() != 1) return;
+        ui.transformLogic([&] (DS::HashMap &hm) {
+            return hm.update(updateHold, numbers[0]), true;
         });
-    });
-    insertButton.setCallback([&]() {
-        insertField.releaseText();
+        fields[3].disable(), fields[2].enable(), fields[2].focusField();
     });
 
-    // set callback functions: input field and button for deletion
-    eraseField.setCallbackFunction([&](const std::string &msg) {
-        int value = convert(msg);
-        if (value == -1) {
-            std::cerr << "Input field contains non-numerical value!" << std::endl;
-            return;
-        }
-        treeUI.transformLogic([&](DS::HashMap &hm) {
-            return hm.erase(value), true;
-        });
+    // search button
+    buttons[3].setString("SEARCH", 20);
+    buttons[3].setCallback([&]() {
+        if (fields[4].isEnabled()) fields[4].disable();
+        else disableFields(), fields[4].enable();
     });
-    eraseButton.setCallback([&]() {
-        eraseField.releaseText();
+    fields[4].setLabel("Enter value to search for");
+    fields[4].setCallbackFunction([&] (const std::string &msg) {
+        std::vector<int> numbers = stringToNumbers(msg);
+        for (int value : numbers) {
+            ui.transformLogic([&] (DS::HashMap &hm) {
+                return hm.find(value), true;
+            });
+        }
+    });
+
+    // import file button
+    buttons[4].setString("IMPORT FILE", 20);
+    buttons[4].setCallback([&]() {
+        std::string filePath = openFileDialog();
+        std::vector<int> numbers = fileToNumbers(filePath);
+        if (numbers.empty()) return;
+        ui.appendEmpty(), ui.nextCompleteState();
+        for (int value : numbers) {
+            ui.transformLogic([&] (DS::HashMap &hm) {
+                return hm.insert(value), true;
+            });
+            ui.nextCompleteState();
+        }
+    });
+
+    // clear UI
+    buttons[5].setString("CLEAR", 20);
+    buttons[5].setCallback([&]() {
+        ui.appendEmpty(), ui.nextCompleteState();
     });
 
     // set callback functions: previous/next buttons
     prevOperationButton.setCallback([&]() {
-        treeUI.previousCompleteState();
+        ui.previousCompleteState();
     });
     prevStepButton.setCallback([&]() {
-        treeUI.previousState();
+        ui.previousState();
     });
     nextOperationButton.setCallback([&]() {
-        treeUI.nextCompleteState();
+        ui.nextCompleteState();
     });
     nextStepButton.setCallback([&]() {
-        treeUI.nextState();
+        ui.nextState();
     });
     playButton.setCallback([&]() {
-        if (treeUI.checkIsPlaying()) treeUI.pause();
-        else treeUI.play();
+        if (ui.checkIsPlaying()) ui.pause();
+        else ui.play();
     });
 }
 
 void HashMapScene::handleEvent(sf::RenderWindow &window, const std::optional<sf::Event> &event) {
-    insertField.handleMouseEvents(window, event);
-    insertField.handleTextEvents(window, event);
-    insertButton.handleMouseEvents(window, event);
-    treeUI.getCurrentCode().handleMouseEvents(window, event);
-
-    eraseField.handleMouseEvents(window, event);
-    eraseField.handleTextEvents(window, event);
-    eraseButton.handleMouseEvents(window, event);
-
-    prevOperationButton.handleMouseEvents(window, event);
-    prevStepButton.handleMouseEvents(window, event);
-    nextOperationButton.handleMouseEvents(window, event);
-    nextStepButton.handleMouseEvents(window, event);
-    playButton.handleMouseEvents(window, event);
-
-    backButton.handleMouseEvents(window, event);
-    settingButton.handleMouseEvents(window, event);
+    baseHandleEvent(window, event);
+    ui.getCurrentCode().handleMouseEvents(window, event);
 }
 
 void HashMapScene::timePropagation(float delta) {
-    insertField.timePropagation();
-    eraseField.timePropagation();
-    treeUI.timePropagation(delta);
+    baseTimePropagation(delta);
+    ui.timePropagation(delta);
 }
 
 void HashMapScene::draw(sf::RenderWindow &window) {
-    window.draw(treeUI.getCurrentUI());
-    window.draw(treeUI.getCurrentCode());
-    window.draw(backButton);
-    window.draw(settingButton);
-    window.draw(insertField);
-    window.draw(insertButton);
-    window.draw(eraseField);
-    window.draw(eraseButton);
-    window.draw(prevOperationButton);
-    window.draw(prevStepButton);
-    window.draw(nextOperationButton);
-    window.draw(nextStepButton);
-    window.draw(playButton);
+    window.draw(ui.getCurrentUI());
+    baseDraw(window);
+    window.draw(ui.getCurrentCode());
 }

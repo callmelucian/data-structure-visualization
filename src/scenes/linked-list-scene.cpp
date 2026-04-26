@@ -98,7 +98,7 @@ LinkedListScene::LinkedListScene(SceneManager &manager) : Scene(manager, 7, 7), 
     // update search
     buttons[4].setString("SEARCH");
     buttons[4].setCharacterSize(20);
-    fields[6].setLabel("Enter value to search");
+    fields[6].setLabel("Enter value to search for");
     fields[6].setCallbackFunction([&] (const std::string &msg) {
         std::vector<int> numbers = stringToNumbers(msg);
         for (int value : numbers) {

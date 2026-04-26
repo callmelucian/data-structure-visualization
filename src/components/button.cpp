@@ -52,6 +52,12 @@ void Button::setString(const std::string &msg) {
     label.centerOrigin();
 }
 
+void Button::setString (const std::string &msg, int characterSize) {
+    label.setString(msg);
+    label.setCharacterSize(characterSize);
+    label.centerOrigin();
+}
+
 void Button::setScale(float scaleConstant) {
     container.setScale({scaleConstant, scaleConstant});
     label.setScale({scaleConstant, scaleConstant});

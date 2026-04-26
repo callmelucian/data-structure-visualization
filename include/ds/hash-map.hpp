@@ -26,6 +26,7 @@ private:
     std::function<void(int,int)> callbackAddEdge;
     std::function<void(int,int)> callbackAttachRoot;
     std::function<void(int)> callbackHighlightNode;
+    std::function<void(int,bool)> callbackColorNode;
     std::function<void()> callbackApplyAnimation;
     std::function<void()> callbackCompleteAnimation;
     std::function<void(const std::vector<std::string>&)> callbackLoadCode;
@@ -63,6 +64,10 @@ public:
         callbackHighlightNode = std::move(func);
     }
 
+    void setCallbackColorNode (auto func) {
+        callbackColorNode = std::move(func);
+    }
+
     void setCallbackApplyAnimation(auto func) {
         callbackApplyAnimation = std::move(func);
     }
@@ -79,9 +84,10 @@ public:
         callbackHighlightCode = std::move(func);
     }
 
-    void insert (int value);
-    void erase (int eraseKey);
-    void find (int value);
+    void insert (int value, bool complete = true);
+    void erase (int eraseKey, bool complete = true);
+    void find (int searchKey);
+    void update (int oldKey, int newKey);
 };
 
 }; // namespace DS

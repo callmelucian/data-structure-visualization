@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics/Color.hpp>
+#include <string>
 
 // constants
 namespace LightModeColors {
@@ -34,6 +35,10 @@ namespace LightModeColors {
 };
 
 inline int themeIterator = 0;
+
+inline const std::vector<std::string> themeName = {
+    "Default"
+};
 
 inline const std::vector<sf::Color> backgroundColors = {
     sf::Color({214, 209, 203})
@@ -100,6 +105,14 @@ namespace Theme {
         settingIcon.setSmooth(true);
         return ok;
     }
+
+    inline void nextTheme() {
+        themeIterator++;
+        if (themeIterator == themeName.size())
+            themeIterator = 0;
+    }
+    
+    inline std::string getThemeName() { return themeName[themeIterator]; }
 
     inline sf::Color getLightBackground() { return lightBackgroundColors[themeIterator]; }
     inline sf::Color getBackground() { return backgroundColors[themeIterator]; }

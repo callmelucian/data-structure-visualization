@@ -425,6 +425,11 @@ void AnimationManager<UI::HashMap, DS::HashMap>::initCallbackFunctions() {
             std::make_unique<HashMapHighlightNode>(nodeID)
         );
     });
+    stateLogic[0].setCallbackColorNode([&] (int nodeID, bool color) {
+        this->createAnimationEvent(
+            std::make_unique<HashMapColorNode>(nodeID, color)
+        );
+    });
     stateLogic[0].setCallbackApplyAnimation([&]() {
         this->nextStep();
     });

@@ -59,6 +59,9 @@ public:
     sf::Vector2f getSize() const;
 
     void centerOrigin();
+    void setWidth (float newWidth);
+
+    float getWidth() const;
 
     // required overrides for sf::Shape
     virtual std::size_t getPointCount() const override;

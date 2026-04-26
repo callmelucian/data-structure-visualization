@@ -235,6 +235,15 @@ public:
     int apply (UI::HashMap &ui, UI::CodeHighlighter &code) override;
 };
 
+class HashMapColorNode : public AnimationEvent<UI::HashMap> {
+private:
+    int nodeID;
+    bool color;
+public:
+    HashMapColorNode (int nodeID, bool color);
+    int apply (UI::HashMap &ui, UI::CodeHighlighter &code) override;
+};
+
 // ========== LINKED-LIST ==========
 class LinkedListCreateNode : public AnimationEvent<UI::LinkedList> {
 private:

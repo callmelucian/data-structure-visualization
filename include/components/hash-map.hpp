@@ -56,6 +56,8 @@ public:
     void setHighlight (int nodeID);
 
     void copyPosition (const HashMap &other);
+    
+    void colorNode (int nodeID, const sf::Color &color);
 
 
     // overrides
