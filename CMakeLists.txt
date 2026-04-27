@@ -18,7 +18,8 @@ add_executable(DataVisApp
     
     src/ds/avl-tree.cpp
     src/ds/dijkstra.cpp
-    src/ds/red-black-tree.cpp
+    # src/ds/red-black-tree.cpp
+    src/ds/rb-tree.cpp
     src/ds/bellman-ford.cpp
     src/ds/hash-map.cpp
     src/ds/linked-list.cpp

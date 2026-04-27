@@ -105,6 +105,7 @@ void HashMap::insert (int value, bool complete) {
 }
 
 void HashMap::erase (int eraseKey, bool complete) {
+    eraseSuccess = false;
     int modulo = eraseKey % 17;
     if (modulo < 0) modulo += 17;
 
@@ -130,6 +131,7 @@ void HashMap::erase (int eraseKey, bool complete) {
         callbackDeleteNode(getVisualID(tmp));
         callbackApplyAnimation();
         delete tmp;
+        eraseSuccess = true;
     }
     
     else {
@@ -162,6 +164,7 @@ void HashMap::erase (int eraseKey, bool complete) {
             callbackDeleteNode(getVisualID(toDelete));
             callbackApplyAnimation();
             delete toDelete;
+            eraseSuccess = true;
         }
     }
 
@@ -195,7 +198,6 @@ void HashMap::find (int searchKey) {
 
             found = true;
             callbackColorNode(getVisualID(ptr), false);
-            callbackApplyAnimation();
             break;
         }
     }
@@ -213,7 +215,13 @@ void HashMap::find (int searchKey) {
 
 void HashMap::update (int oldKey, int newKey) {
     erase(oldKey, false);
-    insert(newKey, true);
+    if (eraseSuccess) insert(newKey, true);
+    else {
+        callbackHighlightNode(-1);
+        callbackLoadCode({});
+        callbackCompleteAnimation();
+        callbackApplyAnimation();
+    }
 }
 
 }; // namespace DS

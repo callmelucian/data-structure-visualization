@@ -5,7 +5,7 @@
 // utilities
 #include "scene-manager.hpp"
 #include "../core/utility.hpp"
-#include "../ds/red-black-tree.hpp"
+#include "../ds/rb-tree.hpp"
 #include "../animation/animation-manager.hpp"
 #include "../animation/events.hpp"
 
@@ -18,6 +18,7 @@
 class RBTreeScene : public Scene {
 private:
     AnimationManager<UI::BinaryTree, DS::RedBlackTree> ui;
+    int updateHold;
 
 public:
     RBTreeScene (SceneManager &manager);

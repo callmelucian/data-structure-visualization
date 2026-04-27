@@ -21,6 +21,7 @@
 class AVLTreeScene : public Scene {
 private:
     AnimationManager<UI::BinaryTree, DS::AVLTree> ui;
+    int updateHold;
 
 public:
     AVLTreeScene (SceneManager &manager);

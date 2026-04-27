@@ -265,7 +265,6 @@ bool LinkedList::search (int searchKey) {
 
             found = true;
             callbackColorNode(getVisualID(ptr), false);
-            callbackApplyAnimation();
             break;
         }
     }

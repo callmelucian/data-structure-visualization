@@ -1,6 +1,6 @@
 #include "../../include/scenes/rb-tree-scene.hpp"
 
-RBTreeScene::RBTreeScene (SceneManager &manager) : Scene(manager, 6, 3) {
+RBTreeScene::RBTreeScene (SceneManager &manager) : Scene(manager, 7, 5), updateHold(0) {
     // set callback functions: AVL Tree UI
     ui.setCallbackEnableButtons([&](int f) {
         for (UI::Button &button : buttons) {
@@ -64,10 +64,32 @@ RBTreeScene::RBTreeScene (SceneManager &manager) : Scene(manager, 6, 3) {
         else disableFields(), fields[2].enable();
     });
 
-    // import file
-    buttons[3].setString("IMPORT FILE");
-    buttons[3].setCharacterSize(20);
+        // update button
+    buttons[3].setString("UPDATE", 20);
     buttons[3].setCallback([&]() {
+        if (fields[3].isEnabled() || fields[4].isEnabled()) disableFields();
+        else disableFields(), fields[3].enable();
+    });
+    fields[3].setLabel("Enter value to be replaced");
+    fields[3].setCallbackFunction([&] (const std::string &msg) {
+        std::vector<int> numbers = stringToNumbers(msg);
+        if (numbers.size() != 1) return;
+        updateHold = numbers[0];
+        fields[3].disable(), fields[4].enable(), fields[4].focusField();
+    });
+    fields[4].setLabel("Enter value to replace");
+    fields[4].setCallbackFunction([&] (const std::string &msg) {
+        std::vector<int> numbers = stringToNumbers(msg);
+        if (numbers.size() != 1) return;
+        ui.transformLogic([&] (DS::RedBlackTree &rb) {
+            return rb.update(updateHold, numbers[0]);
+        });
+        fields[4].disable(), fields[3].enable(), fields[3].focusField();
+    });
+
+    // import file
+    buttons[4].setString("IMPORT FILE", 20);
+    buttons[4].setCallback([&]() {
         std::string filePath = openFileDialog();
         std::vector<int> numbers = fileToNumbers(filePath);
         if (numbers.empty()) return;
@@ -81,22 +103,21 @@ RBTreeScene::RBTreeScene (SceneManager &manager) : Scene(manager, 6, 3) {
     });
 
     // clear
-    buttons[4].setString("CLEAR");
-    buttons[4].setCharacterSize(20); 
-    buttons[4].setCallback([&]() {
+    buttons[5].setString("CLEAR", 20);
+    buttons[5].setCallback([&]() {
         ui.appendEmpty(), ui.nextCompleteState();
     });
 
     // code
-    buttons[5].setString("SHOW CODE", 20);
-    buttons[5].setCallback([&]() {
+    buttons[6].setString("SHOW CODE", 20);
+    buttons[6].setCallback([&]() {
         if (ui.getCurrentCode().isShown()) {
             ui.getCurrentCode().hide(), ui.centerUI();
-            buttons[5].setString("SHOW CODE", 20);
+            buttons[6].setString("SHOW CODE", 20);
         }
         else {
             ui.getCurrentCode().show(), ui.offcenterUI();
-            buttons[5].setString("HIDE CODE", 20);
+            buttons[6].setString("HIDE CODE", 20);
         }
     });
 

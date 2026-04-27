@@ -8,7 +8,8 @@ AnimationManager<TypeUI, TypeLogic>::AnimationManager() :
     // set position for UI and code highlighter
     stateUI[0].setPosition({Setting::screenWidth / 2.f, Setting::screenHeight / 2.f - 55.f});
     uiTargetPosition = stateUI[0].getPosition();
-    // stateCode[0].setPosition({Setting::screenWidth - 20.f, Setting::screenHeight - 20.f});
+    stateCode[0].setPosition({-Setting::codeWidth, 0.f});
+    stateCode[0].setTargetPosition(-Setting::codeWidth, 0.f);
 
     // initialize callback functions
     initCallbackFunctions();

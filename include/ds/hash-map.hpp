@@ -20,6 +20,7 @@ private:
     };
     std::vector<Node*> rootNode;
     int nodeCounter;
+    bool eraseSuccess;
 
     std::function<void(int)> callbackCreateNode;
     std::function<void(int)> callbackDeleteNode;

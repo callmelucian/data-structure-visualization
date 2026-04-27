@@ -19,7 +19,7 @@
 // data structures
 #include "../ds/avl-tree.hpp"
 #include "../ds/dijkstra.hpp"
-#include "../ds/red-black-tree.hpp"
+#include "../ds/rb-tree.hpp"
 #include "../ds/hash-map.hpp"
 #include "../ds/linked-list.hpp"
 

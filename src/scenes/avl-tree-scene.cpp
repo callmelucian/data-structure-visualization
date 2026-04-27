@@ -1,6 +1,6 @@
 #include "../../include/scenes/avl-tree-scene.hpp"
 
-AVLTreeScene::AVLTreeScene (SceneManager &manager) : Scene(manager, 6, 3) {
+AVLTreeScene::AVLTreeScene (SceneManager &manager) : Scene(manager, 7, 5), updateHold(0) {
     // set callback functions: AVL Tree UI
     ui.setCallbackEnableButtons([&](int f) {
         for (UI::Button &button : buttons) {
@@ -14,6 +14,7 @@ AVLTreeScene::AVLTreeScene (SceneManager &manager) : Scene(manager, 6, 3) {
 
     // insert button
     buttons[0].setString("INSERT", 20);
+    fields[0].setLabel("Enter value to be inserted (allow multiple values)");
     fields[0].setCallbackFunction([&](const std::string &msg) {
         std::vector<int> numbers = stringToNumbers(msg);
         for (int value : numbers) {
@@ -28,8 +29,8 @@ AVLTreeScene::AVLTreeScene (SceneManager &manager) : Scene(manager, 6, 3) {
     });
 
     // erase button
-    buttons[1].setString("ERASE");
-    buttons[1].setCharacterSize(20);
+    buttons[1].setString("ERASE", 20);
+    fields[1].setLabel("Enter value to be erased (allow multiple values)");
     fields[1].setCallbackFunction([&](const std::string &msg) {
         std::vector<int> numbers = stringToNumbers(msg);
         for (int value : numbers) {
@@ -44,8 +45,8 @@ AVLTreeScene::AVLTreeScene (SceneManager &manager) : Scene(manager, 6, 3) {
     });
 
     // search button
-    buttons[2].setString("SEARCH");
-    buttons[2].setCharacterSize(20);
+    buttons[2].setString("SEARCH", 20);
+    fields[2].setLabel("Enter value to search (allow multiple values)");
     fields[2].setCallbackFunction([&](const std::string &msg) {
         std::vector<int> numbers = stringToNumbers(msg);
         if (numbers.empty() || numbers.size() >= 2) return;
@@ -60,10 +61,32 @@ AVLTreeScene::AVLTreeScene (SceneManager &manager) : Scene(manager, 6, 3) {
         else disableFields(), fields[2].enable();
     });
 
-    // import file
-    buttons[3].setString("IMPORT FILE");
-    buttons[3].setCharacterSize(20);
+    // update button
+    buttons[3].setString("UPDATE", 20);
     buttons[3].setCallback([&]() {
+        if (fields[3].isEnabled() || fields[4].isEnabled()) disableFields();
+        else disableFields(), fields[3].enable();
+    });
+    fields[3].setLabel("Enter value to be replaced");
+    fields[3].setCallbackFunction([&] (const std::string &msg) {
+        std::vector<int> numbers = stringToNumbers(msg);
+        if (numbers.size() != 1) return;
+        updateHold = numbers[0];
+        fields[3].disable(), fields[4].enable(), fields[4].focusField();
+    });
+    fields[4].setLabel("Enter value to replace");
+    fields[4].setCallbackFunction([&] (const std::string &msg) {
+        std::vector<int> numbers = stringToNumbers(msg);
+        if (numbers.size() != 1) return;
+        ui.transformLogic([&] (DS::AVLTree &avl) {
+            return avl.update(updateHold, numbers[0]);
+        });
+        fields[4].disable(), fields[3].enable(), fields[3].focusField();
+    });
+
+    // import file
+    buttons[4].setString("IMPORT FILE", 20);
+    buttons[4].setCallback([&]() {
         std::string filePath = openFileDialog();
         std::vector<int> numbers = fileToNumbers(filePath);
         if (numbers.empty()) return;
@@ -77,22 +100,21 @@ AVLTreeScene::AVLTreeScene (SceneManager &manager) : Scene(manager, 6, 3) {
     });
 
     // clear
-    buttons[4].setCallback([&]() {
+    buttons[5].setString("CLEAR", 20);
+    buttons[5].setCallback([&]() {
         ui.appendEmpty(), ui.nextCompleteState();
     });
-    buttons[4].setString("CLEAR");
-    buttons[4].setCharacterSize(20);
 
     // code
-    buttons[5].setString("SHOW CODE", 20);
-    buttons[5].setCallback([&]() {
+    buttons[6].setString("SHOW CODE", 20);
+    buttons[6].setCallback([&]() {
         if (ui.getCurrentCode().isShown()) {
             ui.getCurrentCode().hide(), ui.centerUI();
-            buttons[5].setString("SHOW CODE", 20);
+            buttons[6].setString("SHOW CODE", 20);
         }
         else {
             ui.getCurrentCode().show(), ui.offcenterUI();
-            buttons[5].setString("HIDE CODE", 20);
+            buttons[6].setString("HIDE CODE", 20);
         }
     });
 

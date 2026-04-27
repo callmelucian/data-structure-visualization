@@ -102,7 +102,6 @@ void CodeHighlighter::copyPosition(const CodeHighlighter &other) {
 }
 
 void CodeHighlighter::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    if (!shown) return;
     states.transform *= getTransform(); 
 
     target.draw(background, states);

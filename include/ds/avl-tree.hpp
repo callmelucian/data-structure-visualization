@@ -19,6 +19,7 @@ private:
     };
     Node *root;
     int nodeCounter;
+    bool eraseSuccess;
 
     std::function<void(int, bool)> callbackCreateNode;
     std::function<void(int)> callbackDeleteNode;
@@ -56,18 +57,18 @@ private:
      * @brief Perform left rotation on the subtree given by ptr
      * and return the new root in O(1)
      */
-    Node* leftRotation(Node *ptr);
+    Node* leftRotation(Node* ptr, Node* parent, bool isLeftChild);
 
     /**
      * @brief Perform right rotation on the subtree given by ptr
      * and return the new root in O(1)
      */
-    Node* rightRotation(Node *ptr);
+    Node* rightRotation(Node* ptr, Node* parent, bool isLeftChild);
 
     /**
      * @brief Perform self balancing in O(1)
      */
-    Node* selfBalancing(Node *ptr);
+    Node* selfBalancing(Node *ptr, Node* parent, bool leftChild);
 
     /**
      * @brief Return the pointer pointing the smallest key
@@ -75,18 +76,24 @@ private:
      */
     Node* getSmallestKey(Node *ptr);
 
+    void fixEdges (Node* ptr, Node* parent, bool leftChild);
+
     /**
      * @brief Perform insertion on the subtree given by ptr
      * and return the new root in O(height)
      */
-    Node* insertValue(Node *ptr, int insertKey);
+    Node* insertValue(Node* ptr, Node* parent, bool leftChild, int insertKey);
 
     /**
      * @brief Perform deletion on the subtree given by ptr
      * and return the new root in O(height)
      */
-    Node* eraseValue(Node *ptr, int deleteKey);
+    Node* eraseValue(Node* ptr, Node* parent, bool leftChild, int deleteKey);
 
+    /**
+     * @brief Perform search on the subtree given by ptr
+     * and return the result as a boolen in O(height)
+     */
     bool searchValue (Node* ptr, int searchKey);
 
     /**
@@ -197,20 +204,21 @@ public:
     void setCallbackHighlightCode (auto func) {
         callbackHighlightCode = func;
     }
-    
-    void checkCallbackFunctions();
 
     /**
      * @brief Insert a value and rebalance itself accordingly
      */
-    void insert(int value);
+    void insert (int value, bool complete = true);
 
     /**
      * @brief Delete a value and rebalance itself accordingly
      * and return a boolean flag to tell whether the node is actually deleted
      */
-    bool erase(int value);
+    bool erase (int value, bool complete = true);
 
     bool search (int value);
+
+    bool update (int oldKey, int newKey);
 };
-};
+
+}; // namespace DS

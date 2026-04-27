@@ -125,43 +125,58 @@ inline const std::vector<std::string> AVL_TREE_SEARCH = {
 
 // ========== RB TREE ==========
 inline const std::vector<std::string> RB_TREE_INSERT = {
-    "Node* insertValue (Node* ptr, int insertKey):",
-    "    if ptr == nullptr: return new Node(insertKey, RED);",
-    "    if insertKey == ptr->value: return ptr",
-    "    if insertKey < ptr->value:",
-    "        ptr->leftST = insertValue(ptr->leftST, insertKey)",
-    "    if insertKey > ptr->value:",
-    "        ptr->rightST = insertValue(ptr->rightST, insertKey)",
-    "    if ptr is root: ptr->color = BLACK",
-    "    return selfBalance(ptr)"
+    "void insertValue (int insertKey):",
+    "    ptr = root",
+    "    while ptr != nullptr:",
+    "        if insertKey == ptr->value: return",
+    "        else if insertKey < ptr->value: ptr = ptr->lpt",
+    "        else if insertKey > ptr->value: ptr = ptr->rpt",
+    "    create new RED node at ptr",
+    "    while parent of ptr is RED:",
+    "        if uncle of ptr is RED:",
+    "            recolor parent, uncle and grandparent",
+    "            bring ptr up 2 levels",
+    "        if uncle of ptr is BLACK and ptr is inner child:",
+    "            rotate parent in the opposite direction",
+    "        if uncle of ptr is BLACK and ptr is outer child:",
+    "            recolor parent and grandparent",
+    "            rotate grandparent towards uncle",
+    "   color root BLACK"
 };
 
-inline const std::vector<std::string> RB_TREE_SELF_BALANCE = {
-    "Node* selfBalance (Node* ptr):",
-    "    if right child is red and left child is black: leftRotate",
-    "    if both left and left-left children are red: rightRotate",
-    "    if both left and right children are red: flipColors",
-    "    return ptr"
+inline const std::vector<std::string> RB_TREE_ERASE_FIXUP = {
+    "void eraseFixup (Node* ptr):",
+    "    while ptr != root and ptr is BLACK:",
+    "        let s be ptr's sibling",
+    "        if s is RED:",
+    "            recolor s to BLACK and parent of ptr to RED",
+    "            rotate parent towards ptr",
+    "        if s is BLACK and its children are BLACK:",
+    "            recolor s to RED and move ptr to parent",
+    "        if s is BLACK and its inner child is RED:",
+    "            recolor s and its inner child",
+    "            rotate s away from ptr",
+    "        if s is BLACK and its outer child is RED:",
+    "            recolor s, its outer child and parent of ptr",
+    "            rotate parent towards ptr",
+    "            move ptr to root and terminate",
+    "    color ptr BLACK"
 };
 
 inline const std::vector<std::string> RB_TREE_ERASE_VALUE = {
-    "Node* eraseValue (Node* ptr, int eraseKey):",
-    "    if ptr == nullptr: return nullptr",
-    "    if eraseKey < ptr->value:",
-    "        if both left and left-left children are black/empty:",
-    "            ptr = moveRedLeft(ptr)",
-    "        ptr->leftST = eraseValue(ptr->leftST, eraseKey)",
-    "    if eraseKey >= ptr->value:",
-    "        if left child is red: rightRotate current subtree",
-    "        if eraseKey == ptr->value and current subtree contains 1 node:",
-    "            delete current node and return nullptr",
-    "        if both right and right-left children are black/empty:",
-    "            ptr = moveRedRight(ptr)",
-    "        if eraseKey == ptr->value:",
-    "            swap current node with the smallest value among rightST",
-    "        ptr->rightST = eraseValue(ptr->rightST, eraseKey)",
-    "    if ptr is root: ptr->color = BLACK",
-    "    return selfBalance(ptr)"
+    "void eraseValue (int eraseKey):",
+    "    ptr = root",
+    "    while ptr->nullptr && ptr->value != eraseKey:",
+    "        if eraseKey < ptr->value: ptr = ptr->lpt",
+    "        if eraseKey > ptr->value: ptr = ptr->rpt",
+    "    if ptr == nullptr: return",
+    "    if either subtree of ptr is empty:",
+    "        delete ptr and move other subtree up",
+    "    else:",
+    "        let tmp be the smallest value among the right subtree",
+    "        delete tmp and replace the value of ptr with tmp",
+    "    if the color of the deleted node is BLACK:",
+    "        eraseFixup(deletedNode)"
 };
 
 // ========== GRAPH ==========
