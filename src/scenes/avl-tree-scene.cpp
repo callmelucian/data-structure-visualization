@@ -86,9 +86,14 @@ AVLTreeScene::AVLTreeScene (SceneManager &manager) : Scene(manager, 6, 3) {
     // code
     buttons[5].setString("SHOW CODE", 20);
     buttons[5].setCallback([&]() {
-        if (ui.getCurrentCode().isShown())
+        if (ui.getCurrentCode().isShown()) {
             ui.getCurrentCode().hide(), ui.centerUI();
-        else ui.getCurrentCode().show(), ui.offcenterUI();
+            buttons[5].setString("SHOW CODE", 20);
+        }
+        else {
+            ui.getCurrentCode().show(), ui.offcenterUI();
+            buttons[5].setString("HIDE CODE", 20);
+        }
     });
 
     // set callback functions: previous/next buttons

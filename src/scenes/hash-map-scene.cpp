@@ -1,6 +1,6 @@
 #include "../../include/scenes/hash-map-scene.hpp"
 
-HashMapScene::HashMapScene(SceneManager &manager) : Scene(manager, 6, 5), updateHold(0) {
+HashMapScene::HashMapScene(SceneManager &manager) : Scene(manager, 7, 5), updateHold(0) {
     // set callback functions: Hash Map UI
     ui.setCallbackEnableButtons([&](int f) {
         for (UI::Button &button : buttons) {
@@ -104,6 +104,19 @@ HashMapScene::HashMapScene(SceneManager &manager) : Scene(manager, 6, 5), update
         ui.appendEmpty(), ui.nextCompleteState();
     });
 
+    // code
+    buttons[6].setString("SHOW CODE", 20);
+    buttons[6].setCallback([&]() {
+        if (ui.getCurrentCode().isShown()) {
+            ui.getCurrentCode().hide(), ui.centerUI();
+            buttons[6].setString("SHOW CODE", 20);
+        }
+        else {
+            ui.getCurrentCode().show(), ui.offcenterUI();
+            buttons[6].setString("HIDE CODE", 20);
+        }
+    });
+
     // set callback functions: previous/next buttons
     prevOperationButton.setCallback([&]() {
         ui.previousCompleteState();
@@ -134,7 +147,7 @@ void HashMapScene::timePropagation(float delta) {
 }
 
 void HashMapScene::draw(sf::RenderWindow &window) {
+    window.draw(ui.getCurrentCode());
     window.draw(ui.getCurrentUI());
     baseDraw(window);
-    window.draw(ui.getCurrentCode());
 }

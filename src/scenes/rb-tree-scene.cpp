@@ -1,6 +1,6 @@
 #include "../../include/scenes/rb-tree-scene.hpp"
 
-RBTreeScene::RBTreeScene (SceneManager &manager) : Scene(manager, 5, 3) {
+RBTreeScene::RBTreeScene (SceneManager &manager) : Scene(manager, 6, 3) {
     // set callback functions: AVL Tree UI
     ui.setCallbackEnableButtons([&](int f) {
         for (UI::Button &button : buttons) {
@@ -87,6 +87,19 @@ RBTreeScene::RBTreeScene (SceneManager &manager) : Scene(manager, 5, 3) {
         ui.appendEmpty(), ui.nextCompleteState();
     });
 
+    // code
+    buttons[5].setString("SHOW CODE", 20);
+    buttons[5].setCallback([&]() {
+        if (ui.getCurrentCode().isShown()) {
+            ui.getCurrentCode().hide(), ui.centerUI();
+            buttons[5].setString("SHOW CODE", 20);
+        }
+        else {
+            ui.getCurrentCode().show(), ui.offcenterUI();
+            buttons[5].setString("HIDE CODE", 20);
+        }
+    });
+
     // set callback functions: previous/next buttons
     prevOperationButton.setCallback([&]() {
         ui.previousCompleteState();
@@ -117,7 +130,7 @@ void RBTreeScene::timePropagation(float delta) {
 }
 
 void RBTreeScene::draw(sf::RenderWindow &window) {
+    window.draw(ui.getCurrentCode());
     window.draw(ui.getCurrentUI());
     baseDraw(window);
-    window.draw(ui.getCurrentCode());
 }

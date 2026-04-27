@@ -106,7 +106,7 @@ void Edge::handleMouseMovement (const sf::Vector2f &mousePos) {}
 void Edge::handleTextEntered (const char &unicode) {}
     
 // ========== GRAPH IMPLEMENTATION ==========
-Graph::Graph() : targetOrigin({0, 0}), activatedNode(-1), isDirected(false) {}
+Graph::Graph() : targetOrigin({0, 0}), activatedNode(-1), isDirected(false), canInteract(true) {}
 
 Graph::~Graph() {
     for (UI::FloatingNode* ptr : nodes) delete ptr;
@@ -342,7 +342,16 @@ void Graph::setAnnotation (int nodeID, int value) {
 
 void Graph::calculatePositions (float maxWidth, float maxHeight) {}
 
+void Graph::enableInteractions() {
+    canInteract = true;
+}
+
+void Graph::disableInteractions() {
+    canInteract = false;
+}
+
 void Graph::handleMousePress (const sf::Vector2f &mousePos) {
+    if (!canInteract) return;
     if (callbackIsEditing(mousePos)) return;
     sf::Vector2f localPos = this->getInverseTransform().transformPoint(mousePos);
     bool clicked = false;
@@ -375,6 +384,7 @@ void Graph::handleMousePress (const sf::Vector2f &mousePos) {
 }
 
 void Graph::handleMouseRelease (const sf::Vector2f &mousePos) {
+    if (!canInteract) return;
     sf::Vector2f localPos = this->getInverseTransform().transformPoint(mousePos);
     bool callback = false;
     int a, b;
@@ -399,6 +409,7 @@ void Graph::handleMouseRelease (const sf::Vector2f &mousePos) {
 }
 
 void Graph::handleMouseMovement (const sf::Vector2f &mousePos) {
+    if (!canInteract) return;
     bool hovered = false;
     sf::Vector2f localPos = this->getInverseTransform().transformPoint(mousePos);
     for (UI::FloatingNode* ptr : nodes) {

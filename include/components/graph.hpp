@@ -58,7 +58,7 @@ private:
     UI::HighlightCircle<FloatingNode> highlighter;
     sf::Vector2f targetOrigin;
     int activatedNode;
-    bool isDirected;
+    bool isDirected, canInteract;
 
     std::function<void(bool)> callbackAllowEdit;
     std::function<void(bool)> callbackAllowDelete;
@@ -127,8 +127,10 @@ public:
     void highlightEdge (int edgeID);
 
     void copyPosition (const Graph &other);
-
     void calculatePositions (float maxWidth, float maxHeight);
+
+    void enableInteractions();
+    void disableInteractions();
 
     void handleMousePress (const sf::Vector2f &mousePos) override;
     void handleMouseRelease (const sf::Vector2f &mousePos) override;

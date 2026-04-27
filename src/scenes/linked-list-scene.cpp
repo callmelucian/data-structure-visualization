@@ -1,6 +1,6 @@
 #include "../../include/scenes/linked-list-scene.hpp"
 
-LinkedListScene::LinkedListScene(SceneManager &manager) : Scene(manager, 7, 7), insertHold(0), updateHold(0) {
+LinkedListScene::LinkedListScene(SceneManager &manager) : Scene(manager, 8, 7), insertHold(0), updateHold(0) {
     // animation manager
     ui.setCallbackEnableButtons([&](int f) {
         for (UI::Button &button : buttons) {
@@ -134,6 +134,19 @@ LinkedListScene::LinkedListScene(SceneManager &manager) : Scene(manager, 7, 7), 
     buttons[6].setCallback([&]() {
         ui.appendEmpty(), ui.nextCompleteState();
     });
+
+    // code
+    buttons[7].setString("SHOW CODE", 20);
+    buttons[7].setCallback([&]() {
+        if (ui.getCurrentCode().isShown()) {
+            ui.getCurrentCode().hide(), ui.centerUI();
+            buttons[7].setString("SHOW CODE", 20);
+        }
+        else {
+            ui.getCurrentCode().show(), ui.offcenterUI();
+            buttons[7].setString("HIDE CODE", 20);
+        }
+    });
     
     // set callback functions: previous/next buttons
     prevOperationButton.setCallback([&]() {
@@ -165,7 +178,7 @@ void LinkedListScene::timePropagation(float delta) {
 }
 
 void LinkedListScene::draw(sf::RenderWindow &window) {
+    window.draw(ui.getCurrentCode());
     window.draw(ui.getCurrentUI());
     baseDraw(window);
-    window.draw(ui.getCurrentCode());
 }

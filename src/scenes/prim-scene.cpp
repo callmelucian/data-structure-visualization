@@ -1,7 +1,7 @@
 #include "../../include/scenes/prim-scene.hpp"
 
 PrimScene::PrimScene (SceneManager &manager) :
-    Scene(manager, 6, 2), canEdit(false), canDelete(false), fastPropagation(false) {
+    Scene(manager, 7, 2), canEdit(false), canDelete(false), fastPropagation(false) {
     // set callback functions for button-UI communications
     ui.getCurrentUI().setCallbackAllowEdit([&] (bool f) {
         if (f) buttons[0].enableButton();
@@ -119,6 +119,19 @@ PrimScene::PrimScene (SceneManager &manager) :
     });
     buttons[5].setString("CLEAR", 20);
 
+    // code
+    buttons[6].setString("SHOW CODE", 20);
+    buttons[6].setCallback([&]() {
+        if (ui.getCurrentCode().isShown()) {
+            ui.getCurrentCode().hide(), ui.centerUI();
+            buttons[6].setString("SHOW CODE", 20);
+        }
+        else {
+            ui.getCurrentCode().show(), ui.offcenterUI();
+            buttons[6].setString("HIDE CODE", 20);
+        }
+    });
+
     // set callback functions: previous and next states
     prevOperationButton.setCallback([&]() {
         ui.previousCompleteState();
@@ -147,10 +160,13 @@ void PrimScene::handleEvent (sf::RenderWindow &window, const std::optional<sf::E
 void PrimScene::timePropagation (float delta) {
     baseTimePropagation(delta);
     ui.timePropagation(delta);
+
+    if (!ui.isComplete()) ui.getCurrentUI().disableInteractions();
+    else ui.getCurrentUI().enableInteractions();
 }
 
 void PrimScene::draw (sf::RenderWindow &window) {
+    window.draw(ui.getCurrentCode());
     baseDraw(window);
     window.draw(ui.getCurrentUI());
-    window.draw(ui.getCurrentCode());
 }
