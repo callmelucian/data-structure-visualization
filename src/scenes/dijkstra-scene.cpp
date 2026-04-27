@@ -32,6 +32,7 @@ DijkstraScene::DijkstraScene (SceneManager &manager) :
         if (!canEdit) buttons[0].disableButton();
         if (!canDelete) buttons[1].disableButton();
         if (!f) disableFields();
+        buttons.back().enableButton();
     });
     ui.setCallbackPlayPause(changePlayButton);
     disableFields();
@@ -40,7 +41,7 @@ DijkstraScene::DijkstraScene (SceneManager &manager) :
     buttons[0].setString("EDIT", 20);
     buttons[0].setCallback([&]() {
         if (fields[0].isEnabled()) fields[0].disable();
-        else disableFields(), fields[0].enable();
+        else disableFields(), fields[0].enable(), fields[0].focusField();
     });
     fields[0].setLabel("Enter new edge weight");
     fields[0].setCallbackFunction([&] (const std::string &msg) {
@@ -80,9 +81,9 @@ DijkstraScene::DijkstraScene (SceneManager &manager) :
     buttons[3].setString("RUN", 20);
     buttons[3].setCallback([&]() {
         if (fields[1].isEnabled()) fields[1].disable();
-        else disableFields(), fields[1].enable();
+        else disableFields(), fields[1].enable(), fields[1].focusField();
     });
-    fields[1].setLabel("Enter source node(s)");
+    fields[1].setLabel("Enter source node");
     fields[1].setCallbackFunction([&] (const std::string &msg) {
         std::vector<int> numbers = stringToNumbers(msg);
         if (numbers.size() != 1) return; // will allow multicore Dijkstra if i have time

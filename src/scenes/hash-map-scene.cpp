@@ -8,6 +8,7 @@ HashMapScene::HashMapScene(SceneManager &manager) : Scene(manager, 7, 5), update
             else button.disableButton();
         }
         if (!f) disableFields();
+        buttons.back().enableButton();
     });
     ui.setCallbackPlayPause(changePlayButton);
     disableFields();
@@ -16,7 +17,7 @@ HashMapScene::HashMapScene(SceneManager &manager) : Scene(manager, 7, 5), update
     buttons[0].setString("INSERT", 20);
     buttons[0].setCallback([&]() {
         if (fields[0].isEnabled()) fields[0].disable();
-        else disableFields(), fields[0].enable();
+        else disableFields(), fields[0].enable(), fields[0].focusField();
     });
     fields[0].setLabel("Enter value to be inserted");
     fields[0].setCallbackFunction([&] (const std::string &msg) {
@@ -32,7 +33,7 @@ HashMapScene::HashMapScene(SceneManager &manager) : Scene(manager, 7, 5), update
     buttons[1].setString("ERASE", 20);
     buttons[1].setCallback([&]() {
         if (fields[1].isEnabled()) fields[1].disable();
-        else disableFields(), fields[1].enable();
+        else disableFields(), fields[1].enable(), fields[1].focusField();
     });
     fields[1].setLabel("Enter value to be erased");
     fields[1].setCallbackFunction([&] (const std::string &msg) {
@@ -48,7 +49,7 @@ HashMapScene::HashMapScene(SceneManager &manager) : Scene(manager, 7, 5), update
     buttons[2].setString("UPDATE", 20);
     buttons[2].setCallback([&]() {
         if (fields[2].isEnabled() || fields[3].isEnabled()) disableFields();
-        else disableFields(), fields[2].enable();
+        else disableFields(), fields[2].enable(), fields[2].focusField();
     });
     fields[2].setLabel("Enter value to be replaced");
     fields[2].setCallbackFunction([&] (const std::string &msg) {
@@ -71,7 +72,7 @@ HashMapScene::HashMapScene(SceneManager &manager) : Scene(manager, 7, 5), update
     buttons[3].setString("SEARCH", 20);
     buttons[3].setCallback([&]() {
         if (fields[4].isEnabled()) fields[4].disable();
-        else disableFields(), fields[4].enable();
+        else disableFields(), fields[4].enable(), fields[4].focusField();
     });
     fields[4].setLabel("Enter value to search for");
     fields[4].setCallbackFunction([&] (const std::string &msg) {

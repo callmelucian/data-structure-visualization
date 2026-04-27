@@ -8,6 +8,7 @@ RBTreeScene::RBTreeScene (SceneManager &manager) : Scene(manager, 7, 5), updateH
             else button.disableButton();
         }
         if (!f) disableFields();
+        buttons.back().enableButton();
     });
     ui.setCallbackPlayPause(changePlayButton);
     disableFields();
@@ -15,7 +16,7 @@ RBTreeScene::RBTreeScene (SceneManager &manager) : Scene(manager, 7, 5), updateH
     // insert button
     buttons[0].setString("INSERT");
     buttons[0].setCharacterSize(20);
-    fields[0].setLabel("Insert/Init");
+    fields[0].setLabel("Enter value to be inserted (allow multiple values)");
     fields[0].setCallbackFunction([&](const std::string &msg) {
         std::vector<int> numbers = stringToNumbers(msg);
         for (int value : numbers) {
@@ -26,13 +27,13 @@ RBTreeScene::RBTreeScene (SceneManager &manager) : Scene(manager, 7, 5), updateH
     });
     buttons[0].setCallback([&]() {
         if (fields[0].isEnabled()) fields[0].disable();
-        else disableFields(), fields[0].enable();
+        else disableFields(), fields[0].enable(), fields[0].focusField();
     });
 
     // erase button
     buttons[1].setString("ERASE");
     buttons[1].setCharacterSize(20);
-    fields[1].setLabel("Erase");
+    fields[1].setLabel("Enter value to be erased (allow multiple values)");
     fields[1].setCallbackFunction([&](const std::string &msg) {
         std::vector<int> numbers = stringToNumbers(msg);
         for (int value : numbers) {
@@ -43,13 +44,13 @@ RBTreeScene::RBTreeScene (SceneManager &manager) : Scene(manager, 7, 5), updateH
     });
     buttons[1].setCallback([&]() {
         if (fields[1].isEnabled()) fields[1].disable();
-        else disableFields(), fields[1].enable();
+        else disableFields(), fields[1].enable(), fields[1].focusField();
     });
 
     // search button
     buttons[2].setString("SEARCH");
     buttons[2].setCharacterSize(20);
-    fields[2].setLabel("Search");
+    fields[2].setLabel("Enter value to search (allow multiple values)");
     fields[2].setCallbackFunction([&](const std::string &msg) {
         std::vector<int> numbers = stringToNumbers(msg);
         if (numbers.empty() || numbers.size() >= 2) return;
@@ -61,14 +62,14 @@ RBTreeScene::RBTreeScene (SceneManager &manager) : Scene(manager, 7, 5), updateH
     });
     buttons[2].setCallback([&]() {
         if (fields[2].isEnabled()) fields[2].disable();
-        else disableFields(), fields[2].enable();
+        else disableFields(), fields[2].enable(), fields[2].focusField();
     });
 
         // update button
     buttons[3].setString("UPDATE", 20);
     buttons[3].setCallback([&]() {
         if (fields[3].isEnabled() || fields[4].isEnabled()) disableFields();
-        else disableFields(), fields[3].enable();
+        else disableFields(), fields[3].enable(), fields[3].focusField();
     });
     fields[3].setLabel("Enter value to be replaced");
     fields[3].setCallbackFunction([&] (const std::string &msg) {

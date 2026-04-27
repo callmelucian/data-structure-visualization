@@ -8,6 +8,7 @@ AVLTreeScene::AVLTreeScene (SceneManager &manager) : Scene(manager, 7, 5), updat
             else button.disableButton();
         }
         if (!f) disableFields();
+        buttons.back().enableButton();
     });
     ui.setCallbackPlayPause(changePlayButton);
     disableFields();
@@ -25,7 +26,7 @@ AVLTreeScene::AVLTreeScene (SceneManager &manager) : Scene(manager, 7, 5), updat
     });
     buttons[0].setCallback([&]() {
         if (fields[0].isEnabled()) fields[0].disable();
-        else disableFields(), fields[0].enable();
+        else disableFields(), fields[0].enable(), fields[0].focusField();
     });
 
     // erase button
@@ -41,7 +42,7 @@ AVLTreeScene::AVLTreeScene (SceneManager &manager) : Scene(manager, 7, 5), updat
     });
     buttons[1].setCallback([&]() {
         if (fields[1].isEnabled()) fields[1].disable();
-        else disableFields(), fields[1].enable();
+        else disableFields(), fields[1].enable(), fields[1].focusField();
     });
 
     // search button
@@ -58,14 +59,14 @@ AVLTreeScene::AVLTreeScene (SceneManager &manager) : Scene(manager, 7, 5), updat
     });
     buttons[2].setCallback([&]() {
         if (fields[2].isEnabled()) fields[2].disable();
-        else disableFields(), fields[2].enable();
+        else disableFields(), fields[2].enable(), fields[2].focusField();
     });
 
     // update button
     buttons[3].setString("UPDATE", 20);
     buttons[3].setCallback([&]() {
         if (fields[3].isEnabled() || fields[4].isEnabled()) disableFields();
-        else disableFields(), fields[3].enable();
+        else disableFields(), fields[3].enable(), fields[3].focusField();
     });
     fields[3].setLabel("Enter value to be replaced");
     fields[3].setCallbackFunction([&] (const std::string &msg) {

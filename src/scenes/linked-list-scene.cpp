@@ -8,13 +8,13 @@ LinkedListScene::LinkedListScene(SceneManager &manager) : Scene(manager, 8, 7), 
             else button.disableButton();
         }
         if (!f) disableFields();
+        buttons.back().enableButton();
     });
     ui.setCallbackPlayPause(changePlayButton);
     disableFields();
 
     // append button
-    buttons[0].setString("APPEND");
-    buttons[0].setCharacterSize(20);
+    buttons[0].setString("APPEND", 20);
     fields[0].setLabel("Enter value of new node");
     fields[0].setCallbackFunction([&](const std::string &msg) {
         std::vector<int> numbers = stringToNumbers(msg);
@@ -26,12 +26,11 @@ LinkedListScene::LinkedListScene(SceneManager &manager) : Scene(manager, 8, 7), 
     });
     buttons[0].setCallback([&]() {
         if (fields[0].isEnabled()) fields[0].disable();
-        else disableFields(), fields[0].enable();
+        else disableFields(), fields[0].enable(), fields[0].focusField();
     });
 
     // insert button
-    buttons[1].setString("INSERT");
-    buttons[1].setCharacterSize(20);
+    buttons[1].setString("INSERT", 20);
     fields[1].setLabel("Enter position to be inserted (0-indexed)");
     fields[1].setCallbackFunction([&] (const std::string &msg) {
         std::vector<int> numbers = stringToNumbers(msg);
@@ -55,8 +54,7 @@ LinkedListScene::LinkedListScene(SceneManager &manager) : Scene(manager, 8, 7), 
     });
 
     // erase button
-    buttons[2].setString("ERASE");
-    buttons[2].setCharacterSize(20);
+    buttons[2].setString("ERASE", 20);
     fields[3].setLabel("Enter value of to erase");
     fields[3].setCallbackFunction([&] (const std::string &msg) {
         std::vector<int> numbers = stringToNumbers(msg);
@@ -68,12 +66,11 @@ LinkedListScene::LinkedListScene(SceneManager &manager) : Scene(manager, 8, 7), 
     });
     buttons[2].setCallback([&]() {
         if (fields[3].isEnabled()) fields[3].disable();
-        else disableFields(), fields[3].enable();
+        else disableFields(), fields[3].enable(), fields[3].focusField();
     });
 
     // update button
-    buttons[3].setString("UPDATE");
-    buttons[3].setCharacterSize(20);
+    buttons[3].setString("UPDATE", 20);
     fields[4].setLabel("Enter value to be replaced");
     fields[4].setCallbackFunction([&] (const std::string &msg) {
         std::vector<int> numbers = stringToNumbers(msg);
@@ -92,12 +89,11 @@ LinkedListScene::LinkedListScene(SceneManager &manager) : Scene(manager, 8, 7), 
     });
     buttons[3].setCallback([&]() {
         if (fields[4].isEnabled() || fields[5].isEnabled()) disableFields();
-        else disableFields(), fields[4].enable();
+        else disableFields(), fields[4].enable(), fields[4].focusField();
     });
 
     // update search
-    buttons[4].setString("SEARCH");
-    buttons[4].setCharacterSize(20);
+    buttons[4].setString("SEARCH", 20);
     fields[6].setLabel("Enter value to search for");
     fields[6].setCallbackFunction([&] (const std::string &msg) {
         std::vector<int> numbers = stringToNumbers(msg);
@@ -109,12 +105,11 @@ LinkedListScene::LinkedListScene(SceneManager &manager) : Scene(manager, 8, 7), 
     });
     buttons[4].setCallback([&]() {
         if (fields[6].isEnabled()) fields[6].disable();
-        else disableFields(), fields[6].enable();
+        else disableFields(), fields[6].enable(), fields[6].focusField();
     });
 
     // import file
-    buttons[5].setString("IMPORT FILE");
-    buttons[5].setCharacterSize(20);
+    buttons[5].setString("IMPORT FILE", 20);
     buttons[5].setCallback([&]() {
         std::string filePath = openFileDialog();
         std::vector<int> numbers = fileToNumbers(filePath);
@@ -129,8 +124,7 @@ LinkedListScene::LinkedListScene(SceneManager &manager) : Scene(manager, 8, 7), 
     });
 
     // clear UI
-    buttons[6].setString("CLEAR");
-    buttons[6].setCharacterSize(20);
+    buttons[6].setString("CLEAR", 20);
     buttons[6].setCallback([&]() {
         ui.appendEmpty(), ui.nextCompleteState();
     });
