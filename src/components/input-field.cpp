@@ -85,6 +85,7 @@ bool TextInputField::isFocused() const {
 
 void TextInputField::focusField() {
     focus = true;
+    container.setFillColor(Theme::getPressedButton());
 }
 
 bool TextInputField::isEnabled() const {
