@@ -30,7 +30,7 @@ int main() {
 
     // initialize window
     auto window = sf::RenderWindow(
-        sf::VideoMode({(int)Setting::screenWidth, (int)Setting::screenHeight}),
+        sf::VideoMode({(unsigned int)Setting::screenWidth, (unsigned int)Setting::screenHeight}),
         "Data Structures Visualizer",
         sf::Style::Default,
         sf::State::Windowed,

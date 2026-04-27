@@ -18,7 +18,7 @@ private:
     float lineSpacing, titleBarHeight;
     unsigned int fontSize;
     bool shown;
-    sf::Vector2f targetHighlightPos;
+    sf::Vector2f targetHighlightPos, targetPosition;
 public:
     CodeHighlighter();
 
@@ -31,6 +31,7 @@ public:
     bool isShown() const;
     void show();
     void hide();
+    void setTargetPosition (float x, float y);
 
     // overrides
     sf::FloatRect getBoundary() const override;

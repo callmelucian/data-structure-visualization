@@ -90,7 +90,7 @@ public:
 
     void copyFrom (const Graph &other);
 
-    void timePropagation (float deltaTime, float maxWidth = Setting::focusX, float maxHeight = Setting::focusY);
+    void timePropagation (float deltaTime, float maxWidth = Setting::tightFocusX, float maxHeight = Setting::focusY);
 
     void makeDirected();
     
@@ -128,7 +128,7 @@ public:
 
     void copyPosition (const Graph &other);
 
-    void calculatePositions();
+    void calculatePositions (float maxWidth, float maxHeight);
 
     void handleMousePress (const sf::Vector2f &mousePos) override;
     void handleMouseRelease (const sf::Vector2f &mousePos) override;

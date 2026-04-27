@@ -3,10 +3,11 @@
 template <typename TypeUI, typename TypeLogic>
 AnimationManager<TypeUI, TypeLogic>::AnimationManager() :
     stateUI(1), completeUI(1, true), stateLogic(1), stateCode(1),
-    currentEventStep(0), stateUIIterator(0), stateLogicIterator(0), isPlaying(false) {
+    currentEventStep(0), stateUIIterator(0), stateLogicIterator(0), isPlaying(false), isCentered(true) {
 
     // set position for UI and code highlighter
     stateUI[0].setPosition({Setting::screenWidth / 2.f, Setting::screenHeight / 2.f - 55.f});
+    uiTargetPosition = stateUI[0].getPosition();
     // stateCode[0].setPosition({Setting::screenWidth - 20.f, Setting::screenHeight - 20.f});
 
     // initialize callback functions
@@ -44,7 +45,10 @@ void AnimationManager<TypeUI, TypeLogic>::popAnimation() {
     if (changeTracker) {
         while (!isPlaying && stateUIIterator + 1 < stateUI.size())
             stateUI.pop_back(), stateCode.pop_back(), completeUI.pop_back();
-        tempUI.calculatePositions();
+        tempUI.calculatePositions(
+            isCentered ? Setting::narrowFocusX : Setting::tightFocusX,
+            Setting::focusY
+        );
         stateUI.push_back(tempUI);
         stateCode.push_back(tempCode);
         completeUI.push_back(completed);
@@ -84,8 +88,7 @@ bool AnimationManager<TypeUI, TypeLogic>::previousState (bool playing) {
     TypeUI tempUI = getCurrentUI();
     UI::CodeHighlighter tempCode = getCurrentCode();
     stateUIIterator--;
-    getCurrentUI().copyPosition(tempUI);
-    getCurrentCode().copyPosition(tempCode);
+    applyTransition(tempUI, tempCode);
     if (!isPlaying) callbackEnableButtons(completeUI[stateUIIterator]);
     stateLogicIterator -= completeUI[stateUIIterator];
     return true;
@@ -98,8 +101,7 @@ bool AnimationManager<TypeUI, TypeLogic>::previousCompleteState (bool playing) {
     UI::CodeHighlighter tempCode = getCurrentCode();
     bool lastModify = true;
     while (lastModify = previousState() && !isComplete());
-    getCurrentUI().copyPosition(tempUI);
-    getCurrentCode().copyPosition(tempCode);
+    applyTransition(tempUI, tempCode);
     return lastModify;
 }
 
@@ -110,9 +112,7 @@ bool AnimationManager<TypeUI, TypeLogic>::nextState (bool playing) {
     TypeUI tempUI = getCurrentUI();
     UI::CodeHighlighter tempCode = getCurrentCode();
     stateUIIterator++;
-    getCurrentUI().copyPosition(tempUI);
-    getCurrentUI().setPosition(tempUI.getPosition());
-    getCurrentCode().copyPosition(tempCode);
+    applyTransition(tempUI, tempCode);
     if (!isPlaying) callbackEnableButtons(completeUI[stateUIIterator]);
     stateLogicIterator += completeUI[stateUIIterator];
     return true;
@@ -125,10 +125,20 @@ bool AnimationManager<TypeUI, TypeLogic>::nextCompleteState (bool playing) {
     UI::CodeHighlighter tempCode = getCurrentCode();
     bool lastModify = true;
     while (lastModify = nextState() && !isComplete());
-    getCurrentUI().copyPosition(tempUI);
-    getCurrentUI().setPosition(tempUI.getPosition());
-    getCurrentCode().copyPosition(tempCode);
+    applyTransition(tempUI, tempCode);
     return lastModify;
+}
+
+template <typename TypeUI, typename TypeLogic>
+void AnimationManager<TypeUI, TypeLogic>::applyTransition (TypeUI &lastUI, UI::CodeHighlighter &lastCode) {
+    getCurrentCode().copyPosition(lastCode);
+    getCurrentCode().setTargetPosition(isCentered ? -Setting::codeWidth : 0.f, 0.f);
+    getCurrentUI().copyPosition(lastUI);
+    getCurrentUI().setPosition(lastUI.getPosition());
+    getCurrentUI().calculatePositions(
+        isCentered ? Setting::narrowFocusX : Setting::tightFocusX,
+        Setting::focusY
+    );
 }
 
 template <typename TypeUI, typename TypeLogic>
@@ -144,6 +154,14 @@ void AnimationManager<TypeUI, TypeLogic>::timePropagation (float deltaTime) {
     }
     getCurrentUI().timePropagation(deltaTime);
     getCurrentCode().timePropagation(deltaTime);
+
+    // set position for UI
+    sf::Vector2f displacement = uiTargetPosition - getCurrentUI().getPosition();
+    if (magnitude(displacement) < eps) getCurrentUI().setPosition(uiTargetPosition);
+    else {
+        sf::Vector2f newPosition = getCurrentUI().getPosition() + displacement * Setting::animationFactor() * deltaTime * 5.f;
+        getCurrentUI().setPosition(newPosition);
+    }
 }
 
 template <typename TypeUI, typename TypeLogic>
@@ -198,12 +216,19 @@ bool AnimationManager<TypeUI, TypeLogic>::checkIsPlaying() const {
 
 template <typename TypeUI, typename TypeLogic>
 void AnimationManager<TypeUI, TypeLogic>::centerUI() {
-    getCurrentUI().setPosition({Setting::screenWidth / 2.f, Setting::screenHeight / 2.f - 55.f});
+    uiTargetPosition = {Setting::screenWidth / 2.f, Setting::screenHeight / 2.f - 55.f};
+    getCurrentCode().setTargetPosition(-Setting::codeWidth, 0.f);
+    getCurrentUI().calculatePositions(Setting::narrowFocusX, Setting::focusY);
+    isCentered = true;
+    
 }
 
 template <typename TypeUI, typename TypeLogic>
 void AnimationManager<TypeUI, TypeLogic>::offcenterUI() {
-    getCurrentUI().setPosition({Setting::offCenter, Setting::screenHeight / 2.f - 55.f});
+    uiTargetPosition = {Setting::offCenter, Setting::screenHeight / 2.f - 55.f};
+    getCurrentCode().setTargetPosition(0.f, 0.f);
+    getCurrentUI().calculatePositions(Setting::tightFocusX, Setting::focusY);
+    isCentered = false;
 }
 
 // ========== TEMPLATE-SPECIFIC FUNCTIONS: AnimationManager<UI::BinaryTree, DS::AVLTree> ==========

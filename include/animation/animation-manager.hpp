@@ -38,11 +38,14 @@ private:
 
     // iterators
     int currentEventStep, stateUIIterator, stateLogicIterator;
-    bool isPlaying;
+    bool isPlaying, isCentered;
     
     // callback functions
     std::function<void(int)> callbackEnableButtons;
     std::function<void(bool)> callbackPlayPause;
+
+    // positions
+    sf::Vector2f uiTargetPosition;
 
     // countdown clock
     CountDownClock clock;
@@ -143,6 +146,7 @@ public:
 
     void centerUI();
     void offcenterUI();
+    void applyTransition (TypeUI &lastUI, UI::CodeHighlighter &lastCode);
 
     /**
      * Initialize callback functions

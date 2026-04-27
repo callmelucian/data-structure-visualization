@@ -45,7 +45,7 @@ public:
 
     bool attachRoot (int slot, int nodeID);
 
-    void calculatePositions (float maxWidth = Setting::focusX, float maxHeight = Setting::focusY);
+    void calculatePositions (float maxWidth = Setting::narrowFocusX, float maxHeight = Setting::focusY);
 
     void updateOrigin();
 

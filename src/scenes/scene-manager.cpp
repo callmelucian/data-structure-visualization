@@ -40,7 +40,7 @@ Scene::Scene (SceneManager &manager, int buttonCount, int fieldCount) :
     setting.setPosition({Setting::screenWidth - 40 - MEDIUM_RADIUS / 2.f, 40 + MEDIUM_RADIUS / 2.f});
     setting.setIcon(Theme::settingIcon, 25.f);
     setting.setCallback([&]() {
-        manager.changeScene(5);
+        manager.changeScene(7);
     });
     
     // buttons

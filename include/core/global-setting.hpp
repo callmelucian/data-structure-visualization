@@ -3,18 +3,17 @@
 #include <string>
 
 namespace Setting {
-    inline constexpr const char* appName = "CS163 Visualization App";
+    extern const float actionBarWidth;
+    extern const float actionBarHeight;
 
-    inline constexpr float actionBarWidth = 1800.f;
-    inline constexpr float actionBarHeight = 120.f;
-
-    inline constexpr float screenWidth = 1800;
-    inline constexpr float screenHeight = 900;
-    inline constexpr sf::Vector2f screenCenter({screenWidth / 2.f, screenHeight / 2.f});
-    inline constexpr float focusX = 1550;
-    inline constexpr float focusY = 450;
-    inline constexpr float codeWidth = 640;
-    inline constexpr float offCenter = 1220;
+    extern const float screenWidth;
+    extern const float screenHeight;
+    extern const sf::Vector2f screenCenter;
+    extern const float tightFocusX;
+    extern const float narrowFocusX;
+    extern const float focusY;
+    extern const float codeWidth;
+    extern const float offCenter;
 
     float animationFactor(); // 1 + animationCoefficient / 50
     float animationDelay(); // 6.8 - animationCoefficient / 15

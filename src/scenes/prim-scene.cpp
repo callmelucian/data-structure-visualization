@@ -110,7 +110,7 @@ PrimScene::PrimScene (SceneManager &manager) :
             });
             ui.nextCompleteState();
         }
-        ui.getCurrentUI().setOrigin({Setting::focusX / 2.f, Setting::focusY / 2.f});
+        // ui.getCurrentUI().setOrigin({Setting::focusX / 2.f, Setting::focusY / 2.f});
     });
 
     // clear

@@ -76,18 +76,29 @@ void CodeHighlighter::highlightCode(int row) {
 }
 
 void CodeHighlighter::timePropagation(float deltaTime) {
-    if (highlightedRow == -1) return;
-    sf::Vector2f displacement = targetHighlightPos - highlightBar.getPosition();
-    if (magnitude(displacement) < eps) highlightBar.setPosition(targetHighlightPos);
+    // move highlight bar
+    if (highlightedRow != -1) {
+        sf::Vector2f displacement = targetHighlightPos - highlightBar.getPosition();
+        if (magnitude(displacement) < eps) highlightBar.setPosition(targetHighlightPos);
+        else {
+            sf::Vector2f newPosition = highlightBar.getPosition() + displacement * Setting::animationFactor() * deltaTime * 10.f;
+            highlightBar.setPosition(newPosition);
+        }
+    }
+
+    // move code highlighter
+    sf::Vector2f displacement = targetPosition - getPosition();
+    if (magnitude(displacement) < eps) setPosition(targetPosition);
     else {
-        sf::Vector2f newPosition = highlightBar.getPosition() + displacement * Setting::animationFactor() * deltaTime * 10.f;
-        highlightBar.setPosition(newPosition);
+        sf::Vector2f newPosition = getPosition() + displacement * Setting::animationFactor() * deltaTime * 5.f;
+        setPosition(newPosition);
     }
 }
 
 void CodeHighlighter::copyPosition(const CodeHighlighter &other) {
     highlightBar.setPosition(other.highlightBar.getPosition());
     shown = other.isShown();
+    setPosition(other.getPosition());
 }
 
 void CodeHighlighter::draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -109,6 +120,10 @@ void CodeHighlighter::show() {
 
 void CodeHighlighter::hide() {
     shown = false;
+}
+
+void CodeHighlighter::setTargetPosition (float x, float y) {
+    targetPosition = {x, y};
 }
 
 sf::FloatRect CodeHighlighter::getBoundary() const {

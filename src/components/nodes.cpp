@@ -56,7 +56,7 @@ void Node::setAnnotationColor (const sf::Color &color) {
 
 void Node::randomPosition() {
     setPosition({
-        randFloat(0, Setting::focusX),
+        randFloat(0, Setting::tightFocusX),
         randFloat(0, Setting::focusY)
     });
 }

@@ -340,7 +340,7 @@ void Graph::setAnnotation (int nodeID, int value) {
     if (nodeID < nodes.size()) nodes[nodeID]->setAnnotation(msg);
 }
 
-void Graph::calculatePositions() {}
+void Graph::calculatePositions (float maxWidth, float maxHeight) {}
 
 void Graph::handleMousePress (const sf::Vector2f &mousePos) {
     if (callbackIsEditing(mousePos)) return;

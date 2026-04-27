@@ -46,7 +46,7 @@ public:
 
     void swapNode(int nodeA, int nodeB);
 
-    void calculatePositions(float maxWidth = Setting::focusX, float maxHeight = Setting::focusY);
+    void calculatePositions(float maxWidth = Setting::narrowFocusX, float maxHeight = Setting::focusY);
 
     void handleMousePress(const sf::Vector2f &mousePos) override;
 

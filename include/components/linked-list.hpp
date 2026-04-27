@@ -42,7 +42,7 @@ public:
     void colorNode (int nodeID, const sf::Color &color);
     void addEdge (int fromNode, int toNode);
     void setHead (int nodeID);
-    void calculatePositions (float maxWidth = Setting::focusX, float maxHeight = Setting::focusY);
+    void calculatePositions (float maxWidth = Setting::narrowFocusX, float maxHeight = Setting::focusY);
     void updateOrigin();
     void setTargetOrigin (float x, float y);
     void setHighlight (int nodeID);
