@@ -78,8 +78,8 @@ bool DijkstraAlgorithm::editEdge (int targetEdge, int weight) {
     return true;
 }
 
-void DijkstraAlgorithm::run (int source) {
-    if (nodeDeleted[source]) return;
+bool DijkstraAlgorithm::run (int source) {
+    if (source < 0 || source >= nodeDeleted.size() || nodeDeleted[source]) return false;
 
     // Logic intialization
     std::vector<int> dist(graphSize, INT_MAX);
@@ -145,10 +145,11 @@ void DijkstraAlgorithm::run (int source) {
     callbackLoadCode({});
     callbackCompleteAnimation();
     callbackApplyAnimation();
+    return true;
 }
 
-void DijkstraAlgorithm::runPrim (int source) {
-    if (nodeDeleted[source]) return;
+bool DijkstraAlgorithm::runPrim (int source) {
+    if (source < 0 || source >= nodeDeleted.size() || nodeDeleted[source]) return false;
 
     // Logic intialization
     std::vector<bool> vist(graphSize, false);
@@ -219,5 +220,6 @@ void DijkstraAlgorithm::runPrim (int source) {
     callbackLoadCode({});
     callbackCompleteAnimation();
     callbackApplyAnimation();
+    return true;
 }
 }; // namespace DS

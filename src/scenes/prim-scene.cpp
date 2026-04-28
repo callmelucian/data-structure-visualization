@@ -86,7 +86,7 @@ PrimScene::PrimScene (SceneManager &manager) :
         std::vector<int> numbers = stringToNumbers(msg);
         if (numbers.size() != 1) return;
         ui.transformLogic([&] (DS::DijkstraAlgorithm &g) {
-            return g.runPrim(numbers[0]), true;
+            return g.runPrim(numbers[0]);
         });
     });
 

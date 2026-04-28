@@ -119,9 +119,9 @@ public:
 
     bool editEdge (int edgeID, int weight);
 
-    void run (int source);
+    bool run (int source);
 
-    void runPrim (int source);
+    bool runPrim (int source);
 };
 
 }; // namespace DS

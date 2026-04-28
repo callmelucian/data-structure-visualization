@@ -90,7 +90,7 @@ DijkstraScene::DijkstraScene (SceneManager &manager) :
         std::vector<int> numbers = stringToNumbers(msg);
         if (numbers.size() != 1) return; // will allow multicore Dijkstra if i have time
         ui.transformLogic([&] (DS::DijkstraAlgorithm &g) {
-            return g.run(numbers[0]), true;
+            return g.run(numbers[0]);
         });
     });
 

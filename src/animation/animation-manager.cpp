@@ -201,12 +201,14 @@ void AnimationManager<TypeUI, TypeLogic>::resetManager() {
 template <typename TypeUI, typename TypeLogic>
 void AnimationManager<TypeUI, TypeLogic>::play() {
     isPlaying = true;
+    callbackEnableButtons(true);
     callbackPlayPause(true);
 }
 
 template <typename TypeUI, typename TypeLogic>
 void AnimationManager<TypeUI, TypeLogic>::pause() {
     isPlaying = false;
+    callbackEnableButtons(isComplete());
     callbackPlayPause(false);
 }
 
