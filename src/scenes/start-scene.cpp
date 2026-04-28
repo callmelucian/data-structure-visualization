@@ -1,67 +1,56 @@
 #include "../../include/scenes/start-scene.hpp"
 
+const std::vector<std::string> sceneName = {
+    "LINKED LIST", "HASH MAP",
+    "SHORTEST PATH", "MINIMUM SPANNING TREE",
+    "AVL TREE", "RED-BLACK TREE"
+};
+
 StartScene::StartScene (SceneManager &manager) :
-    Scene(manager),
-    toAVL(300.f, 70.f, 10.f),
-    toDijkstra(300.f, 70.f, 10.f),
-    toHashMap(300.f, 70.f, 10.f),
-    toLinkedList(300.f, 70.f, 10.f),
-    toPrim(300.f, 70.f, 10.f),
-    toRBTree(300.f, 70.f, 10.f) {
+    Scene(manager), navigation(6, UI::Button(400.f, 70.f, 20.f)),
+    title(Theme::googleSansBold), subtitle(Theme::googleSansItalic) {
 
-    toAVL.setString("AVL TREE");
-    toAVL.setCharacterSize(30);
-    toAVL.setPosition({Setting::screenWidth / 2.f, Setting::screenHeight / 2.f - 250});
-    toAVL.setCallback([&]() { manager.changeScene(1); });
-    // toAVL.disableButton();
+    for (int i = 0; i < navigation.size(); i++) {
+        navigation[i].setString(sceneName[i], 25);
+        navigation[i].setOutlineThickness(3);
+        navigation[i].setCallback([i, &manager]() { manager.changeScene(i + 1); });
+    }
 
-    toDijkstra.setString("RB TREE");
-    toDijkstra.setCharacterSize(30);
-    toDijkstra.setPosition({Setting::screenWidth / 2.f, Setting::screenHeight / 2.f - 150});
-    toDijkstra.setCallback([&]() { manager.changeScene(2); });
-    // toDijkstra.disableButton();
+    for (int i = 0, pos = 340; i < navigation.size(); i += 2, pos += 145) {
+        navigation[i].setPosition({600, (float)pos});
+    }
+    for (int i = 1, pos = 340; i < navigation.size(); i += 2, pos += 145) {
+        navigation[i].setPosition({1200, (float)pos});
+    }
 
-    toHashMap.setString("LINKED LIST");
-    toHashMap.setCharacterSize(30);
-    toHashMap.setPosition({Setting::screenWidth / 2.f, Setting::screenHeight / 2.f - 50});
-    toHashMap.setCallback([&]() { manager.changeScene(3); });
-    // toHashMap.disableButton();
-
-    toLinkedList.setString("HASH MAP");
-    toLinkedList.setCharacterSize(30);
-    toLinkedList.setPosition({Setting::screenWidth / 2.f, Setting::screenHeight / 2.f + 50});
-    toLinkedList.setCallback([&]() { manager.changeScene(4); });
-    // toLinkedList.disableButton();
-
-    toPrim.setString("DIJKSTRA");
-    toPrim.setCharacterSize(30);
-    toPrim.setPosition({Setting::screenWidth / 2.f, Setting::screenHeight / 2.f + 150});
-    toPrim.setCallback([&]() { manager.changeScene(5); });
-    // toPrim.disableButton();
-
-    toRBTree.setString("MST (PRIM)");
-    toRBTree.setCharacterSize(30);
-    toRBTree.setPosition({Setting::screenWidth / 2.f, Setting::screenHeight / 2.f + 250});
-    toRBTree.setCallback([&]() { manager.changeScene(6); });
-    // toRBTree.disableButton();
+    title.setString("DATA STRUCTURE VISUALIZER");
+    title.setCharacterSize(40);
+    title.setPosition({Setting::screenWidth / 2.f, 75});
+    title.setFillColor(Theme::textPrimary);
+    title.centerOrigin();
+    
+    subtitle.setString("By Tan Minh @ Lucian");
+    subtitle.setCharacterSize(24);
+    subtitle.setPosition({Setting::screenWidth / 2.f, 110});
+    subtitle.setFillColor(Theme::accentDark);
+    subtitle.centerOrigin();
 }
 
 void StartScene::handleEvent (sf::RenderWindow &window, const std::optional<sf::Event> &event) {
-    toAVL.handleMouseEvents(window, event);
-    toDijkstra.handleMouseEvents(window, event);
-    toHashMap.handleMouseEvents(window, event);
-    toLinkedList.handleMouseEvents(window, event);
-    toPrim.handleMouseEvents(window, event);
-    toRBTree.handleMouseEvents(window, event);
+    for (UI::Button &button : navigation)
+        button.handleMouseEvents(window, event);
+    setting.handleMouseEvents(window, event);
 }
 
 void StartScene::timePropagation (float delta) {}
 
 void StartScene::draw (sf::RenderWindow &window) {
-    window.draw(toAVL);
-    window.draw(toDijkstra);
-    window.draw(toHashMap);
-    window.draw(toLinkedList);
-    window.draw(toPrim);
-    window.draw(toRBTree);
+    for (UI::Button &button : navigation)
+        button.changeColor(), window.draw(button);
+    setting.changeColor();
+    window.draw(setting);
+    title.setFillColor(Theme::textPrimary);
+    window.draw(title);
+    subtitle.setFillColor(Theme::accentDark);
+    window.draw(subtitle);
 }

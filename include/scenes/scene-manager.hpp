@@ -48,6 +48,7 @@ public:
     // get background color
     sf::Color getBackground();
     void setBackground (const sf::Color &color);
+    void setBackgroundImage (const sf::Texture& texture);
 
     void baseHandleEvent (sf::RenderWindow &window, const std::optional<sf::Event> &event);
     void baseDraw (sf::RenderWindow &window);

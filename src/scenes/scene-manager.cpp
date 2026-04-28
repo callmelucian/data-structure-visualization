@@ -17,7 +17,7 @@ float calculateContainerWidth (int buttonCount) {
 
 // Scene Implementation
 Scene::Scene (SceneManager &manager, int buttonCount, int fieldCount) :
-    backgroundColor(Theme::getBackground()), manager(manager),
+    backgroundColor(Theme::background), manager(manager),
     container(calculateContainerWidth(buttonCount), LARGE_RADIUS + BUTTON_HEIGHT + 2 * BUTTON_MARGIN + 5.f, 20.f),
     previousScene(MEDIUM_RADIUS, MEDIUM_RADIUS, MEDIUM_RADIUS / 2.f),
     setting(MEDIUM_RADIUS, MEDIUM_RADIUS, MEDIUM_RADIUS / 2.f),
@@ -71,7 +71,7 @@ Scene::Scene (SceneManager &manager, int buttonCount, int fieldCount) :
     // container
     float containerY = (playButton.getPosition().y - LARGE_RADIUS / 2.f - BUTTON_MARGIN
                         + buttons[0].getPosition().y + BUTTON_HEIGHT / 2.f + BUTTON_MARGIN) / 2.f;
-    container.setFillColor(Theme::getLightBackground());
+    container.setFillColor(Theme::lightBackground);
     container.setPosition({Setting::screenWidth / 2.f, containerY});
     container.centerOrigin();
 
@@ -105,16 +105,27 @@ void Scene::baseHandleEvent (sf::RenderWindow &window, const std::optional<sf::E
 }
 
 void Scene::baseDraw (sf::RenderWindow &window) {
+    previousScene.changeColor();
     window.draw(previousScene);
+    setting.changeColor();
     window.draw(setting);
+    container.setFillColor(Theme::lightBackground);
     window.draw(container);
+    playButton.changeColor();
     window.draw(playButton);
+    playButton.changeColor();
     window.draw(prevStepButton);
+    prevStepButton.changeColor();
     window.draw(prevOperationButton);
+    prevOperationButton.changeColor();
     window.draw(nextStepButton);
+    nextStepButton.changeColor();
     window.draw(nextOperationButton);
-    for (UI::Button &button : buttons) window.draw(button);
-    for (UI::TextInputField &field : fields) window.draw(field);
+    nextOperationButton.changeColor();
+    for (UI::Button &button : buttons)
+        button.changeColor(), window.draw(button);
+    for (UI::TextInputField &field : fields)
+        field.changeColor(), window.draw(field);
 }
 
 void Scene::disableFields() {
@@ -166,7 +177,8 @@ void SceneManager::runMainLoop(sf::RenderWindow &window) {
         }
 
         if (scenes[sceneID.back()]) {
-            window.clear(scenes[sceneID.back()]->getBackground());
+            window.clear(Theme::background);
+            if (Theme::backgroundImage) window.draw(*Theme::backgroundImage);
 
             // time propagation on current scene
             sf::Time elapsed = clock.restart();

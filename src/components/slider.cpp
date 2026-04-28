@@ -1,35 +1,21 @@
 #include "../../include/components/slider.hpp"
 
-const sf::Color holderColor = sf::Color::White;
 const sf::Color hoveredColor = sf::Color({0, 0, 0, 55});
 
 namespace UI {
 
 Slider::Slider (float width, float height, float radius) :
-    holder(width, height, radius),
-    hovered(0.f, height, radius),
-    filled(width / 2.f, height, radius),
-    annotation(Theme::googleSansRegular),
-    followMouse(false), radius(radius) {
-    
-    // setup holder bar
-    // holder.setOutlineColor(Theme::getPrimary());
-    // holder.setOutlineThickness(2.f);
-    holder.setFillColor(holderColor);
+    holder(width, height, radius), hovered(0.f, height, radius), filled(width / 2.f, height, radius),
+    annotation(Theme::googleSansRegular), followMouse(false), radius(radius),
+    holderColor(&Theme::button), fillColor(&Theme::buttonPressed), textColor(&Theme::textPrimary) {
 
     // setup hover bar
     hovered.setFillColor(hoveredColor);
 
-    // setup filled bar
-    filled.setFillColor(Theme::getPressedButton());
-
     // setup annotation
-    annotation.setFillColor(Theme::getTextPrimary());
-    annotation.setAutoCharacterSize(width, height);
     annotation.setPosition({width / 2.f, height / 2.f});
     setString("50%");
-
-    annotation.setAutoCharacterSize(holder.getSize().x, holder.getSize().y, 0.7);
+    annotation.setAutoCharacterSize(width, height, 0.7);
     annotation.centerOrigin();
     
     // center origin
@@ -56,6 +42,10 @@ void Slider::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     target.draw(annotation, states);
 }
 
+void Slider::setOutlineThickness (float thickness) {
+    holder.setOutlineThickness(thickness);
+}
+
 sf::FloatRect Slider::getBoundary() const {
     return holder.getGlobalBounds();
 }
@@ -65,6 +55,13 @@ void Slider::updateSliderValue() {
     float newValue = filled.getSize().x / holder.getSize().x;
     changeValue(newValue);
     setString(floatToPercentage(newValue));
+}
+
+void Slider::changeColor() {
+    holder.setFillColor(*holderColor);
+    holder.setOutlineColor(*textColor);
+    filled.setFillColor(*fillColor);
+    annotation.setFillColor(*textColor);
 }
 
 void Slider::handleMousePress(const sf::Vector2f &mousePos) {

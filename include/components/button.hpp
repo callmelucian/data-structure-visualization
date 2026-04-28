@@ -16,6 +16,7 @@ private:
     std::function<void()> onClick;
     bool activation, clickable;
     std::optional<sf::Sprite> icon;
+    sf::Color *containerFill, *containerOutline, *labelFill;
 
 public:
     // constructor
@@ -78,6 +79,8 @@ public:
 
     // toggle clickable state
     void toggleState();
+
+    void changeColor();
 };
 
 }; // namespace UI

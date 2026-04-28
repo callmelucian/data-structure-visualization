@@ -20,6 +20,8 @@ private:
     sf::Clock blinkClock;
     std::function<void(const std::string&)> callbackFunction;
 
+    sf::Color *textColor, *containerColor, *cursorColor;
+
 public:
     TextInputField(float width, float height, float radius = 10.f);
 
@@ -51,6 +53,8 @@ public:
     bool isEnabled() const;
 
     void focusField();
+
+    void changeColor();
 
     void handleTextEntered(const char &unicode) override;
 

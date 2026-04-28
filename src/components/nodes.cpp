@@ -4,23 +4,20 @@ namespace UI {
 
 // ========== NODE ==========
 Node::Node(const std::string &msg, float radius, float thickness) :
-    circle(radius, 100), label(Theme::googleSansRegular, msg), annotation(Theme::googleSansItalic) {
+    circle(radius, 100), label(Theme::googleSansRegular, msg), annotation(Theme::googleSansItalic),
+    circleFill(&Theme::button), textColor(&Theme::textPrimary), annotationColor(&Theme::accentDark) {
     
     // setup circle
     circle.setOrigin({radius, radius});
-    circle.setFillColor(Theme::getButton());
-    circle.setOutlineColor(Theme::getTextPrimary());
     circle.setOutlineThickness(thickness);
 
     // setup label
     float squareSize = std::sqrt(2 * radius * radius);
     label.setAutoCharacterSize(squareSize, squareSize);
-    label.setFillColor(sf::Color::Black);
     label.centerOrigin();
 
     // setup annotation
     annotation.setCharacterSize(20);
-    annotation.setFillColor(sf::Color::Red);
     annotation.setPosition({0, -radius - 15.f});
 }
 
@@ -32,6 +29,15 @@ void Node::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     target.draw(circle, states);
     target.draw(label, states);
     target.draw(annotation, states);
+}
+
+void Node::swap (Node& other) noexcept {
+    sf::Vector2f tmp = getPosition();
+    setPosition(other.getPosition());
+    other.setPosition(tmp);
+    std::swap(circle, other.circle);
+    std::swap(label, other.label);
+    std::swap(annotation, other.annotation);
 }
 
 float Node::getRadius() const {
@@ -46,12 +52,12 @@ sf::FloatRect Node::getGlobalBounds() const {
     return getTransform().transformRect(circle.getGlobalBounds());
 }
 
-void Node::setColor (const sf::Color &color) {
-    circle.setFillColor(color);
+void Node::setColor (sf::Color &color) {
+    circleFill = &color;
 }
 
-void Node::setAnnotationColor (const sf::Color &color) {
-    annotation.setFillColor(color);
+void Node::setAnnotationColor (sf::Color &color) {
+    annotationColor = &color;
 }
 
 void Node::randomPosition() {
@@ -80,6 +86,13 @@ void Node::setString (const std::string &s) {
     float squareSize = std::sqrt(2 * getRadius() * getRadius());
     label.setAutoCharacterSize(squareSize, squareSize);
     label.centerOrigin();
+}
+
+void Node::changeColor() {
+    circle.setFillColor(*circleFill);
+    circle.setOutlineColor(*textColor);
+    label.setFillColor(*textColor);
+    annotation.setFillColor(*annotationColor);
 }
 
 void Node::handleMousePress(const sf::Vector2f &mousePos) {}
@@ -114,7 +127,7 @@ float AnimatedNode::getTargetY() const {
     return targetPosition.y;
 }
 
-void AnimatedNode::setColor (const sf::Color &color) {
+void AnimatedNode::setColor (sf::Color &color) {
     nodeUI.setColor(color);
 }
 
@@ -144,7 +157,7 @@ float AnimatedNode::getRadius() const {
 }
 
 void swapAnimatedNode(AnimatedNode &a, AnimatedNode &b) {
-    std::swap(a.nodeUI, b.nodeUI);
+    a.nodeUI.swap(b.nodeUI);
 }
 
 // void AnimatedNode::highlightNode() {
@@ -179,6 +192,10 @@ void AnimatedNode::draw(sf::RenderTarget& target, sf::RenderStates states) const
     nodeUI.draw(target, states);
 }
 
+void AnimatedNode::changeColor() {
+    nodeUI.changeColor();
+}
+
 // ========== FLOATING NODE ==========
 FloatingNode::FloatingNode(const std::string &msg, float radius, float thickness) : Node(msg, radius, thickness), isClicked(false), isActivated(false) {
     randomPosition();
@@ -207,12 +224,12 @@ void FloatingNode::timePropagation (float deltaTime) {
 
 void FloatingNode::activateNode() {
     isActivated = true;
-    setColor(Theme::getAccentPrimary());
+    setColor(Theme::accentPrimary);
 }
 
 void FloatingNode::deactivateNode() {
     isActivated = false;
-    setColor(Theme::getButton());
+    setColor(Theme::button);
 }
 
 void FloatingNode::copyPosition (const FloatingNode &other) {
@@ -223,7 +240,7 @@ void FloatingNode::copyPosition (const FloatingNode &other) {
 
 void FloatingNode::handleMousePress (const sf::Vector2f &mousePos) {
     if (!containPosition(mousePos) || isActivated) return;
-    setColor(Theme::getPressedButton());
+    setColor(Theme::buttonPressed);
     setScale({0.97f, 0.97f});
     isClicked = true;
 }
@@ -239,9 +256,7 @@ bool FloatingNode::isClickedCheck() const {
 
 void FloatingNode::handleMouseRelease (const sf::Vector2f &mousePos) {
     if (!isClicked || isActivated) return;
-    setColor(containPosition(mousePos) ?
-        Theme::getHoveredButton() : Theme::getButton()
-    );
+    setColor(containPosition(mousePos) ? Theme::buttonHovered : Theme::button);
     setScale({1.f, 1.f});
     isClicked = false;
     // callbackOnClick();
@@ -249,9 +264,7 @@ void FloatingNode::handleMouseRelease (const sf::Vector2f &mousePos) {
 
 void FloatingNode::handleMouseMovement (const sf::Vector2f &mousePos) {
     if (isClicked || isActivated) return;
-    setColor(containPosition(mousePos) ?
-        Theme::getHoveredButton() : Theme::getButton()
-    );
+    setColor(containPosition(mousePos) ? Theme::buttonHovered : Theme::button);
 }
 
 // ========== HELPER FUNCTIONS ==========
@@ -276,7 +289,7 @@ void drawEdge(sf::RenderTarget &target, sf::RenderStates states, const AnimatedN
     line.setOrigin({0, thickness / 2.0f});
     line.setPosition(start);
     line.setRotation(sf::radians(angle));
-    line.setFillColor(Theme::getTextPrimary());
+    line.setFillColor(Theme::textPrimary);
 
         // draw arrow head
     if (isDirected) {
@@ -289,7 +302,7 @@ void drawEdge(sf::RenderTarget &target, sf::RenderStates states, const AnimatedN
         
         arrowhead.setPosition(end);
         arrowhead.setRotation(sf::radians(angle));
-        arrowhead.setFillColor(Theme::getTextPrimary());
+        arrowhead.setFillColor(Theme::textPrimary);
         target.draw(arrowhead, states);
     }
 

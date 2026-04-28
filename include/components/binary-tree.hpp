@@ -38,7 +38,7 @@ public:
 
     void deleteNode(int nodeID);
 
-    void colorNode (int nodeID, const sf::Color &color);
+    void colorNode (int nodeID, sf::Color &color);
 
     bool addEdge(int parentNode, int childNode, bool isLeft);
 
@@ -75,6 +75,8 @@ public:
     void copyPosition (const BinaryTree &o);
 
     void printPosition() const;
+
+    void changeColor();
 };
 
 } // namespace UI

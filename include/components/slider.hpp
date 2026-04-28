@@ -18,6 +18,8 @@ private:
     bool followMouse;
     float radius;
 
+    sf::Color *holderColor, *fillColor, *textColor;
+
     std::function<void(float)> changeValue;
 
 public:
@@ -35,11 +37,15 @@ public:
     // (override) draw slider onto the screen
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
+    void setOutlineThickness (float thickness);
+    
     // (override) get boundary
     sf::FloatRect getBoundary() const override;
 
     // update slider value
     void updateSliderValue();
+
+    void changeColor();
 
     // (override) handle mouse press
     void handleMousePress(const sf::Vector2f &mousePos) override;

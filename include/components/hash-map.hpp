@@ -57,8 +57,9 @@ public:
 
     void copyPosition (const HashMap &other);
     
-    void colorNode (int nodeID, const sf::Color &color);
+    void colorNode (int nodeID, sf::Color &color);
 
+    void changeColor();
 
     // overrides
     void draw (sf::RenderTarget &target, sf::RenderStates states) const override;

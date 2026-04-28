@@ -19,8 +19,12 @@ private:
     sf::CircleShape circle;
     Text label, annotation;
 
+    sf::Color *circleFill, *textColor, *annotationColor;
+
 public:
     Node(const std::string &msg, float radius = 30.f, float thickness = 2.f);
+
+    void swap (Node& other) noexcept;
 
     // draw node onto the screen
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
@@ -31,9 +35,9 @@ public:
 
     sf::FloatRect getGlobalBounds() const;
 
-    void setColor (const sf::Color &color);
+    void setColor (sf::Color &color);
 
-    void setAnnotationColor (const sf::Color &color);
+    void setAnnotationColor (sf::Color &color);
 
     void randomPosition();
 
@@ -42,6 +46,8 @@ public:
     void clampPosition (const sf::Vector2f &pos, float maxWidth, float maxHeight);
 
     void setString (const std::string &s);
+
+    void changeColor();
 
     // handle mouse press
     void handleMousePress(const sf::Vector2f &mousePos) override;
@@ -74,7 +80,7 @@ public:
 
     float getTargetY() const;
 
-    void setColor (const sf::Color &color);
+    void setColor (sf::Color &color);
 
     sf::Vector2f getTargetPosition() const;
 
@@ -99,6 +105,8 @@ public:
     void copyPosition (const AnimatedNode &other);
 
     void setString (const std::string &s);
+
+    void changeColor();
 
     // draw node onto the screen
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

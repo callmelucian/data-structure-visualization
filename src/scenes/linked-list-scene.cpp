@@ -172,7 +172,9 @@ void LinkedListScene::timePropagation(float delta) {
 }
 
 void LinkedListScene::draw(sf::RenderWindow &window) {
+    ui.getCurrentCode().changeColor();
     window.draw(ui.getCurrentCode());
+    ui.getCurrentUI().changeColor();
     window.draw(ui.getCurrentUI());
     baseDraw(window);
 }

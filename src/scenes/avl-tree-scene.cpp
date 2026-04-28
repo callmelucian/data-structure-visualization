@@ -149,7 +149,9 @@ void AVLTreeScene::timePropagation(float delta) {
 }
 
 void AVLTreeScene::draw(sf::RenderWindow &window) {
+    ui.getCurrentCode().changeColor();
     window.draw(ui.getCurrentCode());
+    ui.getCurrentUI().changeColor();
     window.draw(ui.getCurrentUI());
     baseDraw(window);
 }

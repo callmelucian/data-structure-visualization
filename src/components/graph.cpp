@@ -12,24 +12,20 @@ namespace UI {
 Edge::Edge() :
     fromID(0), toID(0), weight(0),
     isDeleted(false), isActivated(false), isHovered(false), isHighlighted(false), isDirected(false),
-    defaultColor(Theme::getTextPrimary()),
-    fromObserver(nullptr), toObserver(nullptr),
-    thickness(0.f) {}
+    defaultColor(&Theme::textPrimary), fromObserver(nullptr), toObserver(nullptr), thickness(0.f) {}
 
 Edge::Edge (int fromNode, int toNode, int weight, Node* fromObserver, Node* toObserver, bool isDirected) :
     fromID(fromNode), toID(toNode), weight(weight),
     isDeleted(false), isActivated(false), isHovered(false), isHighlighted(false), isDirected(isDirected),
-    defaultColor(Theme::getTextPrimary()),
-    fromObserver(fromObserver), toObserver(toObserver),
-    thickness(2.f) {}
+    defaultColor(&Theme::textPrimary), fromObserver(fromObserver), toObserver(toObserver), thickness(2.f) {}
 
 void Edge::updateObserver (Node* newFrom, Node* newTo) {
     fromObserver = newFrom;
     toObserver = newTo;
 }
 
-void Edge::setDefaultColor (const sf::Color &color) {
-    defaultColor = color;
+void Edge::setDefaultColor (sf::Color &color) {
+    defaultColor = &color;
 }
 
 sf::Vector2f Edge::getFromPosition() const {
@@ -41,9 +37,9 @@ sf::Vector2f Edge::getToPosition() const {
 }
 
 sf::Color Edge::getColor() const {
-    if (isHighlighted || isActivated) return Theme::getAccentPrimary();
-    if (isHovered) return Theme::getTextSecondary();
-    return defaultColor;
+    if (isHighlighted || isActivated) return Theme::accentPrimary;
+    if (isHovered) return Theme::textSecondary;
+    return *defaultColor;
 }
 
 void Edge::drawEdge (sf::RenderTarget &target, sf::RenderStates states, const sf::Vector2f &fromPos, const sf::Vector2f &toPos) const {
@@ -229,7 +225,7 @@ void Graph::insertEdge (int fromNode, int toNode, int weight) {
     edges.emplace_back(fromNode, toNode, weight, nodes[fromNode], nodes[toNode], isDirected);
 }
 
-void Graph::setEdgeColor (int edgeID, const sf::Color &color) {
+void Graph::setEdgeColor (int edgeID, sf::Color &color) {
     edges[edgeID].setDefaultColor(color);
 }
 
@@ -307,12 +303,12 @@ void Graph::resetEdgeActivation() {
 void Graph::clearAnnotation() {
     for (FloatingNode* ptr : nodes) {
         ptr->setAnnotation("");
-        ptr->setAnnotationColor(Theme::getAccentDark());
+        ptr->setAnnotationColor(Theme::accentDark);
     }
 }
 
 void Graph::markAnnotation (int nodeID) {
-    nodes[nodeID]->setAnnotationColor(Theme::getTextPrimary());
+    nodes[nodeID]->setAnnotationColor(Theme::textPrimary);
 }
 
 void Graph::highlightNode (int nodeID) {
@@ -348,6 +344,11 @@ void Graph::enableInteractions() {
 
 void Graph::disableInteractions() {
     canInteract = false;
+}
+
+void Graph::changeColor() {
+    for (UI::FloatingNode* ptr : nodes) ptr->changeColor();
+    highlighter.changeColor();
 }
 
 void Graph::handleMousePress (const sf::Vector2f &mousePos) {

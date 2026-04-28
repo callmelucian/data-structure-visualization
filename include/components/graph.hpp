@@ -25,7 +25,7 @@ namespace UI {
 struct Edge : public UI::Base {
     int fromID, toID, weight;
     bool isDeleted, isActivated, isHovered, isHighlighted, isDirected;
-    sf::Color defaultColor;
+    sf::Color *defaultColor;
     Node *fromObserver, *toObserver;
     float thickness;
 
@@ -33,7 +33,7 @@ struct Edge : public UI::Base {
     Edge (int fromNode, int toNode, int weight, Node* fromObserver, Node* toObserver, bool isDirected);
 
     void updateObserver (Node *newFrom, Node* newTo);
-    void setDefaultColor (const sf::Color &color);
+    void setDefaultColor (sf::Color &color);
 
     sf::Vector2f getFromPosition() const;
     sf::Vector2f getToPosition() const;
@@ -98,7 +98,7 @@ public:
 
     void insertEdge (int fromNode, int toNode, int weight);
 
-    void setEdgeColor (int edgeID, const sf::Color &color);
+    void setEdgeColor (int edgeID, sf::Color &color);
 
     void setAnnotation (int nodeID, int value);
 
@@ -131,6 +131,8 @@ public:
 
     void enableInteractions();
     void disableInteractions();
+
+    void changeColor();
 
     void handleMousePress (const sf::Vector2f &mousePos) override;
     void handleMouseRelease (const sf::Vector2f &mousePos) override;

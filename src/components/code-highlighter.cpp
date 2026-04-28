@@ -3,35 +3,14 @@
 namespace UI {
 
 CodeHighlighter::CodeHighlighter() :
-    highlightedRow(-1), lineSpacing(20.f), titleBarHeight(0.f), fontSize(16), shown(false) {
-    background.setFillColor(Theme::getAccentSecondary());
-    highlightBar.setFillColor(Theme::getAccentPrimary());
+    highlightedRow(-1), lineSpacing(20.f), titleBarHeight(0.f), fontSize(16), shown(false),
+    backgroundFill(&Theme::accentSecondary), highlightFill(&Theme::accentPrimary), textColor(&Theme::textPrimary) {
+    // background.setFillColor(Theme::getAccentSecondary());
+    // highlightBar.setFillColor(Theme::getAccentPrimary());
 
     background.setSize({Setting::codeWidth, Setting::screenHeight});
     highlightBar.setSize({Setting::codeWidth, lineSpacing}); 
 }
-
-// void CodeHighlighter::loadCode(const std::vector<std::string>& codes) {
-//     textLines.clear();
-//     highlightedRow = -1;
-
-//     sf::Vector2f bgSize = background.getSize();
-//     float totalTextHeight = codes.size() * lineSpacing;
-//     float startY = (bgSize.y - totalTextHeight) / 2.0f;
-
-//     for (size_t i = 0; i < codes.size(); ++i) {
-//         UI::Text text(Theme::googleSansItalic);
-//         text.setString(codes[i]);
-//         text.setCharacterSize(fontSize);
-//         text.setFillColor(Theme::getTextPrimary());
-//         text.centerOrigin();
-
-//         float posX = bgSize.x / 2.0f;
-//         float posY = startY + (i * lineSpacing) + (lineSpacing / 2.0f);
-//         text.setPosition({posX, posY});
-//         textLines.push_back(text);
-//     }
-// }
 
 void CodeHighlighter::loadCode(const std::vector<std::string>& codes) {
     textLines.clear();
@@ -44,7 +23,6 @@ void CodeHighlighter::loadCode(const std::vector<std::string>& codes) {
         UI::Text text(Theme::googleSansItalic);
         text.setString(codeLine);
         text.setCharacterSize(fontSize);
-        text.setFillColor(Theme::getTextPrimary());
         text.centerOrigin();
 
         float currentWidth = text.getWidth();
@@ -123,6 +101,14 @@ void CodeHighlighter::hide() {
 
 void CodeHighlighter::setTargetPosition (float x, float y) {
     targetPosition = {x, y};
+}
+
+void CodeHighlighter::changeColor() {
+    sf::Color transparentBackground = *backgroundFill;
+    transparentBackground.a = 204;
+    background.setFillColor(transparentBackground);
+    highlightBar.setFillColor(*highlightFill);
+    for (UI::Text &text : textLines) text.setFillColor(*textColor);
 }
 
 sf::FloatRect CodeHighlighter::getBoundary() const {

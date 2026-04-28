@@ -39,7 +39,7 @@ public:
 
     void createNode (const std::string &s, bool isHead = false);
     void deleteNode (int nodeID);
-    void colorNode (int nodeID, const sf::Color &color);
+    void colorNode (int nodeID, sf::Color &color);
     void addEdge (int fromNode, int toNode);
     void setHead (int nodeID);
     void calculatePositions (float maxWidth = Setting::narrowFocusX, float maxHeight = Setting::focusY);
@@ -50,6 +50,7 @@ public:
     void copyFrom (const LinkedList &other);
     void timePropagation (float deltaTime);
     void changeValue (int nodeID, const std::string &s);
+    void changeColor();
     
     // overrides
     void draw (sf::RenderTarget &target, sf::RenderStates states) const override;

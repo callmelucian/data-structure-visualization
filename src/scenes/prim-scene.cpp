@@ -47,6 +47,7 @@ PrimScene::PrimScene (SceneManager &manager) :
             return g.editEdge(ui.getCurrentUI().edgeActivated(), numbers[0]);
         });
     });
+    buttons[0].disableButton();
 
     // delete
     buttons[1].setString("DELETE", 20);
@@ -64,6 +65,7 @@ PrimScene::PrimScene (SceneManager &manager) :
             return logic.deleteEdge(edgeID), true;
         });
     });
+    buttons[1].disableButton();
 
     // create node
     buttons[2].setString("ADD NODE", 20);
@@ -167,7 +169,9 @@ void PrimScene::timePropagation (float delta) {
 }
 
 void PrimScene::draw (sf::RenderWindow &window) {
+    ui.getCurrentCode().changeColor();
     window.draw(ui.getCurrentCode());
     baseDraw(window);
+    ui.getCurrentUI().changeColor();
     window.draw(ui.getCurrentUI());
 }

@@ -23,6 +23,7 @@ int main() {
 
     // load assets
     Theme::loadIcons();
+    Theme::updateTheme();
 
     // anti aliasing
     sf::ContextSettings settings;
@@ -45,12 +46,6 @@ int main() {
         std::make_unique<StartScene>(manager)
     );
     manager.addNewScene(
-        std::make_unique<AVLTreeScene>(manager)
-    );
-    manager.addNewScene(
-        std::make_unique<RBTreeScene>(manager)
-    );
-    manager.addNewScene(
         std::make_unique<LinkedListScene>(manager)
     );
     manager.addNewScene(
@@ -61,6 +56,12 @@ int main() {
     );
     manager.addNewScene(
         std::make_unique<PrimScene>(manager)
+    );
+    manager.addNewScene(
+        std::make_unique<AVLTreeScene>(manager)
+    );
+    manager.addNewScene(
+        std::make_unique<RBTreeScene>(manager)
     );
     manager.addNewScene(
         std::make_unique<SettingScene>(manager)

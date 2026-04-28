@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <memory>
+#include <vector>
 
 // utilities
 #include "scene-manager.hpp"
@@ -15,9 +16,13 @@
 // UI components
 #include "../components/button.hpp"
 
+extern const std::vector<std::string> sceneName;
+
 class StartScene : public Scene {
 private:
-    UI::Button toAVL, toDijkstra, toHashMap, toLinkedList, toPrim, toRBTree;
+    // UI::Button toAVL, toDijkstra, toHashMap, toLinkedList, toPrim, toRBTree;
+    std::vector<UI::Button> navigation;
+    UI::Text title, subtitle;
 
 public:
     StartScene (SceneManager &manager);

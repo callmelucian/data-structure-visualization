@@ -39,7 +39,7 @@ void LinkedList::deleteNode (int nodeID) {
         if (u == nodeID) u = -1;
 }
 
-void LinkedList::colorNode (int nodeID, const sf::Color &color) {
+void LinkedList::colorNode (int nodeID, sf::Color &color) {
     if (nodeID < nodeUI.size())
         nodeUI[nodeID]->setColor(color);
 }
@@ -138,6 +138,11 @@ void LinkedList::timePropagation (float deltaTime) {
 
 void LinkedList::changeValue (int nodeID, const std::string &s) {
     if (nodeID < nodeUI.size()) nodeUI[nodeID]->setString(s);
+}
+
+void LinkedList::changeColor() {
+    for (AnimatedNode* ptr : nodeUI) ptr->changeColor();
+    highlighter.changeColor();
 }
 
 // overrides

@@ -67,7 +67,7 @@ void BinaryTree::deleteNode(int nodeID) {
     if (highlighter.getAddress() == nodeUI[nodeID]) highlighter.free();
 }
 
-void BinaryTree::colorNode (int nodeID, const sf::Color &color) {
+void BinaryTree::colorNode (int nodeID, sf::Color &color) {
     if (!isDeleted[nodeID]) nodeUI[nodeID]->setColor(color);
 }
 
@@ -230,6 +230,11 @@ void BinaryTree::printPosition() const {
     for (int i = 0; i < nodeUI.size(); i++)
         std::cerr << nodeUI[i]->getPosition() << " ";
     std::cerr << "\n";
+}
+
+void BinaryTree::changeColor() {
+    for (AnimatedNode* ptr : nodeUI) ptr->changeColor();
+    highlighter.changeColor();
 }
 
 } // namespace UI

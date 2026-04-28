@@ -10,7 +10,7 @@ void DijkstraAlgorithm::makeDirected() {
 
 void DijkstraAlgorithm::clearUIState() {
     for (int i = 0; i < edgeWeight.size(); i++)
-        if (!edgeDeleted[i]) callbackSetEdgeColor(i, sf::Color::Black);
+        if (!edgeDeleted[i]) callbackSetEdgeColor(i, Theme::textPrimary);
     callbackClearAnnotation();
 }
 
@@ -160,7 +160,7 @@ void DijkstraAlgorithm::runPrim (int source) {
     callbackLoadCode(CodeRepo::PRIM_CODE);
     callbackClearAnnotation();
     for (int i = 0; i < edgeWeight.size(); i++)
-        if (!edgeDeleted[i]) callbackSetEdgeColor(i, Theme::getTextSecondary());
+        if (!edgeDeleted[i]) callbackSetEdgeColor(i, Theme::textSecondary);
     for (int i = 0; i < graphSize; i++)
         if (!nodeDeleted[i]) callbackEditAnnotation(i, INT_MAX);
     callbackHighlightCode(0);
@@ -184,7 +184,7 @@ void DijkstraAlgorithm::runPrim (int source) {
         callbackApplyAnimation();
 
         if (curNode != source) {
-            callbackSetEdgeColor(edgeID, Theme::getTextPrimary());
+            callbackSetEdgeColor(edgeID, Theme::textPrimary);
             callbackHighlightCode(4);
             callbackApplyAnimation();
         }

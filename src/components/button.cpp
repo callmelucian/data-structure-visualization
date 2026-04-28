@@ -4,15 +4,11 @@
 namespace UI {
 
 Button::Button(float width, float height, float radius) :
-    container(width, height, radius), label(Theme::googleSansRegular), activation(false), clickable(true) {
+    container(width, height, radius), label(Theme::googleSansRegular), activation(false), clickable(true),
+    containerFill(&Theme::button), containerOutline(&Theme::textPrimary), labelFill(&Theme::textPrimary) {
 
     container.setOrigin({width / 2.f, height / 2.f});
-    container.setFillColor(Theme::getButton());
-    // container.setOutlineThickness(2);
-    // container.setOutlineColor(sf::Color::Black);
-
     label.setAutoCharacterSize(width, height);
-    label.setFillColor(Theme::getTextPrimary());
     label.centerOrigin();
 }
 
@@ -94,16 +90,18 @@ sf::FloatRect Button::getBoundary() const {
 
 void Button::handleMousePress(const sf::Vector2f &mousePos) {
     if (!containPosition(mousePos) or !clickable) return;
-    container.setFillColor(Theme::getPressedButton());
+    // container.setFillColor(Theme::getPressedButton());
+    containerFill = &Theme::buttonPressed;
     setScale(0.97f);
     activation = true;
 }
 
 void Button::handleMouseRelease(const sf::Vector2f &mousePos) {
     if (!activation or !clickable) return;
-    container.setFillColor(
-        containPosition(mousePos) ? Theme::getHoveredButton() : Theme::getButton()
-    );
+    // container.setFillColor(
+    //     containPosition(mousePos) ? Theme::getHoveredButton() : Theme::getButton()
+    // );
+    containerFill = containPosition(mousePos) ? &Theme::buttonHovered : &Theme::button;
     setScale(1.f);
     activation = false;
     onClick();
@@ -111,9 +109,10 @@ void Button::handleMouseRelease(const sf::Vector2f &mousePos) {
 
 void Button::handleMouseMovement(const sf::Vector2f &mousePos) {
     if (activation or !clickable) return;
-    container.setFillColor(
-        containPosition(mousePos) ? Theme::getHoveredButton() : Theme::getButton()
-    );
+    // container.setFillColor(
+    //     containPosition(mousePos) ? Theme::getHoveredButton() : Theme::getButton()
+    // );
+    containerFill = containPosition(mousePos) ? &Theme::buttonHovered : &Theme::button;
 }
 
 void Button::draw(sf::RenderTarget &target, sf::RenderStates states) const {
@@ -127,18 +126,27 @@ void Button::handleTextEntered(const char &unicode) {}
 
 void Button::disableButton() {
     clickable = false;
-    container.setFillColor(Theme::getButton());
-    label.setFillColor(Theme::getTextSecondary());
+    containerFill = &Theme::button;
+    labelFill = &Theme::textSecondary;
+    // container.setFillColor(Theme::getButton());
+    // label.setFillColor(Theme::getTextSecondary());
 }
 
 void Button::enableButton() {
     clickable = true;
-    label.setFillColor(Theme::getTextPrimary());
+    // label.setFillColor(Theme::getTextPrimary());
+    labelFill = &Theme::textPrimary;
 }
 
 void Button::toggleState() {
     if (isClickable()) disableButton();
     else enableButton();
+}
+
+void Button::changeColor() {
+    container.setFillColor(*containerFill);
+    container.setOutlineColor(*containerOutline);
+    label.setFillColor(*labelFill);
 }
 
 }; // namespace UI

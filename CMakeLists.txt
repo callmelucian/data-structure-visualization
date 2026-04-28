@@ -15,6 +15,8 @@ include_directories(include)
 # 5. Create the executable from your source files
 add_executable(DataVisApp
     src/main.cpp
+
+    assets/theme.cpp
     
     src/ds/avl-tree.cpp
     src/ds/dijkstra.cpp

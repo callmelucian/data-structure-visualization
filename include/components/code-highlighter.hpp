@@ -19,6 +19,8 @@ private:
     unsigned int fontSize;
     bool shown;
     sf::Vector2f targetHighlightPos, targetPosition;
+
+    sf::Color *backgroundFill, *highlightFill, *textColor;
 public:
     CodeHighlighter();
 
@@ -32,6 +34,7 @@ public:
     void show();
     void hide();
     void setTargetPosition (float x, float y);
+    void changeColor();
 
     // overrides
     sf::FloatRect getBoundary() const override;

@@ -41,6 +41,8 @@ public:
     void draw (sf::RenderTarget &target, sf::RenderStates states) const override;
 
     void lockHighlight();
+
+    void changeColor();
 };
 
 template class HighlightCircle<AnimatedNode>;

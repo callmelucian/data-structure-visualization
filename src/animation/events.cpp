@@ -59,8 +59,8 @@ BinaryTreeColorNode::BinaryTreeColorNode (int nodeID, int color) : nodeID(nodeID
 
 int BinaryTreeColorNode::apply (UI::BinaryTree &ui, UI::CodeHighlighter &code) {
     return ui.colorNode(nodeID,
-        !color ? Theme::getButton() :
-        (color == 1 ? Theme::getRBRed() :Theme::getRBBlack())
+        !color ? Theme::button :
+        (color == 1 ? Theme::rbRed :Theme::rbBlack)
     ), true;
 }
 
@@ -115,7 +115,7 @@ int GraphEditEdge::apply (UI::Graph &ui, UI::CodeHighlighter &code) {
 
 // ========== GRAPH SET EDGE COLOR ========== //
 
-GraphSetEdgeColor::GraphSetEdgeColor (int edgeID, const sf::Color &color) : edgeID(edgeID), color(color) {}
+GraphSetEdgeColor::GraphSetEdgeColor (int edgeID, sf::Color &color) : edgeID(edgeID), color(color) {}
 
 int GraphSetEdgeColor::apply (UI::Graph &ui, UI::CodeHighlighter &code) {
     return ui.setEdgeColor(edgeID, color), true;
@@ -199,7 +199,7 @@ int HashMapHighlightNode::apply (UI::HashMap &ui, UI::CodeHighlighter &code) {
 // ========== HASH MAP COLOR NODE ========== //
 HashMapColorNode::HashMapColorNode (int nodeID, bool color) : nodeID(nodeID), color(color) {}
 int HashMapColorNode::apply (UI::HashMap &ui, UI::CodeHighlighter &code) {
-    return ui.colorNode(nodeID, color ? Theme::getRBRed() : Theme::getButton()), true;
+    return ui.colorNode(nodeID, color ? Theme::rbRed : Theme::button), true;
 }
 
 // ========== LINKED LIST CREATE NODE ========== //
@@ -235,7 +235,7 @@ int LinkedListSetHead::apply (UI::LinkedList &ui, UI::CodeHighlighter &code) {
 // ========== LINKED LIST COLOR NODE ========== //
 LinkedListColorNode::LinkedListColorNode (int nodeID, bool color) : nodeID(nodeID), color(color) {}
 int LinkedListColorNode::apply (UI::LinkedList &ui, UI::CodeHighlighter &code) {
-    return ui.colorNode(nodeID, color ? Theme::getRBRed() : Theme::getButton()), true;
+    return ui.colorNode(nodeID, color ? Theme::rbRed : Theme::button), true;
 }
 
 // ========== LINKED LIST CHANGE VALUE ========== //

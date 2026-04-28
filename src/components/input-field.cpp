@@ -5,28 +5,22 @@ const float BLINK_INTERVAL = 0.3f;
 namespace UI {
 
 TextInputField::TextInputField (float width, float height, float radius) :
-    content(Theme::googleSansRegular),
-    fieldLabel(Theme::googleSansItalic),
-    container(width, height, radius),
-    focus(false), showCursor(false), enableFlag(true) {
+    content(Theme::googleSansRegular), fieldLabel(Theme::googleSansItalic),
+    container(width, height, radius), focus(false), showCursor(false), enableFlag(true),
+    containerColor(&Theme::button), textColor(&Theme::textPrimary), cursorColor(&Theme::textSecondary) {
     
     // setup rectangle
     container.setOrigin({width / 2.f, height / 2.f});
-    container.setFillColor(Theme::getButton());
     container.setOutlineThickness(2);
-    container.setOutlineColor(Theme::getTextPrimary());
 
     // setup cursor
     cursor.setSize({2.f, height * 0.8f});
     cursor.setOrigin({1.f, height * 0.4f});
-    cursor.setFillColor(sf::Color({80, 80, 80}));
     cursor.setPosition({content.getWidth() / 2.f, 0});
 
     // setup content & label
-    content.setFillColor(Theme::getTextPrimary());
     content.centerOrigin();
     content.setCharacterSize(20);
-    fieldLabel.setFillColor(Theme::getTextPrimary());
     fieldLabel.centerOrigin();
     fieldLabel.setPosition({0.f, -(height / 2.f + 12.f)});
     fieldLabel.setCharacterSize(14);
@@ -64,9 +58,10 @@ void TextInputField::handleMousePress(const sf::Vector2f &mousePos) {
     bool contained = containPosition(mousePos);
     if (isFocused() && contained) blinkClock.restart();
     if (!contained) showCursor = false;
-    container.setFillColor(
-        contained ? Theme::getPressedButton() : Theme::getButton()
-    );
+    containerColor = contained ? &Theme::buttonPressed : &Theme::button;
+    // container.setFillColor(
+    //     contained ? Theme::getPressedButton() : Theme::getButton()
+    // );
     focus = contained;
 }
 
@@ -74,9 +69,10 @@ void TextInputField::handleMouseRelease(const sf::Vector2f &mousePos) {}
 
 void TextInputField::handleMouseMovement(const sf::Vector2f &mousePos) {
     if (focus || !enableFlag) return;
-    container.setFillColor(
-        containPosition(mousePos) ? Theme::getHoveredButton() : Theme::getButton()
-    );
+    containerColor = containPosition(mousePos) ? &Theme::buttonHovered : &Theme::button;
+    // container.setFillColor(
+    //     containPosition(mousePos) ? Theme::getHoveredButton() : Theme::getButton()
+    // );
 }
 
 bool TextInputField::isFocused() const { 
@@ -85,11 +81,20 @@ bool TextInputField::isFocused() const {
 
 void TextInputField::focusField() {
     focus = true;
-    container.setFillColor(Theme::getPressedButton());
+    containerColor = &Theme::buttonPressed;
+    // container.setFillColor(Theme::getPressedButton());
 }
 
 bool TextInputField::isEnabled() const {
     return enableFlag;
+}
+
+void TextInputField::changeColor() {
+    content.setFillColor(*textColor);
+    fieldLabel.setFillColor(*textColor);
+    container.setFillColor(*containerColor);
+    container.setOutlineColor(*textColor);
+    cursor.setFillColor(*cursorColor);
 }
 
 void TextInputField::handleTextEntered(const char &unicode) {

@@ -144,9 +144,9 @@ public:
 class GraphSetEdgeColor : public AnimationEvent<UI::Graph> {
 private:
     int edgeID;
-    sf::Color color;
+    sf::Color &color;
 public:
-    GraphSetEdgeColor (int edgeID, const sf::Color &color);
+    GraphSetEdgeColor (int edgeID, sf::Color &color);
     
     int apply (UI::Graph &ui, UI::CodeHighlighter &code) override;
 };

@@ -27,7 +27,7 @@ private:
     std::function<void(int)> callbackDeleteNode;
     std::function<void(int)> callbackDeleteEdge;
     std::function<void(int,int)> callbackEditEdge;
-    std::function<void(int,sf::Color)> callbackSetEdgeColor;
+    std::function<void(int,sf::Color&)> callbackSetEdgeColor;
 
     std::function<void()> callbackClearAnnotation;
     std::function<void(int,int)> callbackEditAnnotation;

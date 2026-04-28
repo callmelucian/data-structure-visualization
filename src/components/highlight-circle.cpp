@@ -7,11 +7,11 @@ namespace UI {
 template <typename NodeType>
 HighlightCircle<NodeType>::HighlightCircle() :
     circle(36.f, 100), highlightLocked(true), nodeObserver(nullptr) {
-        circle.setOutlineColor(Theme::getAccentPrimary());
-        circle.setFillColor(Theme::getTransparent());
-        circle.setOrigin({36.f, 36.f});
-        circle.setOutlineThickness(6.f);
-    }
+    
+    circle.setFillColor(Theme::transparent);
+    circle.setOrigin({36.f, 36.f});
+    circle.setOutlineThickness(6.f);
+}
 
 template <typename NodeType>
 void HighlightCircle<NodeType>::setTargetNode (NodeType* ptr) {
@@ -72,6 +72,11 @@ void HighlightCircle<NodeType>::handleTextEntered (const char &unicode) {}
 template <typename NodeType>
 void HighlightCircle<NodeType>::lockHighlight() {
     highlightLocked = true;
+}
+
+template <typename NodeType>
+void HighlightCircle<NodeType>::changeColor() {
+    circle.setOutlineColor(Theme::accentPrimary);
 }
 
 }; // namespace UI
