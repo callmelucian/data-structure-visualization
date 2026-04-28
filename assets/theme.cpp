@@ -49,20 +49,12 @@ const std::vector<bool> haveBackground = {
 };
 
 namespace Theme {
-    sf::Font cmuSerif("assets/font-cmu/cmunbx.ttf");
-    sf::Font notoCondensedBold("assets/font-noto-mono/NotoSansMono_ExtraCondensed-ExtraBold.ttf");
-    sf::Font notoCondensed("assets/font-noto-mono/NotoSansMono_ExtraCondensed-Regular.ttf");
-    sf::Font notoRegular("assets/font-noto-mono/NotoSansMono-Regular.ttf");
     sf::Font googleSansRegular("assets/font-google-sans-code/GoogleSansCode-Regular.ttf");
     sf::Font googleSansItalic("assets/font-google-sans-code/GoogleSansCode-Italic.ttf");
     sf::Font googleSansBold("assets/font-google-sans-code/GoogleSansCode-Bold.ttf");
     sf::Font googleSansBoldItalic("assets/font-google-sans-code/GoogleSansCode-BoldItalic.ttf");
     sf::Font googleSansExBold("assets/font-google-sans-code/GoogleSansCode-ExtraBold.ttf");
     sf::Font googleSansExBoldItalic("assets/font-google-sans-code/GoogleSansCode-ExtraBoldItalic.ttf");
-    sf::Font ibmRegular("assets/font-ibm-plex/IBMPlexMono-Regular.ttf");
-    sf::Font ibmItalic("assets/font-ibm-plex/IBMPlexMono-Italic.ttf");
-    sf::Font ibmBold("assets/font-ibm-plex/IBMPlexMono-Bold.ttf");
-    sf::Font ibmBoldItalic("assets/font-ibm-plex/IBMPlexMono-BoldItalic.ttf");
 
     sf::Texture leftIcon;
     sf::Texture leftLeftIcon;

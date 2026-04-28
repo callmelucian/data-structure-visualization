@@ -24,21 +24,13 @@ extern const std::vector<bool> haveBackground;
 
 namespace Theme {
     // Fonts
-    extern sf::Font cmuSerif;
-    extern sf::Font notoCondensedBold;
-    extern sf::Font notoCondensed;
-    extern sf::Font notoRegular;
     extern sf::Font googleSansRegular;
     extern sf::Font googleSansItalic;
     extern sf::Font googleSansBold;
     extern sf::Font googleSansBoldItalic;
     extern sf::Font googleSansExBold;
     extern sf::Font googleSansExBoldItalic;
-    extern sf::Font ibmRegular;
-    extern sf::Font ibmItalic;
-    extern sf::Font ibmBold;
-    extern sf::Font ibmBoldItalic;
-
+    
     // Icons
     extern sf::Texture leftIcon;
     extern sf::Texture leftLeftIcon;
