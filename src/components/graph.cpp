@@ -81,7 +81,7 @@ void Edge::draw (sf::RenderTarget &target, sf::RenderStates states) const {
 
     sf::Vector2f delta = getToPosition() - getFromPosition();
 
-    Text text(Theme::ibmRegular, std::to_string(weight), 15);
+    Text text(Theme::googleSansRegular, std::to_string(weight), 15);
     text.setFillColor(getColor());
     text.centerOrigin();
     sf::Vector2f midpoint = (getFromPosition() + getToPosition()) / 2.0f;

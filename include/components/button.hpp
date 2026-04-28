@@ -13,11 +13,11 @@ class Button : public UI::Base {
 private:
     UI::RoundedRectangle container;
     UI::Text label;
-    std::function<void()> onClick;
     bool activation, clickable;
     std::optional<sf::Sprite> icon;
     sf::Color *containerFill, *containerOutline, *labelFill;
-
+    
+    std::function<void()> onClick;
 public:
     // constructor
     Button(float width, float height, float radius = 0.f);
